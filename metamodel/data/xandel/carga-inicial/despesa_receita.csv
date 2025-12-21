@@ -1,0 +1,6 @@
+id_DespesaReceita;SiglaDespesaReceita;NomeDespesaReceita;Despesa;TemRateio;Inativa;Valor;Parcelas;Periodicidade;ParcelaUnica
+1;GCL;Item 1;1;1;1;;1;1;1
+2;UKL;Descrição 2;2;2;2;;2;2;2
+3;KCD;Registro 3;3;3;3;;3;3;3
+4;WKN;Descrição 4;4;4;4;;4;4;4
+5;ILF;Valor 5;5;5;5;;5;5;5
