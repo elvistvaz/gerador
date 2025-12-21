@@ -26,8 +26,8 @@ public class PessoaContaCorrenteMapper {
             entity.getDvContaCorrente(),
             entity.getAtiva(),
             entity.getContaPoupanca(),
-            entity.getContaPadrao(),
             entity.getNomeDependente(),
+            entity.getContaPadrao(),
             entity.getPix()
         );
     }
@@ -67,8 +67,8 @@ public class PessoaContaCorrenteMapper {
         entity.setDvContaCorrente(dto.dvContaCorrente());
         entity.setAtiva(dto.ativa());
         entity.setContaPoupanca(dto.contaPoupanca());
-        entity.setContaPadrao(dto.contaPadrao());
         entity.setNomeDependente(dto.nomeDependente());
+        entity.setContaPadrao(dto.contaPadrao());
         entity.setPix(dto.pix());
         return entity;
     }
@@ -87,8 +87,8 @@ public class PessoaContaCorrenteMapper {
         entity.setDvContaCorrente(dto.dvContaCorrente());
         entity.setAtiva(dto.ativa());
         entity.setContaPoupanca(dto.contaPoupanca());
-        entity.setContaPadrao(dto.contaPadrao());
         entity.setNomeDependente(dto.nomeDependente());
+        entity.setContaPadrao(dto.contaPadrao());
         entity.setPix(dto.pix());
     }
 }

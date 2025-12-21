@@ -13,5 +13,8 @@ public record EmpresaSocioListDTO(
     Integer numeroQuotas,
     BigDecimal valorQuota,
     LocalDateTime dataSaida,
-    Boolean novoModelo
+    BigDecimal valorCremeb,
+    Boolean novoModelo,
+    BigDecimal taxaConsulta,
+    BigDecimal taxaProcedimento
 ) {}

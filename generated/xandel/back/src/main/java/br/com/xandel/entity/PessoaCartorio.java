@@ -3,7 +3,7 @@ package br.com.xandel.entity;
 import jakarta.persistence.*;
 
 /**
- * Relação pessoa-cartório
+ * Relacionamento pessoa-cartório
  */
 @Entity
 @Table(name = "PessoaCartorio", schema = "dbo")

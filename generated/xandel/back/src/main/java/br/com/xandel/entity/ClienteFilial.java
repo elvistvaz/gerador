@@ -17,7 +17,7 @@ public class ClienteFilial {
     @Column(name = "id_Cliente", nullable = false)
     private Integer idCliente;
 
-    @Column(name = "NomeFilial", nullable = false, length = 50)
+    @Column(name = "NomeFilial", nullable = false, length = 100)
     private String nomeFilial;
 
     public ClienteFilial() {

@@ -1,6 +1,8 @@
 package br.com.xandel.repository;
 
 import br.com.xandel.entity.EmpresaCliente;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -14,15 +16,5 @@ import java.util.Optional;
  */
 @Repository
 public interface EmpresaClienteRepository extends JpaRepository<EmpresaCliente, EmpresaClienteId>, JpaSpecificationExecutor<EmpresaCliente> {
-
-    /**
-     * Busca por Empresa.
-     */
-    List<EmpresaCliente> findById_IdEmpresa(Integer idEmpresa);
-
-    /**
-     * Busca por Cliente.
-     */
-    List<EmpresaCliente> findById_IdCliente(Integer idCliente);
 
 }

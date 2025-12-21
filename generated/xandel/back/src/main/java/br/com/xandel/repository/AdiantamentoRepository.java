@@ -1,6 +1,8 @@
 package br.com.xandel.repository;
 
 import br.com.xandel.entity.Adiantamento;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -15,23 +17,8 @@ import java.util.Optional;
 public interface AdiantamentoRepository extends JpaRepository<Adiantamento, Integer>, JpaSpecificationExecutor<Adiantamento> {
 
     /**
-     * Busca por Empresa.
+     * Busca paginada filtrada por idEmpresa.
      */
-    List<Adiantamento> findByIdEmpresa(Integer idEmpresa);
-
-    /**
-     * Busca por Pessoa.
-     */
-    List<Adiantamento> findByIdPessoa(Integer idPessoa);
-
-    /**
-     * Busca por Cliente.
-     */
-    List<Adiantamento> findByIdCliente(Integer idCliente);
-
-    /**
-     * Busca por Lançamento.
-     */
-    List<Adiantamento> findByIdLancamento(Integer idLancamento);
+    Page<Adiantamento> findByIdEmpresa(Integer idEmpresa, Pageable pageable);
 
 }

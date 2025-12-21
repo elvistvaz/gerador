@@ -42,7 +42,12 @@ public class EmpresaClienteMapper {
             entity.getId().getIdEmpresa(),
             entity.getId().getIdCliente(),
             entity.getTaxa(),
-            entity.getProcesso()
+            entity.getProcesso(),
+            entity.getTaxaISS(),
+            entity.getTaxaCOFINS(),
+            entity.getTaxaPIS(),
+            entity.getTaxaCSLL(),
+            entity.getTaxaIRRF()
         );
     }
 

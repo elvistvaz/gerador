@@ -3,7 +3,7 @@ package br.com.xandel.entity;
 import jakarta.persistence.*;
 
 /**
- * Especialidades do médico
+ * Relacionamento médico-especialidade
  */
 @Entity
 @Table(name = "MedicoEspecialidade", schema = "dbo")

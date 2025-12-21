@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * Adiantamentos de valores
+ * Adiantamentos de pagamentos
  */
 @Entity
 @Table(name = "Adiantamento", schema = "dbo")

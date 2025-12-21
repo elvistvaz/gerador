@@ -9,5 +9,10 @@ public record EmpresaClienteListDTO(
     Integer idEmpresa,
     Integer idCliente,
     BigDecimal taxa,
-    String processo
+    String processo,
+    BigDecimal taxaISS,
+    BigDecimal taxaCOFINS,
+    BigDecimal taxaPIS,
+    BigDecimal taxaCSLL,
+    BigDecimal taxaIRRF
 ) {}

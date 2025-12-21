@@ -55,21 +55,22 @@ public class RepositoryTemplate {
         sb.append("extends JpaRepository<").append(entityName).append(", ").append(pkType).append(">");
         sb.append(", JpaSpecificationExecutor<").append(entityName).append("> {\n\n");
 
-        // Métodos de busca baseados em campos únicos e de pesquisa
-        for (Field field : entity.getFields()) {
-            if (field.isUnique() && !field.isPrimaryKey()) {
-                sb.append(generateFindByUniqueField(entityName, field));
-            }
-            if (hasSearchEnabled(field)) {
-                sb.append(generateSearchMethod(entityName, field));
-            }
-        }
-
-        // Métodos de busca para FKs (exceto se FK é parte de PK composta)
+        // Verifica se a entidade tem chave composta
         boolean hasCompositeKey = entity.getFields().stream()
             .filter(Field::isPrimaryKey)
             .count() > 1;
 
+        // Métodos de busca baseados em campos únicos e de pesquisa
+        for (Field field : entity.getFields()) {
+            if (field.isUnique() && !field.isPrimaryKey()) {
+                sb.append(generateFindByUniqueField(entityName, field, hasCompositeKey));
+            }
+            if (hasSearchEnabled(field)) {
+                sb.append(generateSearchMethod(entityName, field, hasCompositeKey));
+            }
+        }
+
+        // Métodos de busca para FKs (exceto se FK é parte de PK composta)
         for (Field field : entity.getFields()) {
             if (field.isForeignKey()) {
                 // Se tem chave composta e o campo é parte da PK, usa caminho id.campo
@@ -88,30 +89,38 @@ public class RepositoryTemplate {
             String filterFieldPascal = NamingUtils.toPascalCase(filterField);
             String filterField2Pascal = filterField2 != null ? NamingUtils.toPascalCase(filterField2) : null;
 
-            // Determina o tipo Java do campo de filtro
+            // Determina o tipo Java do campo de filtro e se faz parte da PK composta
             String filterFieldType = "Integer";
+            boolean filterFieldIsPartOfCompositePk = false;
             for (Field field : entity.getFields()) {
                 if (field.getName().equals(filterField)) {
                     filterFieldType = NamingUtils.toJavaType(field.getDataType());
+                    filterFieldIsPartOfCompositePk = hasCompositeKey && field.isPrimaryKey();
                     break;
                 }
             }
 
             String filterField2Type = "Integer";
+            boolean filterField2IsPartOfCompositePk = false;
             if (filterField2 != null) {
                 for (Field field : entity.getFields()) {
                     if (field.getName().equals(filterField2)) {
                         filterField2Type = NamingUtils.toJavaType(field.getDataType());
+                        filterField2IsPartOfCompositePk = hasCompositeKey && field.isPrimaryKey();
                         break;
                     }
                 }
             }
 
+            // Para campos que são parte da PK composta, usar id_ como prefixo no nome do método
+            String methodPrefix1 = filterFieldIsPartOfCompositePk ? "Id_" : "";
+            String methodPrefix2 = filterField2IsPartOfCompositePk ? "Id_" : "";
+
             // Método para filtro por field1
             sb.append("    /**\n");
             sb.append("     * Busca paginada filtrada por ").append(filterField).append(".\n");
             sb.append("     */\n");
-            sb.append("    Page<").append(entityName).append("> findBy").append(filterFieldPascal);
+            sb.append("    Page<").append(entityName).append("> findBy").append(methodPrefix1).append(filterFieldPascal);
             sb.append("(").append(filterFieldType).append(" ").append(filterField).append(", Pageable pageable);\n\n");
 
             if (filterField2 != null) {
@@ -119,14 +128,14 @@ public class RepositoryTemplate {
                 sb.append("    /**\n");
                 sb.append("     * Busca paginada filtrada por ").append(filterField2).append(".\n");
                 sb.append("     */\n");
-                sb.append("    Page<").append(entityName).append("> findBy").append(filterField2Pascal);
+                sb.append("    Page<").append(entityName).append("> findBy").append(methodPrefix2).append(filterField2Pascal);
                 sb.append("(").append(filterField2Type).append(" ").append(filterField2).append(", Pageable pageable);\n\n");
 
                 // Método para filtro combinado
                 sb.append("    /**\n");
                 sb.append("     * Busca paginada filtrada por ").append(filterField).append(" e ").append(filterField2).append(".\n");
                 sb.append("     */\n");
-                sb.append("    Page<").append(entityName).append("> findBy").append(filterFieldPascal).append("And").append(filterField2Pascal);
+                sb.append("    Page<").append(entityName).append("> findBy").append(methodPrefix1).append(filterFieldPascal).append("And").append(methodPrefix2).append(filterField2Pascal);
                 sb.append("(").append(filterFieldType).append(" ").append(filterField).append(", ").append(filterField2Type).append(" ").append(filterField2).append(", Pageable pageable);\n\n");
             }
         }
@@ -174,30 +183,36 @@ public class RepositoryTemplate {
             && field.getUi().getSearch().isEnabled();
     }
 
-    private String generateFindByUniqueField(String entityName, Field field) {
+    private String generateFindByUniqueField(String entityName, Field field, boolean hasCompositeKey) {
         StringBuilder sb = new StringBuilder();
         String fieldName = NamingUtils.toPascalCase(field.getName());
         String javaType = NamingUtils.toJavaType(field.getDataType());
 
+        // Se o campo faz parte da PK composta, usar prefixo Id_
+        String methodPrefix = (hasCompositeKey && field.isPrimaryKey()) ? "Id_" : "";
+
         sb.append("    /**\n");
         sb.append("     * Busca por ").append(field.getLabel() != null ? field.getLabel() : field.getName()).append(".\n");
         sb.append("     */\n");
-        sb.append("    Optional<").append(entityName).append("> findBy").append(fieldName);
+        sb.append("    Optional<").append(entityName).append("> findBy").append(methodPrefix).append(fieldName);
         sb.append("(").append(javaType).append(" ").append(field.getName()).append(");\n\n");
 
         return sb.toString();
     }
 
-    private String generateSearchMethod(String entityName, Field field) {
+    private String generateSearchMethod(String entityName, Field field, boolean hasCompositeKey) {
         StringBuilder sb = new StringBuilder();
         String fieldName = NamingUtils.toPascalCase(field.getName());
+
+        // Se o campo faz parte da PK composta, usar prefixo Id_
+        String methodPrefix = (hasCompositeKey && field.isPrimaryKey()) ? "Id_" : "";
 
         // Se é string, gera método com LIKE
         if (NamingUtils.isStringType(field.getDataType())) {
             sb.append("    /**\n");
             sb.append("     * Busca por ").append(field.getLabel() != null ? field.getLabel() : field.getName()).append(" (contém).\n");
             sb.append("     */\n");
-            sb.append("    List<").append(entityName).append("> findBy").append(fieldName);
+            sb.append("    List<").append(entityName).append("> findBy").append(methodPrefix).append(fieldName);
             sb.append("ContainingIgnoreCase(String ").append(field.getName()).append(");\n\n");
         }
 

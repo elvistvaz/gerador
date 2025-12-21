@@ -3,7 +3,7 @@ package br.com.xandel.entity;
 import jakarta.persistence.*;
 
 /**
- * Contas de recebimento por pessoa e cliente
+ * Conta de recebimento por pessoa e cliente
  */
 @Entity
 @Table(name = "PessoaContaRecebimento", schema = "dbo")

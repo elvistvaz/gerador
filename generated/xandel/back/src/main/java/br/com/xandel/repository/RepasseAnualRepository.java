@@ -20,11 +20,11 @@ public interface RepasseAnualRepository extends JpaRepository<RepasseAnual, Repa
     /**
      * Busca por Ano (contém).
      */
-    List<RepasseAnual> findByAnoContainingIgnoreCase(String ano);
+    List<RepasseAnual> findById_AnoContainingIgnoreCase(String ano);
 
     /**
      * Busca paginada filtrada por idEmpresa.
      */
-    Page<RepasseAnual> findByIdEmpresa(Integer idEmpresa, Pageable pageable);
+    Page<RepasseAnual> findById_IdEmpresa(Integer idEmpresa, Pageable pageable);
 
 }

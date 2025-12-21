@@ -81,49 +81,61 @@ public class AuditableServiceTemplate {
 
         // Verifica se a entidade tem sessionFilter
         boolean hasSessionFilter = entity.hasSessionFilter();
+        boolean hasCompositeKey = entity.getFields().stream()
+            .filter(Field::isPrimaryKey)
+            .count() > 1;
+
         if (hasSessionFilter) {
             String filterField = entity.getSessionFilter().getField();
             String filterField2 = entity.getSessionFilter().hasField2() ? entity.getSessionFilter().getField2() : null;
             String filterFieldPascal = NamingUtils.toPascalCase(filterField);
             String filterField2Pascal = filterField2 != null ? NamingUtils.toPascalCase(filterField2) : null;
 
-            // Determina o tipo Java do campo de filtro
+            // Determina o tipo Java do campo de filtro e se faz parte da PK composta
             String filterFieldType = "Integer";
+            boolean filterFieldIsPartOfCompositePk = false;
             for (Field field : entity.getFields()) {
                 if (field.getName().equals(filterField)) {
                     filterFieldType = NamingUtils.toJavaType(field.getDataType());
+                    filterFieldIsPartOfCompositePk = hasCompositeKey && field.isPrimaryKey();
                     break;
                 }
             }
 
             String filterField2Type = "Integer";
+            boolean filterField2IsPartOfCompositePk = false;
             if (filterField2 != null) {
                 for (Field field : entity.getFields()) {
                     if (field.getName().equals(filterField2)) {
                         filterField2Type = NamingUtils.toJavaType(field.getDataType());
+                        filterField2IsPartOfCompositePk = hasCompositeKey && field.isPrimaryKey();
                         break;
                     }
                 }
             }
 
+            // Para campos que são parte da PK composta, usar Id_ como prefixo no nome do método
+            String methodPrefix1 = filterFieldIsPartOfCompositePk ? "Id_" : "";
+            String methodPrefix2 = filterField2IsPartOfCompositePk ? "Id_" : "";
+
             if (filterField2 != null) {
                 // Dois campos de filtro
                 sb.append("    public Page<").append(entityName).append("ListDTO> findAll(").append(filterFieldType).append(" ").append(filterField).append(", ").append(filterField2Type).append(" ").append(filterField2).append(", Pageable pageable) {\n");
                 sb.append("        if (").append(filterField).append(" != null && ").append(filterField2).append(" != null) {\n");
-                sb.append("            return repository.findBy").append(filterFieldPascal).append("And").append(filterField2Pascal).append("(").append(filterField).append(", ").append(filterField2).append(", pageable)\n");
+                sb.append("            return repository.findBy").append(methodPrefix1).append(filterFieldPascal).append("And").append(methodPrefix2).append(filterField2Pascal).append("(").append(filterField).append(", ").append(filterField2).append(", pageable)\n");
                 sb.append("                .map(mapper::toListDTO);\n");
                 sb.append("        } else if (").append(filterField).append(" != null) {\n");
-                sb.append("            return repository.findBy").append(filterFieldPascal).append("(").append(filterField).append(", pageable)\n");
+                sb.append("            return repository.findBy").append(methodPrefix1).append(filterFieldPascal).append("(").append(filterField).append(", pageable)\n");
                 sb.append("                .map(mapper::toListDTO);\n");
                 sb.append("        } else if (").append(filterField2).append(" != null) {\n");
-                sb.append("            return repository.findBy").append(filterField2Pascal).append("(").append(filterField2).append(", pageable)\n");
+                sb.append("            return repository.findBy").append(methodPrefix2).append(filterField2Pascal).append("(").append(filterField2).append(", pageable)\n");
                 sb.append("                .map(mapper::toListDTO);\n");
                 sb.append("        }\n");
             } else {
                 // Um campo de filtro
                 sb.append("    public Page<").append(entityName).append("ListDTO> findAll(").append(filterFieldType).append(" ").append(filterField).append(", Pageable pageable) {\n");
                 sb.append("        if (").append(filterField).append(" != null) {\n");
-                sb.append("            return repository.findBy").append(filterFieldPascal).append("(").append(filterField).append(", pageable)\n");
+                sb.append("            return repository.findBy").append(methodPrefix1).append(filterFieldPascal).append("(").append(filterField).append(", pageable)\n");
                 sb.append("                .map(mapper::toListDTO);\n");
                 sb.append("        }\n");
             }

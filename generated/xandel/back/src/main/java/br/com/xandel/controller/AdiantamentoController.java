@@ -27,8 +27,10 @@ public class AdiantamentoController {
      * Lista todos os registros com paginação.
      */
     @GetMapping
-    public ResponseEntity<Page<AdiantamentoListDTO>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(service.findAll(pageable));
+    public ResponseEntity<Page<AdiantamentoListDTO>> findAll(
+            @RequestParam(required = false) Integer idEmpresa,
+            Pageable pageable) {
+        return ResponseEntity.ok(service.findAll(idEmpresa, pageable));
     }
 
     /**

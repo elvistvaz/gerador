@@ -61,6 +61,33 @@
           <td>{{ formatDate(item.dataAdesao) }}</td>
           <td>{{ formatDate(item.dataInativo) }}</td>
           <td class="actions-column">
+            <button class="btn btn-child btn-sm" (click)="navigateToChild('medicoEspecialidade', 'idPessoa', item.idPessoa)" title="Especialidades">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
+                <rect x="9" y="3" width="6" height="4" rx="1"></rect>
+                <path d="M9 12h6"></path>
+                <path d="M9 16h6"></path>
+              </svg>
+              <span>Especialidades</span>
+            </button>
+            <button class="btn btn-child btn-sm" (click)="navigateToChild('pessoaCartorio', 'idPessoa', item.idPessoa)" title="Cartórios">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
+                <rect x="9" y="3" width="6" height="4" rx="1"></rect>
+                <path d="M9 12h6"></path>
+                <path d="M9 16h6"></path>
+              </svg>
+              <span>Cartórios</span>
+            </button>
+            <button class="btn btn-child btn-sm" (click)="navigateToChild('pessoaContaCorrente', 'idPessoa', item.idPessoa)" title="Contas Correntes">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
+                <rect x="9" y="3" width="6" height="4" rx="1"></rect>
+                <path d="M9 12h6"></path>
+                <path d="M9 16h6"></path>
+              </svg>
+              <span>Contas Correntes</span>
+            </button>
             <button class="btn btn-edit btn-sm" (click)="editar(item.idPessoa)" title="Editar">
               <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>

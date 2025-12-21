@@ -63,6 +63,30 @@ import { RepasseAnualListComponent } from './app/components/repasseAnual-list.co
 import { RepasseAnualFormComponent } from './app/components/repasseAnual-form.component';
 import { AnuidadeCremebListComponent } from './app/components/anuidadeCremeb-list.component';
 import { AnuidadeCremebFormComponent } from './app/components/anuidadeCremeb-form.component';
+import { MedicoEspecialidadeListComponent } from './app/components/medicoEspecialidade-list.component';
+import { MedicoEspecialidadeFormComponent } from './app/components/medicoEspecialidade-form.component';
+import { EmpresaDespesaFixaListComponent } from './app/components/empresaDespesaFixa-list.component';
+import { EmpresaDespesaFixaFormComponent } from './app/components/empresaDespesaFixa-form.component';
+import { EmpresaClienteListComponent } from './app/components/empresaCliente-list.component';
+import { EmpresaClienteFormComponent } from './app/components/empresaCliente-form.component';
+import { RetencaoListComponent } from './app/components/retencao-list.component';
+import { RetencaoFormComponent } from './app/components/retencao-form.component';
+import { PessoaCartorioListComponent } from './app/components/pessoaCartorio-list.component';
+import { PessoaCartorioFormComponent } from './app/components/pessoaCartorio-form.component';
+import { PessoaContaRecebimentoListComponent } from './app/components/pessoaContaRecebimento-list.component';
+import { PessoaContaRecebimentoFormComponent } from './app/components/pessoaContaRecebimento-form.component';
+import { PessoaContaCorrenteListComponent } from './app/components/pessoaContaCorrente-list.component';
+import { PessoaContaCorrenteFormComponent } from './app/components/pessoaContaCorrente-form.component';
+import { ClienteContatoListComponent } from './app/components/clienteContato-list.component';
+import { ClienteContatoFormComponent } from './app/components/clienteContato-form.component';
+import { AnuidadeCremebItemListComponent } from './app/components/anuidadeCremebItem-list.component';
+import { AnuidadeCremebItemFormComponent } from './app/components/anuidadeCremebItem-form.component';
+import { AdiantamentoListComponent } from './app/components/adiantamento-list.component';
+import { AdiantamentoFormComponent } from './app/components/adiantamento-form.component';
+import { EmpresaSocioListComponent } from './app/components/empresaSocio-list.component';
+import { EmpresaSocioFormComponent } from './app/components/empresaSocio-form.component';
+import { ClienteFilialListComponent } from './app/components/clienteFilial-list.component';
+import { ClienteFilialFormComponent } from './app/components/clienteFilial-form.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -145,6 +169,42 @@ const routes: Routes = [
   { path: 'anuidadeCremeb', component: AnuidadeCremebListComponent, canActivate: [authGuard] },
   { path: 'anuidadeCremeb/novo', component: AnuidadeCremebFormComponent, canActivate: [authGuard] },
   { path: 'anuidadeCremeb/editar/:id', component: AnuidadeCremebFormComponent, canActivate: [authGuard] },
+  { path: 'medicoEspecialidade', component: MedicoEspecialidadeListComponent, canActivate: [authGuard] },
+  { path: 'medicoEspecialidade/novo', component: MedicoEspecialidadeFormComponent, canActivate: [authGuard] },
+  { path: 'medicoEspecialidade/editar/:id', component: MedicoEspecialidadeFormComponent, canActivate: [authGuard] },
+  { path: 'empresaDespesaFixa', component: EmpresaDespesaFixaListComponent, canActivate: [authGuard] },
+  { path: 'empresaDespesaFixa/novo', component: EmpresaDespesaFixaFormComponent, canActivate: [authGuard] },
+  { path: 'empresaDespesaFixa/editar/:id', component: EmpresaDespesaFixaFormComponent, canActivate: [authGuard] },
+  { path: 'empresaCliente', component: EmpresaClienteListComponent, canActivate: [authGuard] },
+  { path: 'empresaCliente/novo', component: EmpresaClienteFormComponent, canActivate: [authGuard] },
+  { path: 'empresaCliente/editar/:id', component: EmpresaClienteFormComponent, canActivate: [authGuard] },
+  { path: 'retencao', component: RetencaoListComponent, canActivate: [authGuard] },
+  { path: 'retencao/novo', component: RetencaoFormComponent, canActivate: [authGuard] },
+  { path: 'retencao/editar/:id', component: RetencaoFormComponent, canActivate: [authGuard] },
+  { path: 'pessoaCartorio', component: PessoaCartorioListComponent, canActivate: [authGuard] },
+  { path: 'pessoaCartorio/novo', component: PessoaCartorioFormComponent, canActivate: [authGuard] },
+  { path: 'pessoaCartorio/editar/:id', component: PessoaCartorioFormComponent, canActivate: [authGuard] },
+  { path: 'pessoaContaRecebimento', component: PessoaContaRecebimentoListComponent, canActivate: [authGuard] },
+  { path: 'pessoaContaRecebimento/novo', component: PessoaContaRecebimentoFormComponent, canActivate: [authGuard] },
+  { path: 'pessoaContaRecebimento/editar/:id', component: PessoaContaRecebimentoFormComponent, canActivate: [authGuard] },
+  { path: 'pessoaContaCorrente', component: PessoaContaCorrenteListComponent, canActivate: [authGuard] },
+  { path: 'pessoaContaCorrente/novo', component: PessoaContaCorrenteFormComponent, canActivate: [authGuard] },
+  { path: 'pessoaContaCorrente/editar/:id', component: PessoaContaCorrenteFormComponent, canActivate: [authGuard] },
+  { path: 'clienteContato', component: ClienteContatoListComponent, canActivate: [authGuard] },
+  { path: 'clienteContato/novo', component: ClienteContatoFormComponent, canActivate: [authGuard] },
+  { path: 'clienteContato/editar/:id', component: ClienteContatoFormComponent, canActivate: [authGuard] },
+  { path: 'anuidadeCremebItem', component: AnuidadeCremebItemListComponent, canActivate: [authGuard] },
+  { path: 'anuidadeCremebItem/novo', component: AnuidadeCremebItemFormComponent, canActivate: [authGuard] },
+  { path: 'anuidadeCremebItem/editar/:id', component: AnuidadeCremebItemFormComponent, canActivate: [authGuard] },
+  { path: 'adiantamento', component: AdiantamentoListComponent, canActivate: [authGuard] },
+  { path: 'adiantamento/novo', component: AdiantamentoFormComponent, canActivate: [authGuard] },
+  { path: 'adiantamento/editar/:id', component: AdiantamentoFormComponent, canActivate: [authGuard] },
+  { path: 'empresaSocio', component: EmpresaSocioListComponent, canActivate: [authGuard] },
+  { path: 'empresaSocio/novo', component: EmpresaSocioFormComponent, canActivate: [authGuard] },
+  { path: 'empresaSocio/editar/:id', component: EmpresaSocioFormComponent, canActivate: [authGuard] },
+  { path: 'clienteFilial', component: ClienteFilialListComponent, canActivate: [authGuard] },
+  { path: 'clienteFilial/novo', component: ClienteFilialFormComponent, canActivate: [authGuard] },
+  { path: 'clienteFilial/editar/:id', component: ClienteFilialFormComponent, canActivate: [authGuard] },
   { path: 'audit-log', component: AuditLogListComponent, canActivate: [authGuard] },
   { path: 'usuario', component: UsuarioListComponent, canActivate: [authGuard] },
   { path: 'usuario/novo', component: UsuarioFormComponent, canActivate: [authGuard] },

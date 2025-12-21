@@ -20,10 +20,10 @@ public class PessoaContaCorrente {
     @Column(name = "id_Banco", length = 3)
     private String idBanco;
 
-    @Column(name = "Agencia", length = 5)
+    @Column(name = "Agencia", length = 6)
     private String agencia;
 
-    @Column(name = "ContaCorrente", length = 15)
+    @Column(name = "ContaCorrente", length = 20)
     private String contaCorrente;
 
     @Column(name = "dvContaCorrente", length = 2)
@@ -35,11 +35,11 @@ public class PessoaContaCorrente {
     @Column(name = "ContaPoupanca")
     private Boolean contaPoupanca;
 
+    @Column(name = "NomeDependente", length = 100)
+    private String nomeDependente;
+
     @Column(name = "ContaPadrao")
     private Boolean contaPadrao;
-
-    @Column(name = "NomeDependente", length = 60)
-    private String nomeDependente;
 
     @Column(name = "PIX", length = 100)
     private String pix;
@@ -111,20 +111,20 @@ public class PessoaContaCorrente {
         this.contaPoupanca = contaPoupanca;
     }
 
-    public Boolean getContaPadrao() {
-        return contaPadrao;
-    }
-
-    public void setContaPadrao(Boolean contaPadrao) {
-        this.contaPadrao = contaPadrao;
-    }
-
     public String getNomeDependente() {
         return nomeDependente;
     }
 
     public void setNomeDependente(String nomeDependente) {
         this.nomeDependente = nomeDependente;
+    }
+
+    public Boolean getContaPadrao() {
+        return contaPadrao;
+    }
+
+    public void setContaPadrao(Boolean contaPadrao) {
+        this.contaPadrao = contaPadrao;
     }
 
     public String getPix() {

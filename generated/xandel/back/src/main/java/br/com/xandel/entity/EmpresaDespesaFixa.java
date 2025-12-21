@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * Despesas fixas das empresas
+ * Despesas fixas por empresa
  */
 @Entity
 @Table(name = "EmpresaDespesaFixa", schema = "dbo")

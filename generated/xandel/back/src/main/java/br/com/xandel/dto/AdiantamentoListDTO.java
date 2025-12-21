@@ -14,6 +14,9 @@ public record AdiantamentoListDTO(
     Integer idCliente,
     Integer nf,
     BigDecimal valorBruto,
+    BigDecimal retencao,
     BigDecimal valorLiquido,
+    BigDecimal valorTaxa,
+    BigDecimal valorRepasse,
     Boolean pago
 ) {}

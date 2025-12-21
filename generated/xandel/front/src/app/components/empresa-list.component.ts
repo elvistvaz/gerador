@@ -116,6 +116,10 @@ export class EmpresaListComponent implements OnInit {
     this.router.navigate(['/empresa/editar', id]);
   }
 
+  navigateToChild(childRoute: string, foreignKey: string, parentId: number): void {
+    this.router.navigate(['/' + childRoute], { queryParams: { [foreignKey]: parentId } });
+  }
+
   delete(id: number): void {
     if (!confirm('Deseja realmente excluir este registro?')) {
       return;

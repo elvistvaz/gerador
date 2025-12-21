@@ -10,7 +10,7 @@ public record EmpresaClienteRequestDTO(
     Integer idEmpresa,
     Integer idCliente,
     BigDecimal taxa,
-    @Size(max = 10)
+    @Size(max = 20)
     String processo,
     BigDecimal taxaISS,
     BigDecimal taxaCOFINS,

@@ -53,6 +53,33 @@
           <td class="text-right">{{ formatDecimal(item.taxaRetencao) }}</td>
           <td>{{ item.inativa }}</td>
           <td class="actions-column">
+            <button class="btn btn-child btn-sm" (click)="navigateToChild('empresaSocio', 'idEmpresa', item.idEmpresa)" title="Sócios">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
+                <rect x="9" y="3" width="6" height="4" rx="1"></rect>
+                <path d="M9 12h6"></path>
+                <path d="M9 16h6"></path>
+              </svg>
+              <span>Sócios</span>
+            </button>
+            <button class="btn btn-child btn-sm" (click)="navigateToChild('empresaCliente', 'idEmpresa', item.idEmpresa)" title="Clientes">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
+                <rect x="9" y="3" width="6" height="4" rx="1"></rect>
+                <path d="M9 12h6"></path>
+                <path d="M9 16h6"></path>
+              </svg>
+              <span>Clientes</span>
+            </button>
+            <button class="btn btn-child btn-sm" (click)="navigateToChild('empresaDespesaFixa', 'idEmpresa', item.idEmpresa)" title="Despesas Fixas">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
+                <rect x="9" y="3" width="6" height="4" rx="1"></rect>
+                <path d="M9 12h6"></path>
+                <path d="M9 16h6"></path>
+              </svg>
+              <span>Despesas Fixas</span>
+            </button>
             <button class="btn btn-edit btn-sm" (click)="editar(item.idEmpresa)" title="Editar">
               <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>

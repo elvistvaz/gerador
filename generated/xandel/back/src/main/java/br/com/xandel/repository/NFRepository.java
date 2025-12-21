@@ -20,6 +20,6 @@ public interface NFRepository extends JpaRepository<NF, NFId>, JpaSpecificationE
     /**
      * Busca paginada filtrada por idEmpresa.
      */
-    Page<NF> findByIdEmpresa(Integer idEmpresa, Pageable pageable);
+    Page<NF> findById_IdEmpresa(Integer idEmpresa, Pageable pageable);
 
 }

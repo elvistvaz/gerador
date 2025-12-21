@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * Itens da anuidade CREMEB
+ * Itens individuais da anuidade CREMEB
  */
 @Entity
 @Table(name = "AnuidadeCremebItem", schema = "dbo")

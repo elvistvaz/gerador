@@ -39,7 +39,7 @@ public class PagamentoNaoSocioService {
     @Transactional(readOnly = true)
     public Page<PagamentoNaoSocioListDTO> findAll(Integer idEmpresa, Pageable pageable) {
         if (idEmpresa != null) {
-            return repository.findByIdEmpresa(idEmpresa, pageable)
+            return repository.findById_IdEmpresa(idEmpresa, pageable)
                 .map(mapper::toListDTO);
         }
         return repository.findAll(pageable)

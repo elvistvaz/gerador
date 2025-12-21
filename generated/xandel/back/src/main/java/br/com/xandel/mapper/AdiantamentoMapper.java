@@ -49,7 +49,10 @@ public class AdiantamentoMapper {
             entity.getIdCliente(),
             entity.getNf(),
             entity.getValorBruto(),
+            entity.getRetencao(),
             entity.getValorLiquido(),
+            entity.getValorTaxa(),
+            entity.getValorRepasse(),
             entity.getPago()
         );
     }

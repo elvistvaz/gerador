@@ -116,6 +116,10 @@ export class ClienteListComponent implements OnInit {
     this.router.navigate(['/cliente/editar', id]);
   }
 
+  navigateToChild(childRoute: string, foreignKey: string, parentId: number): void {
+    this.router.navigate(['/' + childRoute], { queryParams: { [foreignKey]: parentId } });
+  }
+
   delete(id: number): void {
     if (!confirm('Deseja realmente excluir este registro?')) {
       return;

@@ -1,6 +1,8 @@
 package br.com.xandel.repository;
 
 import br.com.xandel.entity.PessoaCartorio;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
@@ -14,15 +16,5 @@ import java.util.Optional;
  */
 @Repository
 public interface PessoaCartorioRepository extends JpaRepository<PessoaCartorio, PessoaCartorioId>, JpaSpecificationExecutor<PessoaCartorio> {
-
-    /**
-     * Busca por Pessoa.
-     */
-    List<PessoaCartorio> findById_IdPessoa(Integer idPessoa);
-
-    /**
-     * Busca por Cartório.
-     */
-    List<PessoaCartorio> findById_IdCartorio(Integer idCartorio);
 
 }

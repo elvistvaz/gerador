@@ -20,6 +20,6 @@ public interface PagamentoNaoSocioRepository extends JpaRepository<PagamentoNaoS
     /**
      * Busca paginada filtrada por idEmpresa.
      */
-    Page<PagamentoNaoSocio> findByIdEmpresa(Integer idEmpresa, Pageable pageable);
+    Page<PagamentoNaoSocio> findById_IdEmpresa(Integer idEmpresa, Pageable pageable);
 
 }

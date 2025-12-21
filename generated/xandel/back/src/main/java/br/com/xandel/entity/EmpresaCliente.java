@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 /**
- * Clientes vinculados à empresa
+ * Relacionamento empresa-cliente com taxas
  */
 @Entity
 @Table(name = "EmpresaCliente", schema = "dbo")
@@ -13,10 +13,10 @@ public class EmpresaCliente {
     @EmbeddedId
     private EmpresaClienteId id;
 
-    @Column(name = "Taxa", precision = 6, scale = 2)
+    @Column(name = "Taxa", precision = 5, scale = 2)
     private BigDecimal taxa;
 
-    @Column(name = "Processo", length = 10)
+    @Column(name = "Processo", length = 20)
     private String processo;
 
     @Column(name = "TaxaISS", precision = 5, scale = 2)

@@ -46,7 +46,10 @@ public class EmpresaSocioMapper {
             entity.getNumeroQuotas(),
             entity.getValorQuota(),
             entity.getDataSaida(),
-            entity.getNovoModelo()
+            entity.getValorCremeb(),
+            entity.getNovoModelo(),
+            entity.getTaxaConsulta(),
+            entity.getTaxaProcedimento()
         );
     }
 

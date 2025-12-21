@@ -79,7 +79,9 @@
       "Bash(cmd /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\xandel\\\\front && c:\\\\nvm4w\\\\nodejs\\\\npm.cmd run build\")",
       "Bash(cd:*)",
       "Bash(c:nvm4wnodejsnpx.cmd ng build)",
-      "Bash(cmd /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\xandel\\\\front && npx ng build\")"
+      "Bash(cmd /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\xandel\\\\front && npx ng build\")",
+      "Bash(cmd /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\xandel\\\\front && c:\\\\nvm4w\\\\nodejs\\\\npx.cmd ng build 2>&1\")",
+      "Bash(c:nvm4wnodejsnpx.cmd ng build --project=xandel --configuration=development)"
     ]
   }
 }

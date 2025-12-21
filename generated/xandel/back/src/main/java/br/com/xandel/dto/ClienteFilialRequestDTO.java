@@ -10,6 +10,6 @@ public record ClienteFilialRequestDTO(
     Integer idCliente,
     @NotNull
     @NotBlank
-    @Size(max = 50)
+    @Size(max = 100)
     String nomeFilial
 ) {}
