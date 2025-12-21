@@ -1,0 +1,25 @@
+# ===== Maven =====
+target/
+
+# ===== IDE =====
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+.vscode/
+
+# ===== Node.js / Angular (dentro de generated) =====
+node_modules/
+dist/
+.angular/
+
+# ===== Build do backend gerado =====
+generated/**/target/
+
+# ===== Arquivos Temporários =====
+*.log
+nul
+tables_extracted.txt
+tables_structure.json
+sources.txt

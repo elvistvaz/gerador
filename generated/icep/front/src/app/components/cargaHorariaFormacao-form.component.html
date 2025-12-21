@@ -1,0 +1,157 @@
+<div class="container">
+  <div class="header">
+    <h2>{{ isEditing ? 'Editar' : 'Novo' }} Carga Horária de Formação</h2>
+  </div>
+
+  <div *ngIf="loading" class="loading">Carregando...</div>
+
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <form *ngIf="!loading" (ngSubmit)="salvar()" #form="ngForm" class="form-container">
+    <div class="form-group">
+      <label for="avaliacaoId">Avaliação <span class="required">*</span></label>
+      <div class="searchable-select" [class.open]="avaliacaoIdDropdownOpen">
+        <div class="select-display" (click)="toggleAvaliacaoIdDropdown()">
+          <span class="selected-text">{{ getSelectedAvaliacaoIdText() }}</span>
+          <span class="dropdown-arrow">▼</span>
+        </div>
+        <div class="select-dropdown" *ngIf="avaliacaoIdDropdownOpen">
+          <input
+            type="text"
+            class="search-input"
+            [(ngModel)]="avaliacaoIdSearchTerm"
+            [ngModelOptions]="{standalone: true}"
+            placeholder="Pesquisar..."
+            (click)="$event.stopPropagation()"
+          />
+          <div class="options-list">
+            <div
+              class="option"
+              (click)="selectAvaliacaoId(null)"
+              [class.selected]="item.avaliacaoId === null"
+            >
+              Selecione...
+            </div>
+            <div
+              *ngFor="let opt of filteredAvaliacaoIdOptions()"
+              class="option"
+              (click)="selectAvaliacaoId(opt.id)"
+              [class.selected]="item.avaliacaoId === opt.id"
+            >
+              {{ opt.avaliacao }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <input type="hidden" name="avaliacaoId" [(ngModel)]="item.avaliacaoId" required />
+    </div>
+
+    <div class="form-group">
+      <label for="municipioId">Município <span class="required">*</span></label>
+      <div class="searchable-select" [class.open]="municipioIdDropdownOpen">
+        <div class="select-display" (click)="toggleMunicipioIdDropdown()">
+          <span class="selected-text">{{ getSelectedMunicipioIdText() }}</span>
+          <span class="dropdown-arrow">▼</span>
+        </div>
+        <div class="select-dropdown" *ngIf="municipioIdDropdownOpen">
+          <input
+            type="text"
+            class="search-input"
+            [(ngModel)]="municipioIdSearchTerm"
+            [ngModelOptions]="{standalone: true}"
+            placeholder="Pesquisar..."
+            (click)="$event.stopPropagation()"
+          />
+          <div class="options-list">
+            <div
+              class="option"
+              (click)="selectMunicipioId(null)"
+              [class.selected]="item.municipioId === null"
+            >
+              Selecione...
+            </div>
+            <div
+              *ngFor="let opt of filteredMunicipioIdOptions()"
+              class="option"
+              (click)="selectMunicipioId(opt.id)"
+              [class.selected]="item.municipioId === opt.id"
+            >
+              {{ opt.nome }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <input type="hidden" name="municipioId" [(ngModel)]="item.municipioId" required />
+    </div>
+
+    <div class="form-group">
+      <label for="formacaoId">Formação <span class="required">*</span></label>
+      <div class="searchable-select" [class.open]="formacaoIdDropdownOpen">
+        <div class="select-display" (click)="toggleFormacaoIdDropdown()">
+          <span class="selected-text">{{ getSelectedFormacaoIdText() }}</span>
+          <span class="dropdown-arrow">▼</span>
+        </div>
+        <div class="select-dropdown" *ngIf="formacaoIdDropdownOpen">
+          <input
+            type="text"
+            class="search-input"
+            [(ngModel)]="formacaoIdSearchTerm"
+            [ngModelOptions]="{standalone: true}"
+            placeholder="Pesquisar..."
+            (click)="$event.stopPropagation()"
+          />
+          <div class="options-list">
+            <div
+              class="option"
+              (click)="selectFormacaoId(null)"
+              [class.selected]="item.formacaoId === null"
+            >
+              Selecione...
+            </div>
+            <div
+              *ngFor="let opt of filteredFormacaoIdOptions()"
+              class="option"
+              (click)="selectFormacaoId(opt.id)"
+              [class.selected]="item.formacaoId === opt.id"
+            >
+              {{ opt.nome }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <input type="hidden" name="formacaoId" [(ngModel)]="item.formacaoId" required />
+    </div>
+
+    <div class="form-group">
+      <label for="cargaHoraria">Carga Horária (h) <span class="required">*</span></label>
+      <input
+        type="number"
+        id="cargaHoraria"
+        name="cargaHoraria"
+        [(ngModel)]="item.cargaHoraria"
+        required
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancelar()">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        <span>Cancelar</span>
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid">
+        <svg class="icon" *ngIf="!saving" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+          <polyline points="17 21 17 13 7 13 7 21"></polyline>
+          <polyline points="7 3 7 8 15 8"></polyline>
+        </svg>
+        <span>{{ saving ? 'Salvando...' : 'Salvar' }}</span>
+      </button>
+    </div>
+  </form>
+</div>

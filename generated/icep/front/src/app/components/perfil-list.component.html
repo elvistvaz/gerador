@@ -1,0 +1,69 @@
+<div class="container">
+  <div class="header">
+    <h2>Perfis de Acesso</h2>
+  </div>
+
+  <div *ngIf="loading" class="loading">Carregando...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div class="info-box" *ngIf="!loading">
+    <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="16" x2="12" y2="12"></line>
+      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+    </svg>
+    <span>Os perfis são definidos na configuração do sistema e não podem ser editados por esta interface.</span>
+  </div>
+
+  <div *ngIf="!loading && items.length > 0" class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>Descrição</th>
+          <th>Ativo</th>
+          <th>Permissões</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of items">
+          <td>{{ item.id }}</td>
+          <td>{{ item.nome }}</td>
+          <td>{{ item.descricao }}</td>
+          <td>
+            <span [class]="item.ativo ? 'badge-success' : 'badge-danger'">{{ item.ativo ? 'Sim' : 'Não' }}</span>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-toggle" (click)="toggleExpand(item.id)">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" *ngIf="expandedPerfil !== item.id">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" *ngIf="expandedPerfil === item.id">
+                <polyline points="18 15 12 9 6 15"></polyline>
+              </svg>
+              <span>{{ expandedPerfil === item.id ? 'Ocultar' : 'Ver' }} ({{ item.permissoes?.length || 0 }})</span>
+            </button>
+            <div class="permissions-list" *ngIf="expandedPerfil === item.id">
+              <ul>
+                <li *ngFor="let perm of item.permissoes">
+                  <svg class="perm-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  {{ formatPermission(perm) }}
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="no-data" *ngIf="!loading && items.length === 0">
+    <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+    </svg>
+    <span>Nenhum perfil encontrado.</span>
+  </div>
+</div>

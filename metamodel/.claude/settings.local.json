@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /s /b \"C:\\temp\\icep\\dados\"\" 2>nul || echo \"Diretorio nao encontrado \")",
+      "Bash(cmd /c \"dir /s /b C:\\temp\\icep\\dados\"\")",
+      "Bash(dir /s /b C:tempicepdados)",
+      "Bash(powershell -Command \"Get-ChildItem -Path ''C:\\temp\\icep\\dados'' -Recurse | Select-Object FullName\")",
+      "Bash(powershell -Command:*)",
+      "Bash(copy:*)"
+    ]
+  }
+}

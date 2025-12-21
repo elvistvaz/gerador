@@ -1,0 +1,37 @@
+<div class="session-selector-overlay">
+  <div class="session-selector-modal">
+    <div class="modal-header">
+      <h2>Selecione o Contexto</h2>
+    </div>
+
+    <div *ngIf="loading" class="loading">Carregando...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+
+    <div class="modal-body" *ngIf="!loading">
+      <div class="form-group">
+        <label>Selecione a Empresa <span class="required">*</span></label>
+        <div class="radio-group">
+          <div
+            *ngFor="let opt of empresaOptions"
+            class="radio-option"
+            (click)="selectEmpresa(opt.idEmpresa)"
+            [class.selected]="selectedEmpresaId === opt.idEmpresa"
+          >
+            <span class="radio-circle"></span>
+            <span class="radio-label">{{ opt.nomeEmpresa }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" (click)="confirmar()" [disabled]="!canConfirm()">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span>Confirmar</span>
+      </button>
+    </div>
+  </div>
+</div>

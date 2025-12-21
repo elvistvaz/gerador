@@ -1,0 +1,201 @@
+<div class="container">
+  <div class="header">
+    <h2>{{ isEditing ? 'Editar' : 'Novo' }} Notas Fiscais</h2>
+  </div>
+
+  <div *ngIf="loading" class="loading">Carregando...</div>
+
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <form *ngIf="!loading" (ngSubmit)="salvar()" #form="ngForm" class="form-container">
+    <div class="form-group">
+      <label for="idEmpresa">Empresa</label>
+      <input
+        type="number"
+        id="idEmpresa"
+        name="idEmpresa"
+        [(ngModel)]="item.idEmpresa"
+        class="form-control"
+        [readonly]="isEditing"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="nf">Nº NF</label>
+      <input
+        type="number"
+        id="nf"
+        name="nf"
+        [(ngModel)]="item.nf"
+        class="form-control"
+        [readonly]="isEditing"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="idCliente">Cliente <span class="required">*</span></label>
+      <input
+        type="number"
+        id="idCliente"
+        name="idCliente"
+        [(ngModel)]="item.idCliente"
+        required
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="emissao">Emissão <span class="required">*</span></label>
+      <input
+        type="datetime-local"
+        id="emissao"
+        name="emissao"
+        [(ngModel)]="item.emissao"
+        required
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="vencimento">Vencimento</label>
+      <input
+        type="datetime-local"
+        id="vencimento"
+        name="vencimento"
+        [(ngModel)]="item.vencimento"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="total">Total</label>
+      <input
+        type="number"
+        id="total"
+        name="total"
+        [(ngModel)]="item.total"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="irrf">IRRF</label>
+      <input
+        type="number"
+        id="irrf"
+        name="irrf"
+        [(ngModel)]="item.irrf"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="pis">PIS</label>
+      <input
+        type="number"
+        id="pis"
+        name="pis"
+        [(ngModel)]="item.pis"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="cofins">COFINS</label>
+      <input
+        type="number"
+        id="cofins"
+        name="cofins"
+        [(ngModel)]="item.cofins"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="csll">CSLL</label>
+      <input
+        type="number"
+        id="csll"
+        name="csll"
+        [(ngModel)]="item.csll"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="iss">ISS</label>
+      <input
+        type="number"
+        id="iss"
+        name="iss"
+        [(ngModel)]="item.iss"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="baixa">Data Baixa</label>
+      <input
+        type="datetime-local"
+        id="baixa"
+        name="baixa"
+        [(ngModel)]="item.baixa"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="valorQuitado">Valor Quitado</label>
+      <input
+        type="number"
+        id="valorQuitado"
+        name="valorQuitado"
+        [(ngModel)]="item.valorQuitado"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="cancelada">Cancelada</label>
+      <input
+        type="checkbox"
+        id="cancelada"
+        name="cancelada"
+        [(ngModel)]="item.cancelada"
+        class="form-check"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="observacao">Observação</label>
+      <input
+        type="text"
+        id="observacao"
+        name="observacao"
+        [(ngModel)]="item.observacao"
+        maxlength="50"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancelar()">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        <span>Cancelar</span>
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid">
+        <svg class="icon" *ngIf="!saving" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+          <polyline points="17 21 17 13 7 13 7 21"></polyline>
+          <polyline points="7 3 7 8 15 8"></polyline>
+        </svg>
+        <span>{{ saving ? 'Salvando...' : 'Salvar' }}</span>
+      </button>
+    </div>
+  </form>
+</div>

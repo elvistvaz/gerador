@@ -1,0 +1,9 @@
+id_tipo_servico;nome_tipo_servico
+1;Consulta
+2;Exame
+3;Procedimento
+4;Cirurgia
+5;Internacao
+6;Urgencia
+7;Emergencia
+8;Homecare

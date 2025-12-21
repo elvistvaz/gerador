@@ -1,0 +1,285 @@
+<div class="container">
+  <div class="header">
+    <h2>{{ isEditing ? 'Editar' : 'Novo' }} Pessoas</h2>
+  </div>
+
+  <div *ngIf="loading" class="loading">Carregando...</div>
+
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <form *ngIf="!loading" (ngSubmit)="salvar()" #form="ngForm" class="form-container">
+    <div class="form-group">
+      <label for="idPessoa">Código</label>
+      <input
+        type="number"
+        id="idPessoa"
+        name="idPessoa"
+        [(ngModel)]="item.idPessoa"
+        class="form-control"
+        [readonly]="isEditing"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="nome">Nome</label>
+      <input
+        type="text"
+        id="nome"
+        name="nome"
+        [(ngModel)]="item.nome"
+        maxlength="60"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="cpf">CPF</label>
+      <input
+        type="text"
+        id="cpf"
+        name="cpf"
+        [(ngModel)]="item.cpf"
+        maxlength="11"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="idConselho">Conselho</label>
+      <input
+        type="number"
+        id="idConselho"
+        name="idConselho"
+        [(ngModel)]="item.idConselho"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="numeroConselho">Nº Conselho</label>
+      <input
+        type="number"
+        id="numeroConselho"
+        name="numeroConselho"
+        [(ngModel)]="item.numeroConselho"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="nascimento">Nascimento</label>
+      <input
+        type="datetime-local"
+        id="nascimento"
+        name="nascimento"
+        [(ngModel)]="item.nascimento"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="rg">RG</label>
+      <input
+        type="text"
+        id="rg"
+        name="rg"
+        [(ngModel)]="item.rg"
+        maxlength="14"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="email">E-mail</label>
+      <input
+        type="text"
+        id="email"
+        name="email"
+        [(ngModel)]="item.email"
+        maxlength="50"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="telefone">Telefone</label>
+      <input
+        type="text"
+        id="telefone"
+        name="telefone"
+        [(ngModel)]="item.telefone"
+        maxlength="9"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="celular">Celular</label>
+      <input
+        type="text"
+        id="celular"
+        name="celular"
+        [(ngModel)]="item.celular"
+        maxlength="9"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="endereco">Endereço</label>
+      <input
+        type="text"
+        id="endereco"
+        name="endereco"
+        [(ngModel)]="item.endereco"
+        maxlength="60"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="idBairro">Bairro</label>
+      <input
+        type="number"
+        id="idBairro"
+        name="idBairro"
+        [(ngModel)]="item.idBairro"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="idCidade">Cidade</label>
+      <input
+        type="number"
+        id="idCidade"
+        name="idCidade"
+        [(ngModel)]="item.idCidade"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="cep">CEP</label>
+      <input
+        type="text"
+        id="cep"
+        name="cep"
+        [(ngModel)]="item.cep"
+        maxlength="8"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="idEstadoCivil">Estado Civil</label>
+      <input
+        type="number"
+        id="idEstadoCivil"
+        name="idEstadoCivil"
+        [(ngModel)]="item.idEstadoCivil"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="dataAdesao">Data Adesão</label>
+      <input
+        type="datetime-local"
+        id="dataAdesao"
+        name="dataAdesao"
+        [(ngModel)]="item.dataAdesao"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="dataInativo">Data de Inativação</label>
+      <input
+        type="datetime-local"
+        id="dataInativo"
+        name="dataInativo"
+        [(ngModel)]="item.dataInativo"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="idBanco">Banco</label>
+      <input
+        type="text"
+        id="idBanco"
+        name="idBanco"
+        [(ngModel)]="item.idBanco"
+        maxlength="3"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="agencia">Agência</label>
+      <input
+        type="text"
+        id="agencia"
+        name="agencia"
+        [(ngModel)]="item.agencia"
+        maxlength="5"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="conta">Conta</label>
+      <input
+        type="text"
+        id="conta"
+        name="conta"
+        [(ngModel)]="item.conta"
+        maxlength="11"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="idPlanoRetencao">Plano de Retenção</label>
+      <input
+        type="number"
+        id="idPlanoRetencao"
+        name="idPlanoRetencao"
+        [(ngModel)]="item.idPlanoRetencao"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="idOperadora">Operadora</label>
+      <input
+        type="number"
+        id="idOperadora"
+        name="idOperadora"
+        [(ngModel)]="item.idOperadora"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancelar()">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        <span>Cancelar</span>
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid">
+        <svg class="icon" *ngIf="!saving" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+          <polyline points="17 21 17 13 7 13 7 21"></polyline>
+          <polyline points="7 3 7 8 15 8"></polyline>
+        </svg>
+        <span>{{ saving ? 'Salvando...' : 'Salvar' }}</span>
+      </button>
+    </div>
+  </form>
+</div>

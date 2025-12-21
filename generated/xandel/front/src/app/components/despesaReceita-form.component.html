@@ -1,0 +1,127 @@
+<div class="container">
+  <div class="header">
+    <h2>{{ isEditing ? 'Editar' : 'Novo' }} Despesas e Receitas</h2>
+  </div>
+
+  <div *ngIf="loading" class="loading">Carregando...</div>
+
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <form *ngIf="!loading" (ngSubmit)="salvar()" #form="ngForm" class="form-container">
+    <div class="form-group">
+      <label for="idDespesaReceita">Código</label>
+      <input
+        type="number"
+        id="idDespesaReceita"
+        name="idDespesaReceita"
+        [(ngModel)]="item.idDespesaReceita"
+        class="form-control"
+        [readonly]="isEditing"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="siglaDespesaReceita">Sigla <span class="required">*</span></label>
+      <input
+        type="text"
+        id="siglaDespesaReceita"
+        name="siglaDespesaReceita"
+        [(ngModel)]="item.siglaDespesaReceita"
+        required
+        maxlength="10"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="nomeDespesaReceita">Nome <span class="required">*</span></label>
+      <input
+        type="text"
+        id="nomeDespesaReceita"
+        name="nomeDespesaReceita"
+        [(ngModel)]="item.nomeDespesaReceita"
+        required
+        maxlength="60"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="despesa">É Despesa <span class="required">*</span></label>
+      <input
+        type="number"
+        id="despesa"
+        name="despesa"
+        [(ngModel)]="item.despesa"
+        required
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="temRateio">Tem Rateio <span class="required">*</span></label>
+      <input
+        type="number"
+        id="temRateio"
+        name="temRateio"
+        [(ngModel)]="item.temRateio"
+        required
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="inativa">Inativa <span class="required">*</span></label>
+      <input
+        type="number"
+        id="inativa"
+        name="inativa"
+        [(ngModel)]="item.inativa"
+        required
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="valor">Valor</label>
+      <input
+        type="number"
+        id="valor"
+        name="valor"
+        [(ngModel)]="item.valor"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="parcelas">Parcelas</label>
+      <input
+        type="number"
+        id="parcelas"
+        name="parcelas"
+        [(ngModel)]="item.parcelas"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancelar()">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        <span>Cancelar</span>
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid">
+        <svg class="icon" *ngIf="!saving" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+          <polyline points="17 21 17 13 7 13 7 21"></polyline>
+          <polyline points="7 3 7 8 15 8"></polyline>
+        </svg>
+        <span>{{ saving ? 'Salvando...' : 'Salvar' }}</span>
+      </button>
+    </div>
+  </form>
+</div>

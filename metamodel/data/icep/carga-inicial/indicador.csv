@@ -1,0 +1,55 @@
+id;ambito_gestao_id;descricao;ordem
+1;1;Elaboração do Plano de Ação anual;1
+2;1;Implementação do Plano de Ação anual;2
+3;1;Realização de Formação com Diretores Escolares;3
+4;1;Registro dos encontros realizados com Diretores Escolares;4
+5;1;Realização de formação com Coordenadores Pedagógicos;5
+6;1;Acompanhamento à Atividade de Coordenação (AC - Ed. Infantil);6
+7;1;Acompanhamento à Atividade de Coordenação (AC - Anos Iniciais);7
+8;1;Acompanhamento à Atividade de Coordenação (AC - Anos Finais);8
+9;1;Monitoramento da realização das Situações Didáticas Avaliativas no EF - Anos Iniciais;9
+10;1;Realização dos encontros formativos com as Duplas Gestoras no EF - Anos Iniciais;10
+11;1;Realização dos encontros formativos com as Duplas Gestoras no EF - Anos Finais;11
+12;1;Acompanhamento direto às escolas - Educação Infantil;12
+13;1;Acompanhamento direto às escolas - Ensino Fundamental Anos Iniciais;13
+14;1;Acompanhamento direto às escolas - Ensino Fundamental Anos Finais;14
+15;2;Elaboração do Plano de Ação da Gestão Escolar;1
+16;2;Implementação do Plano de Ação da Gestão Escolar;2
+17;2;Elaboração do Plano de Apoio Pedagógico;3
+18;2;Implementação do Plano de Apoio Pedagógico;4
+19;2;Monitoramento do Plano de Apoio Pedagógico;5
+20;2;Elaboração do Projeto Institucional de Leitura (PIL);6
+21;2;Implementação do Projeto Institucional de Leitura (PIL);7
+22;2;Monitoramento do desenvolvimento do Projeto Institucional de Leitura (PIL);8
+23;2;Elaboração do Projeto Institucional do Brincar (PIB);9
+24;2;Implementação do Projeto Institucional do Brincar (PIB);10
+25;2;Monitoramento do desenvolvimento do Projeto Institucional do Brincar (PIB);11
+26;3;Elaboração do Plano de Formação dos Professores;1
+27;3;Implementação do Plano de Formação dos Professores;2
+28;3;Monitoramento do desenvolvimento do Plano de Formação dos Professores;3
+29;3;Realização da formação dos professores da Educação Infantil;4
+30;3;Registro dos encontros de formação da Educação Infantil;5
+31;3;Realização da formação dos professores do EF - Anos Iniciais;6
+32;3;Registro dos encontros de formação do EF - Anos Iniciais;7
+33;3;Realização da formação dos professores do EF - Anos Finais;8
+34;3;Registro dos encontros de formação do EF - Anos Finais;9
+35;3;Acompanhamento da realização das Situações Didáticas Avaliativas - Anos Iniciais;10
+36;3;Monitoramento dos resultados das Situações Didáticas Avaliativas no EF - Anos Iniciais;11
+37;3;Realização de acompanhamento direto às salas de aula da Educação Infantil;12
+38;3;Registro dos Acompanhamentos diretos às salas de aula da Educação Infantil;13
+39;3;Realização de acompanhamento direto às salas de aula do EF - Anos Iniciais;14
+40;3;Registro dos Acompanhamentos diretos às salas de aula do EF - Anos Iniciais;15
+41;3;Realização de acompanhamento direto às salas de aula do EF - Anos Finais;16
+42;3;Registro dos Acompanhamentos diretos às salas de aula do EF - Anos Finais;17
+43;4;Elaboração de Plano de Trabalho anual;1
+44;4;Elaboração de rotinas que assegurem o brincar e as interações;2
+45;4;Planejamento das situações didáticas que assegurem as atividades de leitura e escrita;3
+46;5;Elaboração do Plano de Ensino anual;1
+47;5;Elaboração de Situações Didáticas com foco nas práticas sociais de leitura e escrita;2
+48;5;Elaboração de Situações Didáticas com foco na resolução de problemas;3
+49;6;Elaboração do Plano de Ensino anual;1
+50;6;Elaboração de Situações Didáticas de Linguagem com foco nas práticas sociais de leitura e escrita;2
+51;6;Elaboração de Situações Didáticas de Matemática com foco na resolução de problemas;3
+52;6;Elaboração de Situações Didáticas de História e Geografia pautadas nas QSVs;4
+53;6;Elaboração de Situações Didáticas de Ciências da Natureza pautadas nas QSCs;5
+54;1;Registro dos encontros realizados com Coordenadores Pedagógicos;6

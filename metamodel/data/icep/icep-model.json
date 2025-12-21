@@ -1,0 +1,1814 @@
+{
+  "metadata": {
+    "name": "ICEP",
+    "version": "1.0.0",
+    "description": "Sistema de Gestão Educacional ICEP",
+    "author": "Gerador MetaModel",
+    "createdAt": "2025-12-13T00:00:00Z",
+    "updatedAt": "2025-12-13T00:00:00Z",
+    "database": {
+      "type": "SQLSERVER",
+      "schema": "dbo"
+    },
+    "sessionContext": [
+      {
+        "entity": "Avaliacao",
+        "field": "avaliacaoId",
+        "displayField": "avaliacao",
+        "label": "Selecione a Avaliação",
+        "required": true,
+        "inputType": "radio"
+      },
+      {
+        "entity": "Municipio",
+        "field": "municipioId",
+        "displayField": "nome",
+        "label": "Selecione o Município",
+        "required": true,
+        "inputType": "radio"
+      }
+    ],
+    "accessControl": {
+      "roles": [
+        {
+          "id": "admin",
+          "name": "Administrador",
+          "description": "Acesso total ao sistema",
+          "permissions": [
+            {
+              "module": "*",
+              "access": "full"
+            }
+          ]
+        },
+        {
+          "id": "municipio",
+          "name": "Município",
+          "description": "Acesso ao módulo de avaliação",
+          "permissions": [
+            {
+              "module": "avaliacao",
+              "access": "full"
+            }
+          ]
+        },
+        {
+          "id": "territorio",
+          "name": "Território",
+          "description": "Acesso somente leitura ao módulo de avaliação",
+          "permissions": [
+            {
+              "module": "avaliacao",
+              "access": "readonly"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "modules": [
+    {
+      "id": "cadastro",
+      "name": "Cadastro",
+      "description": "Cadastros básicos do sistema",
+      "icon": "folder",
+      "order": 1,
+      "items": [
+        { "id": "menu_avaliacao_periodo", "name": "Avaliações", "entityRef": "Avaliacao", "icon": "event_note", "order": 1 },
+        { "id": "menu_territorio", "name": "Territórios", "entityRef": "Territorio", "icon": "public", "order": 2 },
+        { "id": "menu_municipio", "name": "Municípios", "entityRef": "Municipio", "icon": "location_city", "order": 3 },
+        { "id": "menu_publico_alvo", "name": "Público Alvo", "entityRef": "PublicoAlvo", "icon": "groups", "order": 4 },
+        { "id": "menu_segmento_atendido", "name": "Segmentos Atendidos", "entityRef": "SegmentoAtendido", "icon": "category", "order": 5 },
+        { "id": "menu_formacao", "name": "Tipos de Formação", "entityRef": "Formacao", "icon": "list_alt", "order": 6 },
+        { "id": "menu_formacao_territorio", "name": "Tipos de Formação Território", "entityRef": "FormacaoTerritorio", "icon": "list", "order": 7 },
+        { "id": "menu_ano_escolar", "name": "Anos Escolares", "entityRef": "AnoEscolar", "icon": "event", "order": 8 },
+        { "id": "menu_componente_curricular", "name": "Componentes Curriculares", "entityRef": "ComponenteCurricular", "icon": "auto_stories", "order": 9 },
+        { "id": "menu_conceito_aprendido", "name": "Conceitos Aprendidos", "entityRef": "ConceitoAprendido", "icon": "lightbulb", "order": 10 },
+        { "id": "menu_aprendizagem_esperada", "name": "Aprendizagens Esperadas", "entityRef": "AprendizagemEsperada", "icon": "school", "order": 11 },
+        { "id": "menu_ambito_gestao", "name": "Âmbitos de Gestão", "entityRef": "AmbitoGestao", "icon": "account_tree", "order": 12 },
+        { "id": "menu_indicador", "name": "Indicadores", "entityRef": "Indicador", "icon": "speed", "order": 13 }
+      ]
+    },
+    {
+      "id": "avaliacao",
+      "name": "Avaliação",
+      "description": "Avaliações e resultados",
+      "icon": "grading",
+      "order": 2,
+      "items": [
+        { "id": "menu_avaliacao_sda", "name": "SDA", "entityRef": "AvaliacaoSDA", "icon": "fact_check", "order": 1 },
+        { "id": "menu_avaliacao_indicador", "name": "Indicadores", "entityRef": "AvaliacaoIndicador", "icon": "assessment", "order": 2 },
+        { "id": "menu_comentario_indicador", "name": "Comentários", "entityRef": "ComentarioIndicador", "icon": "chat", "order": 3 },
+        { "id": "menu_atendimento_municipio", "name": "Atendimento por Município", "entityRef": "AtendimentoMunicipio", "icon": "people", "order": 4 },
+        { "id": "menu_carga_horaria", "name": "Carga Horária Formação", "entityRef": "CargaHorariaFormacao", "icon": "schedule", "order": 5 },
+        { "id": "menu_carga_horaria_territorio", "name": "Carga Horária por Território", "entityRef": "CargaHorariaFormacaoTerritorio", "icon": "schedule", "order": 6 }
+      ]
+    }
+  ],
+  "enums": [
+    {
+      "id": "enum_etapa",
+      "name": "Etapa",
+      "description": "Etapas de ensino escolar",
+      "values": [
+        { "code": "educacao_infantil", "label": "Educação Infantil" },
+        { "code": "anos_iniciais", "label": "Anos Iniciais" },
+        { "code": "anos_finais", "label": "Anos Finais" }
+      ]
+    },
+    {
+      "id": "enum_tipo_publico",
+      "name": "TipoPublico",
+      "description": "Tipos de público alvo",
+      "values": [
+        { "code": "Publico Direto", "label": "Público Direto" },
+        { "code": "Publico Indireto", "label": "Público Indireto" }
+      ]
+    },
+    {
+      "id": "enum_nivel_aprendizagem",
+      "name": "NivelAprendizagem",
+      "description": "Níveis de aprendizagem",
+      "values": [
+        { "code": "1", "label": "Nível 1 - Básico" },
+        { "code": "2", "label": "Nível 2 - Intermediário" },
+        { "code": "3", "label": "Nível 3 - Avançado" }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "avaliacao",
+      "name": "Avaliacao",
+      "displayName": "Avaliações",
+      "tableName": "Avaliacao",
+      "description": "Períodos de avaliação",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "avaliacao", "direction": "desc" },
+      "fields": [
+        {
+          "id": "avaliacao_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "avaliacao_avaliacao",
+          "name": "avaliacao",
+          "columnName": "avaliacao",
+          "label": "Avaliação",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 6,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "territorio",
+      "name": "Territorio",
+      "displayName": "Territórios",
+      "tableName": "Territorio",
+      "description": "Cadastro de territórios",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nome", "direction": "asc" },
+      "fields": [
+        {
+          "id": "territorio_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "territorio_nome",
+          "name": "nome",
+          "columnName": "nome",
+          "label": "Nome",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 100,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        },
+        {
+          "id": "territorio_descricao",
+          "name": "descricao",
+          "columnName": "descricao",
+          "label": "Descrição",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 255,
+          "required": false,
+          "ui": {
+            "component": "TEXTAREA",
+            "grid": { "visible": true, "order": 3, "sortable": true },
+            "form": { "visible": true, "order": 3 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "municipio",
+      "name": "Municipio",
+      "displayName": "Municípios",
+      "tableName": "Municipio",
+      "description": "Cadastro de municípios atendidos",
+      "schema": "dbo",
+      "type": "MAIN",
+      "defaultSort": { "field": "nome", "direction": "asc" },
+      "fields": [
+        {
+          "id": "municipio_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "municipio_territorio_id",
+          "name": "territorioId",
+          "columnName": "territorio_id",
+          "label": "Território",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "Territorio",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "municipio_nome",
+          "name": "nome",
+          "columnName": "nome",
+          "label": "Nome",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 100,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 3, "sortable": true },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        },
+        {
+          "id": "municipio_uf",
+          "name": "uf",
+          "columnName": "uf",
+          "label": "UF",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 2,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 4, "width": 60, "sortable": true },
+            "form": { "visible": true, "order": 4 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "municipio_quantidade_escolas",
+          "name": "quantidadeEscolas",
+          "columnName": "quantidade_escolas",
+          "label": "Qtd. Escolas",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": false,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 5, "width": 100, "sortable": true },
+            "form": { "visible": true, "order": 5 }
+          }
+        }
+      ],
+      "indexes": [
+        {
+          "name": "IX_Municipio_Territorio",
+          "fields": ["territorio_id"],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "id": "ambito_gestao",
+      "name": "AmbitoGestao",
+      "displayName": "Âmbitos de Gestão",
+      "tableName": "AmbitoGestao",
+      "description": "Âmbitos de gestão para indicadores",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nome", "direction": "asc" },
+      "fields": [
+        {
+          "id": "ambito_gestao_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "ambito_gestao_nome",
+          "name": "nome",
+          "columnName": "nome",
+          "label": "Nome",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 100,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        },
+        {
+          "id": "ambito_gestao_ordem",
+          "name": "ordem",
+          "columnName": "ordem",
+          "label": "Ordem",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": false,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 3, "width": 80, "sortable": true },
+            "form": { "visible": true, "order": 3 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "ano_escolar",
+      "name": "AnoEscolar",
+      "displayName": "Anos Escolares",
+      "tableName": "AnoEscolar",
+      "description": "Anos escolares",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nome", "direction": "asc" },
+      "fields": [
+        {
+          "id": "ano_escolar_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "ano_escolar_nome",
+          "name": "nome",
+          "columnName": "nome",
+          "label": "Nome",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 50,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        },
+        {
+          "id": "ano_escolar_etapa",
+          "name": "etapa",
+          "columnName": "etapa",
+          "label": "Etapa",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 30,
+          "required": true,
+          "enumRef": "enum_etapa",
+          "ui": {
+            "component": "SELECT",
+            "grid": { "visible": true, "order": 3, "sortable": true },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "ano_escolar_ordem",
+          "name": "ordem",
+          "columnName": "ordem",
+          "label": "Ordem",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": false,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 4, "width": 80, "sortable": true },
+            "form": { "visible": true, "order": 4 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "componente_curricular",
+      "name": "ComponenteCurricular",
+      "displayName": "Componentes Curriculares",
+      "tableName": "ComponenteCurricular",
+      "description": "Componentes curriculares",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nome", "direction": "asc" },
+      "fields": [
+        {
+          "id": "componente_curricular_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "componente_curricular_nome",
+          "name": "nome",
+          "columnName": "nome",
+          "label": "Nome",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 100,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        },
+        {
+          "id": "componente_curricular_sigla",
+          "name": "sigla",
+          "columnName": "sigla",
+          "label": "Sigla",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 10,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 3, "width": 80, "sortable": true },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "conceito_aprendido",
+      "name": "ConceitoAprendido",
+      "displayName": "Conceitos Aprendidos",
+      "tableName": "ConceitoAprendido",
+      "description": "Conceitos de aprendizagem",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nome", "direction": "asc" },
+      "fields": [
+        {
+          "id": "conceito_aprendido_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "conceito_aprendido_nome",
+          "name": "nome",
+          "columnName": "nome",
+          "label": "Nome",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 100,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        },
+        {
+          "id": "conceito_aprendido_ordem",
+          "name": "ordem",
+          "columnName": "ordem",
+          "label": "Ordem",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": false,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 3, "width": 80, "sortable": true },
+            "form": { "visible": true, "order": 3 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "publico_alvo",
+      "name": "PublicoAlvo",
+      "displayName": "Público Alvo",
+      "tableName": "PublicoAlvo",
+      "description": "Público alvo do programa",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nome", "direction": "asc" },
+      "childEntities": [
+        {
+          "entity": "SegmentoAtendido",
+          "foreignKey": "publicoAlvoId",
+          "label": "Segmentos",
+          "icon": "category"
+        }
+      ],
+      "fields": [
+        {
+          "id": "publico_alvo_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "publico_alvo_nome",
+          "name": "nome",
+          "columnName": "nome",
+          "label": "Nome",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 100,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        },
+        {
+          "id": "publico_alvo_tipo",
+          "name": "tipo",
+          "columnName": "tipo",
+          "label": "Tipo",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 30,
+          "required": true,
+          "enumRef": "enum_tipo_publico",
+          "ui": {
+            "component": "SELECT",
+            "grid": { "visible": true, "order": 3, "sortable": true },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "segmento_atendido",
+      "name": "SegmentoAtendido",
+      "displayName": "Segmentos Atendidos",
+      "tableName": "SegmentoAtendido",
+      "description": "Segmentos atendidos por público alvo",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nome", "direction": "asc" },
+      "fields": [
+        {
+          "id": "segmento_atendido_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "segmento_atendido_publico_alvo_id",
+          "name": "publicoAlvoId",
+          "columnName": "publico_alvo_id",
+          "label": "Público Alvo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "PublicoAlvo",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 }
+          }
+        },
+        {
+          "id": "segmento_atendido_nome",
+          "name": "nome",
+          "columnName": "nome",
+          "label": "Nome",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 100,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 3, "sortable": true },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        },
+        {
+          "id": "segmento_atendido_ordem",
+          "name": "ordem",
+          "columnName": "ordem",
+          "label": "Ordem",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": false,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 4, "width": 80, "sortable": true },
+            "form": { "visible": true, "order": 4 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "indicador",
+      "name": "Indicador",
+      "displayName": "Indicadores",
+      "tableName": "Indicador",
+      "description": "Indicadores de acompanhamento",
+      "schema": "dbo",
+      "type": "MAIN",
+      "fields": [
+        {
+          "id": "indicador_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "indicador_ambito_gestao_id",
+          "name": "ambitoGestaoId",
+          "columnName": "ambito_gestao_id",
+          "label": "Âmbito de Gestão",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "AmbitoGestao",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "indicador_descricao",
+          "name": "descricao",
+          "columnName": "descricao",
+          "label": "Descrição",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 500,
+          "required": true,
+          "ui": {
+            "component": "TEXTAREA",
+            "grid": { "visible": true, "order": 3, "sortable": true },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        },
+        {
+          "id": "indicador_ordem",
+          "name": "ordem",
+          "columnName": "ordem",
+          "label": "Ordem",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": false,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 4, "width": 80, "sortable": true },
+            "form": { "visible": true, "order": 4 }
+          }
+        }
+      ],
+      "indexes": [
+        {
+          "name": "IX_Indicador_AmbitoGestao",
+          "fields": ["ambito_gestao_id"],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "id": "aprendizagem_esperada",
+      "name": "AprendizagemEsperada",
+      "displayName": "Aprendizagens Esperadas",
+      "tableName": "AprendizagemEsperada",
+      "description": "Aprendizagens esperadas por componente curricular e conceito",
+      "schema": "dbo",
+      "type": "MAIN",
+      "fields": [
+        {
+          "id": "aprendizagem_esperada_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "aprendizagem_esperada_componente_id",
+          "name": "componenteId",
+          "columnName": "componente_id",
+          "label": "Componente Curricular",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "ComponenteCurricular",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "aprendizagem_esperada_conceito_aprendido_id",
+          "name": "conceitoAprendidoId",
+          "columnName": "conceito_aprendido_id",
+          "label": "Conceito Aprendido",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "ConceitoAprendido",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 3, "sortable": true },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "aprendizagem_esperada_descricao",
+          "name": "descricao",
+          "columnName": "descricao",
+          "label": "Descrição",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 1000,
+          "required": true,
+          "ui": {
+            "component": "TEXTAREA",
+            "grid": { "visible": true, "order": 4, "sortable": true },
+            "form": { "visible": true, "order": 4 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        },
+        {
+          "id": "aprendizagem_esperada_codigo",
+          "name": "codigo",
+          "columnName": "codigo",
+          "label": "Código",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 20,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 5, "width": 100, "sortable": true },
+            "form": { "visible": true, "order": 5 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        }
+      ],
+      "indexes": [
+        {
+          "name": "IX_AprendizagemEsperada_Componente",
+          "fields": ["componente_id"],
+          "unique": false
+        },
+        {
+          "name": "IX_AprendizagemEsperada_Conceito",
+          "fields": ["conceito_aprendido_id"],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "id": "avaliacao_indicador",
+      "name": "AvaliacaoIndicador",
+      "displayName": "Avaliação de Indicadores",
+      "tableName": "AvaliacaoIndicador",
+      "description": "Avaliação de indicadores por município",
+      "schema": "dbo",
+      "type": "MAIN",
+      "sessionFilter": {
+        "field": "municipioId",
+        "field2": "avaliacaoId"
+      },
+      "fields": [
+        {
+          "id": "avaliacao_indicador_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "avaliacao_indicador_avaliacao_id",
+          "name": "avaliacaoId",
+          "columnName": "avaliacao_id",
+          "label": "Avaliação",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "Avaliacao",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "avaliacao_indicador_municipio_id",
+          "name": "municipioId",
+          "columnName": "municipio_id",
+          "label": "Município",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "Municipio",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "avaliacao_indicador_indicador_id",
+          "name": "indicadorId",
+          "columnName": "indicador_id",
+          "label": "Indicador",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "Indicador",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 3, "sortable": true },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "avaliacao_indicador_valor",
+          "name": "valor",
+          "columnName": "valor",
+          "label": "Valor",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": false,
+          "ui": {
+            "component": "SELECT",
+            "grid": { "visible": true, "order": 4, "width": 150, "sortable": true },
+            "form": { "visible": true, "order": 4 },
+            "options": [
+              { "value": 0, "label": "Não se aplica" },
+              { "value": 1, "label": "Não realizado" },
+              { "value": 2, "label": "Realizado Parcial" },
+              { "value": 3, "label": "Realizado Total" }
+            ]
+          }
+        }
+      ],
+      "indexes": [
+        {
+          "name": "IX_AvaliacaoIndicador_Municipio",
+          "fields": ["municipio_id"],
+          "unique": false
+        },
+        {
+          "name": "IX_AvaliacaoIndicador_Indicador",
+          "fields": ["indicador_id"],
+          "unique": false
+        },
+        {
+          "name": "UK_AvaliacaoIndicador_Municipio_Indicador",
+          "fields": ["municipio_id", "indicador_id"],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "id": "comentario_indicador",
+      "name": "ComentarioIndicador",
+      "displayName": "Comentários de Indicadores",
+      "tableName": "ComentarioIndicador",
+      "description": "Comentários sobre indicadores por município e âmbito",
+      "schema": "dbo",
+      "type": "MAIN",
+      "sessionFilter": {
+        "field": "municipioId",
+        "field2": "avaliacaoId"
+      },
+      "fields": [
+        {
+          "id": "comentario_indicador_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "comentario_indicador_avaliacao_id",
+          "name": "avaliacaoId",
+          "columnName": "avaliacao_id",
+          "label": "Avaliação",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "Avaliacao",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "comentario_indicador_municipio_id",
+          "name": "municipioId",
+          "columnName": "municipio_id",
+          "label": "Município",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "Municipio",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "comentario_indicador_ambito_gestao_id",
+          "name": "ambitoGestaoId",
+          "columnName": "ambito_gestao_id",
+          "label": "Âmbito de Gestão",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "AmbitoGestao",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 3, "sortable": true },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "comentario_indicador_comentario",
+          "name": "comentario",
+          "columnName": "comentario",
+          "label": "Comentário",
+          "dataType": "TEXT",
+          "databaseType": "nvarchar(max)",
+          "required": true,
+          "ui": {
+            "component": "TEXTAREA",
+            "grid": { "visible": true, "order": 4, "sortable": true },
+            "form": { "visible": true, "order": 4, "colSpan": 2 }
+          }
+        }
+      ],
+      "indexes": [
+        {
+          "name": "IX_ComentarioIndicador_Municipio",
+          "fields": ["municipio_id"],
+          "unique": false
+        },
+        {
+          "name": "IX_ComentarioIndicador_AmbitoGestao",
+          "fields": ["ambito_gestao_id"],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "id": "avaliacao_sda",
+      "name": "AvaliacaoSDA",
+      "displayName": "Avaliação SDA",
+      "tableName": "AvaliacaoSDA",
+      "description": "Avaliação de Situações Didáticas Avaliativas",
+      "schema": "dbo",
+      "type": "MAIN",
+      "sessionFilter": {
+        "field": "municipioId",
+        "field2": "avaliacaoId"
+      },
+      "fields": [
+        {
+          "id": "avaliacao_sda_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "avaliacao_sda_avaliacao_id",
+          "name": "avaliacaoId",
+          "columnName": "avaliacao_id",
+          "label": "Avaliação",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "Avaliacao",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "avaliacao_sda_municipio_id",
+          "name": "municipioId",
+          "columnName": "municipio_id",
+          "label": "Município",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "Municipio",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "avaliacao_sda_ano_escolar_id",
+          "name": "anoEscolarId",
+          "columnName": "ano_escolar_id",
+          "label": "Ano Escolar",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "AnoEscolar",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 3, "sortable": true },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "avaliacao_sda_aprendizagem_id",
+          "name": "aprendizagemId",
+          "columnName": "aprendizagem_id",
+          "label": "Aprendizagem Esperada",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "AprendizagemEsperada",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 4, "sortable": true },
+            "form": { "visible": true, "order": 4 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "avaliacao_sda_nivel",
+          "name": "nivel",
+          "columnName": "nivel",
+          "label": "Nível",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "enumRef": "enum_nivel_aprendizagem",
+          "ui": {
+            "component": "SELECT",
+            "grid": { "visible": true, "order": 5, "width": 80, "sortable": true },
+            "form": { "visible": true, "order": 5 }
+          }
+        },
+        {
+          "id": "avaliacao_sda_peso",
+          "name": "peso",
+          "columnName": "peso",
+          "label": "Peso",
+          "dataType": "DECIMAL",
+          "databaseType": "numeric",
+          "precision": 5,
+          "scale": 2,
+          "required": true,
+          "ui": {
+            "component": "DECIMAL",
+            "grid": { "visible": true, "order": 6, "width": 80, "sortable": true },
+            "form": { "visible": true, "order": 6 }
+          }
+        },
+        {
+          "id": "avaliacao_sda_quantidade_alunos",
+          "name": "quantidadeAlunos",
+          "columnName": "quantidade_alunos",
+          "label": "Qtd. Alunos",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 7, "width": 100, "sortable": true },
+            "form": { "visible": true, "order": 7 }
+          }
+        }
+      ],
+      "indexes": [
+        {
+          "name": "IX_AvaliacaoSDA_Municipio",
+          "fields": ["municipio_id"],
+          "unique": false
+        },
+        {
+          "name": "IX_AvaliacaoSDA_AnoEscolar",
+          "fields": ["ano_escolar_id"],
+          "unique": false
+        },
+        {
+          "name": "IX_AvaliacaoSDA_Aprendizagem",
+          "fields": ["aprendizagem_id"],
+          "unique": false
+        }
+      ]
+    },
+    {
+      "id": "atendimento_municipio",
+      "name": "AtendimentoMunicipio",
+      "displayName": "Atendimento por Município",
+      "tableName": "AtendimentoMunicipio",
+      "description": "Atendimentos por município e segmento",
+      "schema": "dbo",
+      "type": "MAIN",
+      "sessionFilter": {
+        "field": "municipioId",
+        "field2": "avaliacaoId"
+      },
+      "fields": [
+        {
+          "id": "atendimento_municipio_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "atendimento_municipio_avaliacao_id",
+          "name": "avaliacaoId",
+          "columnName": "avaliacao_id",
+          "label": "Avaliação",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "Avaliacao",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "atendimento_municipio_municipio_id",
+          "name": "municipioId",
+          "columnName": "municipio_id",
+          "label": "Município",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "Municipio",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "atendimento_municipio_segmento_atendido_id",
+          "name": "segmentoAtendidoId",
+          "columnName": "segmento_atendido_id",
+          "label": "Segmento Atendido",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "SegmentoAtendido",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 3, "sortable": true },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "atendimento_municipio_quantidade",
+          "name": "quantidade",
+          "columnName": "quantidade",
+          "label": "Quantidade",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 4, "width": 100, "sortable": true },
+            "form": { "visible": true, "order": 4 }
+          }
+        }
+      ],
+      "indexes": [
+        {
+          "name": "IX_AtendimentoMunicipio_Municipio",
+          "fields": ["municipio_id"],
+          "unique": false
+        },
+        {
+          "name": "IX_AtendimentoMunicipio_Segmento",
+          "fields": ["segmento_atendido_id"],
+          "unique": false
+        },
+        {
+          "name": "UK_AtendimentoMunicipio_Municipio_Segmento",
+          "fields": ["municipio_id", "segmento_atendido_id"],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "id": "carga_horaria_formacao",
+      "name": "CargaHorariaFormacao",
+      "displayName": "Carga Horária de Formação",
+      "tableName": "CargaHorariaFormacao",
+      "description": "Carga horária de formações por município",
+      "schema": "dbo",
+      "type": "MAIN",
+      "sessionFilter": {
+        "field": "municipioId",
+        "field2": "avaliacaoId"
+      },
+      "fields": [
+        {
+          "id": "carga_horaria_formacao_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "carga_horaria_formacao_avaliacao_id",
+          "name": "avaliacaoId",
+          "columnName": "avaliacao_id",
+          "label": "Avaliação",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "Avaliacao",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "carga_horaria_formacao_municipio_id",
+          "name": "municipioId",
+          "columnName": "municipio_id",
+          "label": "Município",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "Municipio",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 3, "sortable": true },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "carga_horaria_formacao_formacao_id",
+          "name": "formacaoId",
+          "columnName": "formacao_id",
+          "label": "Formação",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "Formacao",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 4, "sortable": true },
+            "form": { "visible": true, "order": 4 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "carga_horaria_formacao_carga_horaria",
+          "name": "cargaHoraria",
+          "columnName": "carga_horaria",
+          "label": "Carga Horária (h)",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 5, "width": 120, "sortable": true },
+            "form": { "visible": true, "order": 5 }
+          }
+        }
+      ],
+      "indexes": [
+        {
+          "name": "IX_CargaHorariaFormacao_Municipio",
+          "fields": ["municipio_id"],
+          "unique": false
+        },
+        {
+          "name": "IX_CargaHorariaFormacao_Formacao",
+          "fields": ["formacao_id"],
+          "unique": false
+        },
+        {
+          "name": "UK_CargaHorariaFormacao_Municipio_Formacao",
+          "fields": ["avaliacao_id", "municipio_id", "formacao_id"],
+          "unique": true
+        }
+      ]
+    },
+    {
+      "id": "formacao",
+      "name": "Formacao",
+      "displayName": "Formações",
+      "tableName": "Formacao",
+      "description": "Tipos de formação",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "ordem", "direction": "asc" },
+      "fields": [
+        {
+          "id": "formacao_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "formacao_nome",
+          "name": "nome",
+          "columnName": "nome",
+          "label": "Nome",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 100,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        },
+        {
+          "id": "formacao_ordem",
+          "name": "ordem",
+          "columnName": "ordem",
+          "label": "Ordem",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": false,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 3, "width": 80, "sortable": true },
+            "form": { "visible": true, "order": 3 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "formacao_territorio",
+      "name": "FormacaoTerritorio",
+      "displayName": "Formações de Território",
+      "tableName": "FormacaoTerritorio",
+      "description": "Tipos de formação por território",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "ordem", "direction": "asc" },
+      "fields": [
+        {
+          "id": "formacao_territorio_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "formacao_territorio_nome",
+          "name": "nome",
+          "columnName": "nome",
+          "label": "Nome",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 150,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        },
+        {
+          "id": "formacao_territorio_ordem",
+          "name": "ordem",
+          "columnName": "ordem",
+          "label": "Ordem",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": false,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 3, "width": 80, "sortable": true },
+            "form": { "visible": true, "order": 3 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "carga_horaria_formacao_territorio",
+      "name": "CargaHorariaFormacaoTerritorio",
+      "displayName": "Carga Horária Formação por Território",
+      "tableName": "CargaHorariaFormacaoTerritorio",
+      "description": "Carga horária de formações por território",
+      "schema": "dbo",
+      "type": "MAIN",
+      "defaultSort": { "field": "id", "direction": "asc" },
+      "sessionFilter": {
+        "field": "avaliacaoId"
+      },
+      "fields": [
+        {
+          "id": "carga_horaria_formacao_territorio_id",
+          "name": "id",
+          "columnName": "id",
+          "label": "Codigo",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "autoIncrement": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "carga_horaria_formacao_territorio_avaliacao_id",
+          "name": "avaliacaoId",
+          "columnName": "avaliacao_id",
+          "label": "Avaliação",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "Avaliacao",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "carga_horaria_formacao_territorio_territorio_id",
+          "name": "territorioId",
+          "columnName": "territorio_id",
+          "label": "Território",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "Territorio",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "carga_horaria_formacao_territorio_formacao_id",
+          "name": "formacaoTerritorioId",
+          "columnName": "formacao_territorio_id",
+          "label": "Tipo de Formação",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "reference": {
+            "entity": "FormacaoTerritorio",
+            "field": "id"
+          },
+          "ui": {
+            "component": "AUTOCOMPLETE",
+            "grid": { "visible": true, "order": 3, "sortable": true },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "carga_horaria_formacao_territorio_carga_horaria",
+          "name": "cargaHoraria",
+          "columnName": "carga_horaria",
+          "label": "Carga Horária (h)",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 4, "width": 120, "sortable": true },
+            "form": { "visible": true, "order": 4 }
+          }
+        }
+      ],
+      "indexes": [
+        {
+          "name": "IX_CargaHorariaFormacaoTerritorio_Territorio",
+          "fields": ["territorio_id"],
+          "unique": false
+        },
+        {
+          "name": "IX_CargaHorariaFormacaoTerritorio_Formacao",
+          "fields": ["formacao_territorio_id"],
+          "unique": false
+        },
+        {
+          "name": "UK_CargaHorariaFormacaoTerritorio",
+          "fields": ["territorio_id", "formacao_territorio_id"],
+          "unique": true
+        }
+      ]
+    }
+  ]
+}

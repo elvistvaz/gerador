@@ -1,0 +1,250 @@
+<div class="container">
+  <div class="header">
+    <h2>Análise de Log</h2>
+    <div class="header-actions">
+      <button class="btn btn-filter" (click)="toggleFilters()">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+        </svg>
+        <span>Filtros</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="filter-section" *ngIf="showFilters">
+    <div class="filter-row">
+      <div class="filter-group">
+        <label for="entidade">Entidade</label>
+        <select id="entidade" [(ngModel)]="filter.entidade" class="filter-select">
+          <option value="">Todas</option>
+          <option *ngFor="let ent of entidades" [value]="ent">{{ ent }}</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="usuario">Usuário</label>
+        <select id="usuario" [(ngModel)]="filter.usuario" class="filter-select">
+          <option value="">Todos</option>
+          <option *ngFor="let usr of usuarios" [value]="usr">{{ usr }}</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="dataInicio">Data Início</label>
+        <input type="datetime-local" id="dataInicio" [(ngModel)]="dataInicioStr" class="filter-input">
+      </div>
+      <div class="filter-group">
+        <label for="dataFim">Data Fim</label>
+        <input type="datetime-local" id="dataFim" [(ngModel)]="dataFimStr" class="filter-input">
+      </div>
+      <div class="filter-actions">
+        <button class="btn btn-primary" (click)="aplicarFiltro()">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span>Filtrar</span>
+        </button>
+        <button class="btn btn-secondary" (click)="limparFiltro()">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+          <span>Limpar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">Carregando...</div>
+
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <div *ngIf="!loading && !error" class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th class="sortable" (click)="toggleSort('dataHora')">
+            <span class="th-content">
+              Data/Hora
+              <span class="sort-icon" *ngIf="sortField === 'dataHora'">
+                <svg *ngIf="sortDirection === 'asc'" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>
+                <svg *ngIf="sortDirection === 'desc'" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+              </span>
+              <span class="sort-icon inactive" *ngIf="sortField !== 'dataHora'">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5-5 5 5M7 14l5 5 5-5" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>
+              </span>
+            </span>
+          </th>
+          <th class="sortable" (click)="toggleSort('acao')">
+            <span class="th-content">
+              Ação
+              <span class="sort-icon" *ngIf="sortField === 'acao'">
+                <svg *ngIf="sortDirection === 'asc'" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>
+                <svg *ngIf="sortDirection === 'desc'" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+              </span>
+              <span class="sort-icon inactive" *ngIf="sortField !== 'acao'">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5-5 5 5M7 14l5 5 5-5" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>
+              </span>
+            </span>
+          </th>
+          <th class="sortable" (click)="toggleSort('entidade')">
+            <span class="th-content">
+              Entidade
+              <span class="sort-icon" *ngIf="sortField === 'entidade'">
+                <svg *ngIf="sortDirection === 'asc'" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>
+                <svg *ngIf="sortDirection === 'desc'" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+              </span>
+              <span class="sort-icon inactive" *ngIf="sortField !== 'entidade'">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5-5 5 5M7 14l5 5 5-5" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>
+              </span>
+            </span>
+          </th>
+          <th>Chave</th>
+          <th class="sortable" (click)="toggleSort('usuario')">
+            <span class="th-content">
+              Usuário
+              <span class="sort-icon" *ngIf="sortField === 'usuario'">
+                <svg *ngIf="sortDirection === 'asc'" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>
+                <svg *ngIf="sortDirection === 'desc'" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
+              </span>
+              <span class="sort-icon inactive" *ngIf="sortField !== 'usuario'">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5-5 5 5M7 14l5 5 5-5" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>
+              </span>
+            </span>
+          </th>
+          <th class="actions-column">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let log of logs">
+          <td>{{ log.id }}</td>
+          <td>{{ formatDate(log.dataHora) }}</td>
+          <td><span class="badge" [ngClass]="getAcaoClass(log.acao)">{{ log.acao }}</span></td>
+          <td>{{ log.entidade }}</td>
+          <td>{{ log.chave }}</td>
+          <td>{{ log.usuario }}</td>
+          <td class="actions-column">
+            <button class="btn btn-edit btn-sm" (click)="exibirDetalhes(log)" title="Exibir Detalhes">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              <span>Exibir</span>
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="logs.length === 0">
+          <td colspan="7" class="no-data">
+            Nenhum registro encontrado
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Paginação -->
+    <div class="pagination-container" *ngIf="totalPages > 1">
+      <div class="pagination-info">
+        Mostrando {{ currentPage * pageSize + 1 }} - {{ getLastItemIndex() }} de {{ totalElements }} registros
+      </div>
+      <div class="pagination-controls">
+        <button class="btn btn-pagination" (click)="firstPage()" [disabled]="currentPage === 0" title="Primeira página">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg>
+        </button>
+        <button class="btn btn-pagination" (click)="previousPage()" [disabled]="currentPage === 0" title="Página anterior">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <span class="page-numbers">
+          <button 
+            *ngFor="let page of getPageNumbers()" 
+            class="btn btn-page" 
+            [class.active]="page === currentPage"
+            (click)="goToPage(page)">
+            {{ page + 1 }}
+          </button>
+        </span>
+        <button class="btn btn-pagination" (click)="nextPage()" [disabled]="currentPage >= totalPages - 1" title="Próxima página">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+        <button class="btn btn-pagination" (click)="lastPage()" [disabled]="currentPage >= totalPages - 1" title="Última página">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
+        </button>
+        <select class="page-size-select" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+          <option [value]="10">10 por página</option>
+          <option [value]="20">20 por página</option>
+          <option [value]="50">50 por página</option>
+          <option [value]="100">100 por página</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Detalhes -->
+  <div class="modal-overlay" *ngIf="showModal" (click)="fecharModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Detalhes do Log</h3>
+        <button class="close-btn" (click)="fecharModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="selectedLog">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Data/Hora</label>
+            <span>{{ formatDate(selectedLog.dataHora) }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Ação</label>
+            <span class="badge" [ngClass]="getAcaoClass(selectedLog.acao)">{{ selectedLog.acao }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Entidade</label>
+            <span>{{ selectedLog.entidade }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Chave</label>
+            <span>{{ selectedLog.chave }}</span>
+          </div>
+          <div class="detail-item">
+            <label>Usuário</label>
+            <span>{{ selectedLog.usuario }}</span>
+          </div>
+        </div>
+        
+        <div class="dados-anteriores" *ngIf="getObjectKeys(dadosAnterioresObj).length > 0">
+          <h4>Dados Anteriores</h4>
+          <table class="data-table details-table">
+            <thead>
+              <tr>
+                <th>Campo</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let key of getObjectKeys(dadosAnterioresObj)">
+                <td>{{ key }}</td>
+                <td>{{ dadosAnterioresObj[key] }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="no-data-message" *ngIf="getObjectKeys(dadosAnterioresObj).length === 0">
+          <em>Nenhum dado anterior registrado</em>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="fecharModal()">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+          <span>Fechar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

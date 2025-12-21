@@ -1,0 +1,516 @@
+// Banco de Dados: Sociedade
+// Gerado em: 11/12/2025
+// Formato: dbdiagram.io (DBML)
+
+// ============================================
+// TABELAS DE APOIO / LOOKUP
+// ============================================
+
+Table Banco {
+  id_Banco char(3) [pk, not null]
+  NomeBanco nvarchar(40)
+}
+
+Table Bairro {
+  id_Bairro smallint [pk, not null]
+  NomeBairro nvarchar(40)
+}
+
+Table Cidade {
+  id_Cidade smallint [pk, not null]
+  NomeCidade nvarchar(40)
+  UF char(2)
+  DDD char(2)
+  ISS numeric(5,2)
+}
+
+Table Conselho {
+  id_Conselho smallint [pk, not null]
+  NomeConselho nvarchar(50)
+  Sigla char(12)
+}
+
+Table Especialidade {
+  id_Especialidade smallint [pk, not null]
+  NomeEspecialidade nvarchar(50)
+}
+
+Table EstadoCivil {
+  id_EstadoCivil smallint [pk, not null]
+  NomeEstadoCivil nvarchar(30)
+}
+
+Table Operadora {
+  id_Operadora smallint [pk, not null]
+  NomeOperadora varchar(50) [not null]
+}
+
+Table TipoServico {
+  id_TipoServico smallint [pk, not null]
+  NomeTipoServico varchar(50)
+}
+
+Table TipoContato {
+  id_TipoContato smallint [pk, not null]
+  NomeTipoContato varchar(50)
+}
+
+Table CBO {
+  id_CBO char(6) [pk, not null]
+  NomeCBO varchar(100) [not null]
+}
+
+Table Cartorio {
+  id_Cartorio smallint [pk, not null]
+  NomeCartorio nvarchar(60)
+  Endereco nvarchar(60)
+  id_Bairro smallint [ref: > Bairro.id_Bairro]
+  id_Cidade smallint [ref: > Cidade.id_Cidade]
+  Telefone char(9)
+}
+
+// ============================================
+// TABELAS PRINCIPAIS
+// ============================================
+
+Table Pessoa {
+  id_Pessoa int [pk, not null]
+  id_Conselho smallint [ref: > Conselho.id_Conselho]
+  NumeroConselho int
+  DataFiliacao smalldatetime
+  Nome nvarchar(60)
+  Nascimento smalldatetime
+  RG nvarchar(14)
+  OrgaoEmissor char(6)
+  CPF char(11)
+  InscricaoISS nvarchar(11)
+  InscricaoINSS char(11)
+  ClasseInss char(1)
+  Endereco nvarchar(60)
+  id_Bairro smallint [ref: > Bairro.id_Bairro]
+  id_Cidade smallint [ref: > Cidade.id_Cidade]
+  CEP char(8)
+  Telefone char(9)
+  Celular char(9)
+  Fax char(9)
+  DataAdesao smalldatetime
+  id_EstadoCivil smallint [ref: > EstadoCivil.id_EstadoCivil]
+  Pai nvarchar(60)
+  Mae nvarchar(60)
+  NumeroDependente smallint
+  id_Banco char(3) [ref: > Banco.id_Banco]
+  Agencia char(5)
+  Conta char(11)
+  DvConta char(2)
+  Atualizacao smalldatetime
+  id_Naturalidade smallint [ref: > Cidade.id_Cidade]
+  Nacionalidade nvarchar(12)
+  Email nvarchar(50)
+  NumeroParcelasCota smallint
+  DataDesligamento smalldatetime
+  ValorPagoNoDesligamento money
+  ValorDeCadaCota money
+  DataAlteracao datetime
+  id_Indicacao smallint [ref: > Indicacao.id_Indicacao]
+  DataIndicacao datetime
+  DataInativo datetime
+  Taxaespecial numeric(5,2)
+  ObservacaoPessoa text
+  ContaPoupanca bit
+  id_Operadora smallint [ref: > Operadora.id_Operadora]
+  id_PlanoRetencao smallint [ref: > PlanoRetencao.id_PlanoRetencao]
+  Percentual numeric(5,2)
+  Consulta numeric(5,2)
+  Procedimento numeric(5,2)
+}
+
+Table Cliente {
+  id_Cliente smallint [pk, not null]
+  NomeCliente nvarchar(70) [not null]
+  FantasiaCliente nvarchar(40)
+  DataContrato datetime
+  TaxaADM numeric(6,2)
+  IE char(14)
+  IM char(14)
+  CodigoBanco char(8)
+  CNPJ char(14)
+  Grupo smallint
+  Endereco nvarchar(60)
+  CEP char(8)
+  id_Bairro smallint [ref: > Bairro.id_Bairro]
+  id_Cidade smallint [ref: > Cidade.id_Cidade]
+  Contato nvarchar(30)
+  Fone1 char(9)
+  Fone2 char(9)
+  Fax char(9)
+  ObservacaoCliente text
+  ObsDaNota text
+  email varchar(50)
+  PessoaJuridica smallint
+}
+
+Table Empresa {
+  id_Empresa smallint [pk, not null]
+  NomeEmpresa nvarchar(70) [not null]
+  FantasiaEmpresa nvarchar(30)
+  CNPJ char(14)
+  IM char(14)
+  IE char(14)
+  TaxaRetencao numeric(18,2) [not null]
+  DataAbertura datetime
+  DataCadastro datetime
+  JUCEB char(12)
+  id_EmpresaSocio smallint
+  CapitalSocial money
+  Quotas smallint
+  Endereco nvarchar(60)
+  id_Bairro smallint [ref: > Bairro.id_Bairro]
+  id_Cidade smallint [ref: > Cidade.id_Cidade]
+  CEP char(8)
+  id_Banco char(3) [ref: > Banco.id_Banco]
+  Agencia char(5)
+  ContaCorrente char(12)
+  DVContaCorrente char(1)
+  Administrador char(60)
+  TVL varchar(10)
+  CNAE char(7)
+  CREMEBPJ char(11)
+  Inativa bit
+  NumeroRegistroCartorio varchar(6)
+  DataRegistroCartorio datetime
+  Procurador varchar(100)
+  DataValidade datetime
+  PeriodoVigencia varchar(15)
+  PIXAtivo bit [not null]
+  PIX varchar(100)
+}
+
+// ============================================
+// TABELAS DE RELACIONAMENTO
+// ============================================
+
+Table EmpresaSocio {
+  id_Empresa smallint [pk, not null, ref: > Empresa.id_Empresa]
+  id_Pessoa int [pk, not null, ref: > Pessoa.id_Pessoa]
+  DataAdesao datetime
+  NumeroQuotas smallint
+  ValorQuota money
+  DataSaida datetime
+  ValorCremeb money
+  NovoModelo bit [not null]
+  TaxaConsulta numeric(5,2)
+  TaxaProcedimento numeric(5,2)
+}
+
+Table EmpresaCliente {
+  id_Empresa smallint [pk, not null, ref: > Empresa.id_Empresa]
+  id_Cliente smallint [pk, not null, ref: > Cliente.id_Cliente]
+  Taxa numeric(6,2)
+  Processo char(10)
+  TaxaISS numeric(5,2)
+  TaxaCOFINS numeric(5,2)
+  TaxaPIS numeric(5,2)
+  TaxaCSLL numeric(5,2)
+  TaxaIRRF numeric(5,2)
+}
+
+Table MedicoEspecialidade {
+  id_Pessoa int [pk, not null, ref: > Pessoa.id_Pessoa]
+  id_Especialidade smallint [pk, not null, ref: > Especialidade.id_Especialidade]
+}
+
+Table PessoaCartorio {
+  id_Pessoa int [pk, not null, ref: > Pessoa.id_Pessoa]
+  id_Cartorio smallint [pk, not null, ref: > Cartorio.id_Cartorio]
+}
+
+Table ClienteFilial {
+  id_ClienteFilial smallint [pk, not null, increment]
+  id_Cliente smallint [not null, ref: > Cliente.id_Cliente]
+  NomeFilial varchar(50) [not null]
+}
+
+Table ClienteContato {
+  id_ClienteContato int [pk, not null, increment]
+  id_Cliente smallint [not null, ref: > Cliente.id_Cliente]
+  id_TipoContato smallint [not null, ref: > TipoContato.id_TipoContato]
+  Descricao varchar(100) [not null]
+}
+
+// ============================================
+// TABELAS FINANCEIRAS
+// ============================================
+
+Table Lancamento {
+  id_lancamento int [pk, not null, increment]
+  Data datetime [not null]
+  id_Empresa smallint [not null, ref: > Empresa.id_Empresa]
+  id_Cliente smallint [not null, ref: > Cliente.id_Cliente]
+  id_Pessoa int [not null, ref: > Pessoa.id_Pessoa]
+  NF int
+  ValorBruto money
+  Despesas money
+  Retencao money
+  ValorLiquido money
+  ValorTaxa money
+  ValorRepasse money
+  Baixa datetime
+  MesAno char(6)
+  Taxa numeric(6,2)
+  NovaNota int
+  NotaAntiga int
+  id_ClienteFilial smallint [ref: > ClienteFilial.id_ClienteFilial]
+  id_TipoServico smallint [ref: > TipoServico.id_TipoServico]
+}
+
+Table NF {
+  id_Empresa smallint [pk, not null, ref: > Empresa.id_Empresa]
+  NF int [pk, not null]
+  id_cliente smallint [not null, ref: > Cliente.id_Cliente]
+  Emissao datetime [not null]
+  Vencimento datetime
+  Total money
+  IRRF money
+  PIS money
+  Cofins money
+  CSLL money
+  ISS money
+  Baixa datetime
+  ValorQuitado money
+  Observacao varchar(50)
+  Cancelada bit
+  id_NotaFiscal int [not null, increment]
+  NovaNota int
+  NotaAntiga int
+  ObservacaoBaixa varchar(50)
+  OutrasDespesas money
+}
+
+Table Adiantamento {
+  id_Adiantamento int [pk, not null]
+  Data datetime [not null]
+  id_Empresa smallint [not null, ref: > Empresa.id_Empresa]
+  id_Pessoa int [not null, ref: > Pessoa.id_Pessoa]
+  id_cliente smallint [not null, ref: > Cliente.id_Cliente]
+  NF int
+  ValorBruto money
+  Retencao money
+  ValorLiquido money
+  ValorTaxa money
+  ValorRepasse money
+  id_lancamento int [not null, ref: > Lancamento.id_lancamento]
+  Pago bit
+}
+
+Table ContasPagarReceber {
+  id_ContasPagarReceber int [pk, not null, increment]
+  DataLancamento datetime [not null]
+  ValorOriginal money [not null]
+  ValorParcela money [not null]
+  DataVencimento datetime [not null]
+  DataBaixa datetime
+  ValorBaixado money
+  id_Empresa smallint [ref: > Empresa.id_Empresa]
+  id_Pessoa smallint [ref: > Pessoa.id_Pessoa]
+  MesAnoReferencia varchar(10)
+  Historico varchar(100)
+  id_DespesaReceita smallint [ref: > DespesaReceita.id_DespesaReceita]
+  id_NotaFiscal int
+  id_Lancamento int [ref: > Lancamento.id_lancamento]
+}
+
+Table PagamentoNaoSocio {
+  Data datetime [pk, not null]
+  id_Empresa smallint [pk, not null, ref: > Empresa.id_Empresa]
+  id_Cliente smallint [pk, not null, ref: > Cliente.id_Cliente]
+  id_PessoaNaoSocio int [pk, not null]
+  NF int
+  ValorBruto money
+  Retencao money
+  ValorLiquido money
+  ValorTaxa money
+  ValorRepasse money
+}
+
+// ============================================
+// TABELAS DE DESPESAS E RECEITAS
+// ============================================
+
+Table DespesaReceita {
+  id_DespesaReceita smallint [pk, not null]
+  SiglaDespesaReceita varchar(10) [not null]
+  NomeDespesaReceita varchar(60) [not null]
+  Despesa smallint [not null]
+  TemRateio smallint [not null]
+  Inativa smallint [not null]
+  Valor money
+  Parcelas smallint
+  Periodicidade smallint
+  ParcelaUnica smallint
+}
+
+Table EmpresaDespesaFixa {
+  id_Empresa smallint [pk, not null, ref: > Empresa.id_Empresa]
+  id_DespesaReceita smallint [pk, not null, ref: > DespesaReceita.id_DespesaReceita]
+  DataLancamento datetime
+  Parcelas smallint
+  ValorEmpresa money
+  Inativa smallint
+}
+
+// ============================================
+// TABELAS DE RETENCAO
+// ============================================
+
+Table PlanoRetencao {
+  id_PlanoRetencao smallint [pk, not null]
+  NomePlanoRetencao varchar(50)
+  Inativo bit
+  LiberaDespesas bit
+}
+
+Table Retencao {
+  id_PlanoRetencao smallint [pk, not null, ref: > PlanoRetencao.id_PlanoRetencao]
+  Ate numeric(10,2) [pk, not null]
+  Reter numeric(5,2) [not null]
+}
+
+Table RepasseAnual {
+  Ano char(4) [pk, not null]
+  id_Empresa smallint [pk, not null, ref: > Empresa.id_Empresa]
+  id_Pessoa smallint [pk, not null, ref: > Pessoa.id_Pessoa]
+  JanBruto money
+  JanTaxa money
+  FevBruto money
+  FevTaxa money
+  MarBruto money
+  MarTaxa money
+  AbrBruto money
+  AbrTaxa money
+  MaiBruto money
+  MaiTaxa money
+  JunBruto money
+  JunTaxa money
+  JulBruto money
+  JulTaxa money
+  AgoBruto money
+  AgoTaxa money
+  SetBruto money
+  SetTaxa money
+  OutBruto money
+  OutTaxa money
+  NovBruto money
+  NovTaxa money
+  DezBruto money
+  DezTaxa money
+}
+
+// ============================================
+// TABELAS DE INDICACAO
+// ============================================
+
+Table Indicacao {
+  id_Indicacao smallint [pk, not null]
+  de datetime
+  ate datetime
+  IndicacaoMinima smallint
+  IndicacaoMaxima smallint
+  Indice numeric(5,2)
+  TetoIndice numeric(10,2)
+  GrupoIndicados smallint
+}
+
+// ============================================
+// TABELAS DE IMPOSTO
+// ============================================
+
+Table ImpostoDeRenda {
+  Data datetime [pk, not null]
+  de money [pk, not null]
+  ate money
+  aliquota numeric(5,2)
+  valordeduzir money
+  DeducaoDependente money
+}
+
+// ============================================
+// TABELAS DE ANUIDADE CREMEB
+// ============================================
+
+Table AnuidadeCremeb {
+  id_AnuidadeCremeb int [pk, not null]
+  DataInicio datetime
+  DataFim datetime
+  AnoExercicio char(4)
+  ValorTotal money
+  id_Empresa smallint [ref: > Empresa.id_Empresa]
+}
+
+Table AnuidadeCremebItem {
+  id_AnuidadeCremebItem int [pk, not null]
+  id_AnuidadeCremeb int [ref: > AnuidadeCremeb.id_AnuidadeCremeb]
+  id_Pessoa smallint [ref: > Pessoa.id_Pessoa]
+  DataLancamento datetime
+  ValorIndividual money
+  DataPagamento nchar(10)
+  id_Lancamento int [ref: > Lancamento.id_lancamento]
+}
+
+// ============================================
+// TABELAS DE CONTA CORRENTE
+// ============================================
+
+Table PessoaContaCorrente {
+  id_ContaCorrente int [pk, not null, increment]
+  id_Pessoa int [ref: > Pessoa.id_Pessoa]
+  id_Banco char(3) [ref: > Banco.id_Banco]
+  Agencia char(5)
+  ContaCorrente varchar(15)
+  dvContaCorrente varchar(2)
+  Ativa bit
+  ContaPoupanca bit
+  NomeDependente varchar(60)
+  ContaPadrao bit
+  PIX varchar(100)
+}
+
+Table PessoaContaRecebimento {
+  id_Pessoa smallint [pk, not null, ref: > Pessoa.id_Pessoa]
+  id_Cliente smallint [pk, not null, ref: > Cliente.id_Cliente]
+  id_ContaCorrente smallint [pk, not null, ref: > PessoaContaCorrente.id_ContaCorrente]
+}
+
+// ============================================
+// TABELAS DE PARAMETROS
+// ============================================
+
+Table ParametroEmail {
+  id_Parametro smallint [pk, not null]
+  AssuntoEmail varchar(100)
+  SMTP varchar(100)
+  ContaEmail varchar(100)
+  SenhaEmail varchar(100)
+}
+
+Table ParametroNF {
+  Cofins numeric(5,2)
+  Pis numeric(5,2)
+  CSLL numeric(5,2)
+  IRRF numeric(5,2)
+  TetoImposto numeric(10,2)
+  BasePisCofinsCsll money
+}
+
+// ============================================
+// TABELAS DE USUARIO
+// ============================================
+
+Table Usuario {
+  id_Usuario smallint [pk, not null]
+  UsuarioNome varchar(60) [not null]
+  UsuarioLogin varchar(30) [not null]
+  UsuarioSenha varchar(50) [not null]
+  UsuarioNivelAcesso smallint
+  UsuarioInativo bit
+  UsuarioDataInicio datetime
+}

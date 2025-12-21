@@ -1,0 +1,262 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "metamodel-schema.json",
+  "title": "MetaModel Schema",
+  "description": "Schema para definição de meta-modelo de banco de dados e aplicação",
+  "type": "object",
+  "required": ["metadata", "modules", "entities"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "description": "Informações gerais do projeto",
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string", "description": "Nome do projeto/banco" },
+        "version": { "type": "string", "description": "Versão do modelo" },
+        "description": { "type": "string" },
+        "author": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "database": {
+          "type": "object",
+          "properties": {
+            "type": { "type": "string", "enum": ["SQLSERVER", "MYSQL", "POSTGRESQL", "ORACLE", "H2"] },
+            "schema": { "type": "string" }
+          }
+        }
+      }
+    },
+    "modules": {
+      "type": "array",
+      "description": "Módulos/menus da aplicação",
+      "items": {
+        "$ref": "#/definitions/module"
+      }
+    },
+    "entities": {
+      "type": "array",
+      "description": "Entidades/Tabelas do sistema",
+      "items": {
+        "$ref": "#/definitions/entity"
+      }
+    },
+    "enums": {
+      "type": "array",
+      "description": "Enumerações do sistema",
+      "items": {
+        "$ref": "#/definitions/enum"
+      }
+    }
+  },
+  "definitions": {
+    "module": {
+      "type": "object",
+      "required": ["id", "name", "order"],
+      "properties": {
+        "id": { "type": "string", "description": "Identificador único do módulo" },
+        "name": { "type": "string", "description": "Nome de exibição" },
+        "description": { "type": "string" },
+        "icon": { "type": "string", "description": "Ícone do módulo" },
+        "order": { "type": "integer", "description": "Ordem de exibição" },
+        "items": {
+          "type": "array",
+          "description": "Itens de menu dentro do módulo",
+          "items": {
+            "$ref": "#/definitions/menuItem"
+          }
+        }
+      }
+    },
+    "menuItem": {
+      "type": "object",
+      "required": ["id", "name", "entityRef"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "entityRef": { "type": "string", "description": "Referência à entidade principal" },
+        "icon": { "type": "string" },
+        "order": { "type": "integer" }
+      }
+    },
+    "entity": {
+      "type": "object",
+      "required": ["id", "name", "tableName", "fields"],
+      "properties": {
+        "id": { "type": "string", "description": "Identificador único da entidade" },
+        "name": { "type": "string", "description": "Nome da classe/entidade" },
+        "displayName": { "type": "string", "description": "Nome de exibição na UI (ex: 'Carga Horária de Formação')" },
+        "tableName": { "type": "string", "description": "Nome da tabela no banco" },
+        "description": { "type": "string" },
+        "schema": { "type": "string", "default": "dbo" },
+        "type": {
+          "type": "string",
+          "enum": ["MAIN", "LOOKUP", "JUNCTION", "CHILD", "CONFIG"],
+          "description": "Tipo da entidade"
+        },
+        "parentEntity": {
+          "type": "string",
+          "description": "Entidade pai (para entidades CHILD)"
+        },
+        "audit": {
+          "type": "boolean",
+          "description": "Se a entidade possui campos de auditoria",
+          "default": false
+        },
+        "fields": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/field" }
+        },
+        "indexes": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/index" }
+        },
+        "constraints": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/constraint" }
+        }
+      }
+    },
+    "field": {
+      "type": "object",
+      "required": ["id", "name", "columnName", "dataType"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "description": "Nome do atributo na classe" },
+        "columnName": { "type": "string", "description": "Nome da coluna no banco" },
+        "label": { "type": "string", "description": "Label para exibição em tela" },
+        "description": { "type": "string" },
+        "dataType": {
+          "type": "string",
+          "enum": ["STRING", "INTEGER", "LONG", "DECIMAL", "BOOLEAN", "DATE", "DATETIME", "TIME", "TEXT", "BINARY", "MONEY"],
+          "description": "Tipo de dado lógico"
+        },
+        "databaseType": {
+          "type": "string",
+          "description": "Tipo específico do banco (ex: nvarchar, char, smallint)"
+        },
+        "length": { "type": "integer", "description": "Tamanho máximo" },
+        "precision": { "type": "integer", "description": "Precisão para decimais" },
+        "scale": { "type": "integer", "description": "Escala para decimais" },
+        "primaryKey": { "type": "boolean", "default": false },
+        "autoIncrement": { "type": "boolean", "default": false },
+        "required": { "type": "boolean", "default": false },
+        "unique": { "type": "boolean", "default": false },
+        "defaultValue": { "type": "string" },
+        "reference": {
+          "$ref": "#/definitions/reference",
+          "description": "Referência a outra entidade (FK)"
+        },
+        "enumRef": {
+          "type": "string",
+          "description": "Referência a um enum"
+        },
+        "ui": {
+          "$ref": "#/definitions/fieldUI",
+          "description": "Configurações de interface"
+        },
+        "validation": {
+          "$ref": "#/definitions/validation",
+          "description": "Regras de validação"
+        }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "required": ["entity", "field"],
+      "properties": {
+        "entity": { "type": "string", "description": "Entidade referenciada" },
+        "field": { "type": "string", "description": "Campo referenciado" },
+        "onDelete": { "type": "string", "enum": ["CASCADE", "SET_NULL", "RESTRICT", "NO_ACTION"], "default": "NO_ACTION" },
+        "onUpdate": { "type": "string", "enum": ["CASCADE", "SET_NULL", "RESTRICT", "NO_ACTION"], "default": "NO_ACTION" }
+      }
+    },
+    "fieldUI": {
+      "type": "object",
+      "properties": {
+        "component": {
+          "type": "string",
+          "enum": ["TEXT", "TEXTAREA", "NUMBER", "DECIMAL", "DATE", "DATETIME", "CHECKBOX", "SELECT", "AUTOCOMPLETE", "RADIO", "PASSWORD", "EMAIL", "PHONE", "CPF", "CNPJ", "CEP", "HIDDEN"],
+          "description": "Tipo de componente de UI"
+        },
+        "placeholder": { "type": "string" },
+        "mask": { "type": "string", "description": "Máscara de entrada" },
+        "grid": {
+          "type": "object",
+          "properties": {
+            "visible": { "type": "boolean", "default": true },
+            "order": { "type": "integer" },
+            "width": { "type": "integer" }
+          }
+        },
+        "form": {
+          "type": "object",
+          "properties": {
+            "visible": { "type": "boolean", "default": true },
+            "order": { "type": "integer" },
+            "colSpan": { "type": "integer", "default": 1 },
+            "tab": { "type": "string" },
+            "group": { "type": "string" }
+          }
+        },
+        "search": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean", "default": false },
+            "operator": { "type": "string", "enum": ["EQUALS", "CONTAINS", "STARTS_WITH", "ENDS_WITH", "BETWEEN", "IN"] }
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "minLength": { "type": "integer" },
+        "maxLength": { "type": "integer" },
+        "min": { "type": "number" },
+        "max": { "type": "number" },
+        "pattern": { "type": "string", "description": "Regex de validação" },
+        "custom": { "type": "string", "description": "Nome do validador customizado" }
+      }
+    },
+    "index": {
+      "type": "object",
+      "required": ["name", "fields"],
+      "properties": {
+        "name": { "type": "string" },
+        "fields": { "type": "array", "items": { "type": "string" } },
+        "unique": { "type": "boolean", "default": false }
+      }
+    },
+    "constraint": {
+      "type": "object",
+      "required": ["name", "type"],
+      "properties": {
+        "name": { "type": "string" },
+        "type": { "type": "string", "enum": ["CHECK", "UNIQUE", "DEFAULT"] },
+        "expression": { "type": "string" },
+        "fields": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "enum": {
+      "type": "object",
+      "required": ["id", "name", "values"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["code", "label"],
+            "properties": {
+              "code": { "type": "string" },
+              "label": { "type": "string" },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

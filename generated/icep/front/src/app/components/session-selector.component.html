@@ -1,0 +1,52 @@
+<div class="session-selector-overlay">
+  <div class="session-selector-modal">
+    <div class="modal-header">
+      <h2>Selecione o Contexto</h2>
+    </div>
+
+    <div *ngIf="loading" class="loading">Carregando...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+
+    <div class="modal-body" *ngIf="!loading">
+      <div class="form-group">
+        <label>Selecione a Avaliação <span class="required">*</span></label>
+        <div class="radio-group">
+          <div
+            *ngFor="let opt of avaliacaoOptions"
+            class="radio-option"
+            (click)="selectAvaliacao(opt.id)"
+            [class.selected]="selectedAvaliacaoId === opt.id"
+          >
+            <span class="radio-circle"></span>
+            <span class="radio-label">{{ opt.avaliacao }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Selecione o Município <span class="required">*</span></label>
+        <div class="radio-group">
+          <div
+            *ngFor="let opt of municipioOptions"
+            class="radio-option"
+            (click)="selectMunicipio(opt.id)"
+            [class.selected]="selectedMunicipioId === opt.id"
+          >
+            <span class="radio-circle"></span>
+            <span class="radio-label">{{ opt.nome }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-primary" (click)="confirmar()" [disabled]="!canConfirm()">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span>Confirmar</span>
+      </button>
+    </div>
+  </div>
+</div>

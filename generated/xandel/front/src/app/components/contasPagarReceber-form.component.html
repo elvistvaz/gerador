@@ -1,0 +1,158 @@
+<div class="container">
+  <div class="header">
+    <h2>{{ isEditing ? 'Editar' : 'Novo' }} Contas a Pagar/Receber</h2>
+  </div>
+
+  <div *ngIf="loading" class="loading">Carregando...</div>
+
+  <div *ngIf="successMessage" class="success">{{ successMessage }}</div>
+
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <form *ngIf="!loading" (ngSubmit)="salvar()" #form="ngForm" class="form-container">
+    <div class="form-group">
+      <label for="dataLancamento">Data Lançamento <span class="required">*</span></label>
+      <input
+        type="datetime-local"
+        id="dataLancamento"
+        name="dataLancamento"
+        [(ngModel)]="item.dataLancamento"
+        required
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="valorOriginal">Valor Original <span class="required">*</span></label>
+      <input
+        type="number"
+        id="valorOriginal"
+        name="valorOriginal"
+        [(ngModel)]="item.valorOriginal"
+        required
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="valorParcela">Valor Parcela <span class="required">*</span></label>
+      <input
+        type="number"
+        id="valorParcela"
+        name="valorParcela"
+        [(ngModel)]="item.valorParcela"
+        required
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="dataVencimento">Vencimento <span class="required">*</span></label>
+      <input
+        type="datetime-local"
+        id="dataVencimento"
+        name="dataVencimento"
+        [(ngModel)]="item.dataVencimento"
+        required
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="dataBaixa">Data Baixa</label>
+      <input
+        type="datetime-local"
+        id="dataBaixa"
+        name="dataBaixa"
+        [(ngModel)]="item.dataBaixa"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="valorBaixado">Valor Baixado</label>
+      <input
+        type="number"
+        id="valorBaixado"
+        name="valorBaixado"
+        [(ngModel)]="item.valorBaixado"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="idEmpresa">Empresa</label>
+      <input
+        type="number"
+        id="idEmpresa"
+        name="idEmpresa"
+        [(ngModel)]="item.idEmpresa"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="idPessoa">Pessoa</label>
+      <input
+        type="number"
+        id="idPessoa"
+        name="idPessoa"
+        [(ngModel)]="item.idPessoa"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="mesAnoReferencia">Mês/Ano Ref.</label>
+      <input
+        type="text"
+        id="mesAnoReferencia"
+        name="mesAnoReferencia"
+        [(ngModel)]="item.mesAnoReferencia"
+        maxlength="10"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="historico">Histórico</label>
+      <input
+        type="text"
+        id="historico"
+        name="historico"
+        [(ngModel)]="item.historico"
+        maxlength="100"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="idDespesaReceita">Despesa/Receita</label>
+      <input
+        type="number"
+        id="idDespesaReceita"
+        name="idDespesaReceita"
+        [(ngModel)]="item.idDespesaReceita"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancelar()">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        <span>Cancelar</span>
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="saving || form.invalid">
+        <svg class="icon" *ngIf="!saving" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+          <polyline points="17 21 17 13 7 13 7 21"></polyline>
+          <polyline points="7 3 7 8 15 8"></polyline>
+        </svg>
+        <span>{{ saving ? 'Salvando...' : 'Salvar' }}</span>
+      </button>
+    </div>
+  </form>
+</div>

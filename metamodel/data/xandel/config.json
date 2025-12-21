@@ -1,0 +1,97 @@
+{
+  "project": {
+    "id": "xandel",
+    "name": "Xandel",
+    "description": "Sistema de Gestão Xandel",
+    "version": "1.0.0"
+  },
+  "output": {
+    "baseDir": "generated/xandel",
+    "backendDir": "back",
+    "frontendDir": "front",
+    "cleanBeforeGenerate": false
+  },
+  "backend": {
+    "language": "java",
+    "framework": "spring-boot",
+    "javaVersion": "21",
+    "springBootVersion": "3.2.0",
+    "basePackage": "br.com.xandel",
+    "port": 8081,
+    "contextPath": "/api",
+    "features": {
+      "swagger": true,
+      "actuator": true,
+      "security": true,
+      "audit": true
+    }
+  },
+  "frontend": {
+    "framework": "angular",
+    "angularVersion": "17",
+    "port": 4201,
+    "title": "Xandel",
+    "theme": {
+      "primaryColor": "#667eea",
+      "secondaryColor": "#764ba2",
+      "gradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+    }
+  },
+  "database": {
+    "type": "sqlserver",
+    "host": "localhost",
+    "port": 1433,
+    "name": "Xandel",
+    "schema": "dbo",
+    "driver": "com.microsoft.sqlserver.jdbc.SQLServerDriver",
+    "connectionString": "jdbc:sqlserver://localhost:1433;databaseName=Xandel;encrypt=true;trustServerCertificate=true",
+    "development": {
+      "type": "h2",
+      "name": "xandeldb",
+      "console": true,
+      "consolePort": 8083
+    }
+  },
+  "security": {
+    "jwt": {
+      "secret": "xandel-secret-key-change-in-production-minimum-256-bits",
+      "expiration": 86400000,
+      "refreshExpiration": 604800000
+    },
+    "cors": {
+      "allowedOrigins": ["http://localhost:4201", "http://localhost:8081"],
+      "allowedMethods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      "allowCredentials": true
+    },
+    "defaultAdmin": {
+      "username": "admin",
+      "password": "admin123",
+      "name": "Administrador",
+      "email": "admin@xandel.com.br"
+    }
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "logs/xandel.log",
+    "maxFileSize": "10MB",
+    "maxHistory": 30
+  },
+  "features": {
+    "pagination": {
+      "defaultPageSize": 20,
+      "maxPageSize": 100
+    },
+    "upload": {
+      "enabled": false,
+      "maxFileSize": "10MB",
+      "allowedTypes": ["image/jpeg", "image/png", "application/pdf"]
+    },
+    "email": {
+      "enabled": false,
+      "host": "smtp.example.com",
+      "port": 587,
+      "username": "",
+      "password": ""
+    }
+  }
+}

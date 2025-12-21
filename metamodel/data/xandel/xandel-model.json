@@ -1,0 +1,2887 @@
+{
+  "metadata": {
+    "name": "xandel",
+    "version": "1.0.0",
+    "description": "Sistema de Gestão de Sociedade Médica",
+    "author": "Gerador MetaModel",
+    "createdAt": "2025-12-11T00:00:00Z",
+    "updatedAt": "2025-12-11T00:00:00Z",
+    "database": {
+      "type": "SQLSERVER",
+      "schema": "dbo"
+    },
+    "sessionContext": [
+      {
+        "entity": "Empresa",
+        "field": "idEmpresa",
+        "displayField": "nomeEmpresa",
+        "label": "Selecione a Empresa",
+        "required": true,
+        "inputType": "radio"
+      }
+    ]
+  },
+  "modules": [
+    {
+      "id": "administracao",
+      "name": "Administração",
+      "description": "Configurações administrativas do sistema",
+      "icon": "settings",
+      "order": 1,
+      "items": [
+        { "id": "menu_usuario", "name": "Usuários", "entityRef": "Usuario", "icon": "person", "order": 1 },
+        { "id": "menu_parametro_email", "name": "Parâmetros de E-mail", "entityRef": "ParametroEmail", "icon": "email", "order": 2 }
+      ]
+    },
+    {
+      "id": "cadastro",
+      "name": "Cadastro",
+      "description": "Cadastros auxiliares do sistema",
+      "icon": "list",
+      "order": 2,
+      "items": [
+        { "id": "menu_banco", "name": "Bancos", "entityRef": "Banco", "icon": "account_balance", "order": 1 },
+        { "id": "menu_bairro", "name": "Bairros", "entityRef": "Bairro", "icon": "location_on", "order": 2 },
+        { "id": "menu_cidade", "name": "Cidades", "entityRef": "Cidade", "icon": "location_city", "order": 3 },
+        { "id": "menu_conselho", "name": "Conselhos", "entityRef": "Conselho", "icon": "gavel", "order": 4 },
+        { "id": "menu_especialidade", "name": "Especialidades", "entityRef": "Especialidade", "icon": "medical_services", "order": 5 },
+        { "id": "menu_estado_civil", "name": "Estados Civis", "entityRef": "EstadoCivil", "icon": "favorite", "order": 6 },
+        { "id": "menu_operadora", "name": "Operadoras", "entityRef": "Operadora", "icon": "business", "order": 7 },
+        { "id": "menu_tipo_servico", "name": "Tipos de Serviço", "entityRef": "TipoServico", "icon": "category", "order": 8 },
+        { "id": "menu_tipo_contato", "name": "Tipos de Contato", "entityRef": "TipoContato", "icon": "contact_phone", "order": 9 },
+        { "id": "menu_cbo", "name": "CBO", "entityRef": "CBO", "icon": "work", "order": 10 }
+      ]
+    },
+    {
+      "id": "config_financeira",
+      "name": "Configurações Financeiras",
+      "description": "Parametrização de regras financeiras",
+      "icon": "tune",
+      "order": 3,
+      "items": [
+        { "id": "menu_plano_retencao", "name": "Planos de Retenção", "entityRef": "PlanoRetencao", "icon": "percent", "order": 1 },
+        { "id": "menu_despesa_receita", "name": "Despesas e Receitas", "entityRef": "DespesaReceita", "icon": "swap_vert", "order": 2 },
+        { "id": "menu_imposto_renda", "name": "Tabela IR", "entityRef": "ImpostoDeRenda", "icon": "receipt_long", "order": 3 },
+        { "id": "menu_parametro_nf", "name": "Parâmetros NF", "entityRef": "ParametroNF", "icon": "description", "order": 4 },
+        { "id": "menu_indicacao", "name": "Indicações", "entityRef": "Indicacao", "icon": "stars", "order": 5 }
+      ]
+    },
+    {
+      "id": "gestao",
+      "name": "Gestão",
+      "description": "Gestão de entidades principais",
+      "icon": "folder",
+      "order": 4,
+      "items": [
+        { "id": "menu_pessoa", "name": "Pessoas", "entityRef": "Pessoa", "icon": "people", "order": 1 },
+        { "id": "menu_empresa", "name": "Empresas", "entityRef": "Empresa", "icon": "business", "order": 2 },
+        { "id": "menu_cliente", "name": "Clientes", "entityRef": "Cliente", "icon": "corporate_fare", "order": 3 },
+        { "id": "menu_cartorio", "name": "Cartórios", "entityRef": "Cartorio", "icon": "gavel", "order": 4 }
+      ]
+    },
+    {
+      "id": "financeiro",
+      "name": "Financeiro",
+      "description": "Operações financeiras",
+      "icon": "payments",
+      "order": 5,
+      "items": [
+        { "id": "menu_lancamento", "name": "Lançamentos", "entityRef": "Lancamento", "icon": "receipt", "order": 1 },
+        { "id": "menu_nf", "name": "Notas Fiscais", "entityRef": "NF", "icon": "description", "order": 2 },
+        { "id": "menu_contas", "name": "Contas a Pagar/Receber", "entityRef": "ContasPagarReceber", "icon": "account_balance_wallet", "order": 3 },
+        { "id": "menu_pag_nao_socio", "name": "Pagamentos Não-Sócios", "entityRef": "PagamentoNaoSocio", "icon": "payments", "order": 4 },
+        { "id": "menu_repasse_anual", "name": "Repasse Anual", "entityRef": "RepasseAnual", "icon": "calendar_today", "order": 5 }
+      ]
+    },
+    {
+      "id": "anuidade",
+      "name": "Anuidade",
+      "description": "Gestão de anuidades CREMEB",
+      "icon": "event_note",
+      "order": 6,
+      "items": [
+        { "id": "menu_anuidade_cremeb", "name": "Anuidades CREMEB", "entityRef": "AnuidadeCremeb", "icon": "event", "order": 1 }
+      ]
+    }
+  ],
+  "enums": [
+    {
+      "id": "enum_database_type",
+      "name": "DatabaseType",
+      "description": "Tipos de banco de dados suportados",
+      "values": [
+        { "code": "SQLSERVER", "label": "SQL Server" },
+        { "code": "MYSQL", "label": "MySQL" },
+        { "code": "POSTGRESQL", "label": "PostgreSQL" },
+        { "code": "ORACLE", "label": "Oracle" },
+        { "code": "H2", "label": "H2 Database" }
+      ]
+    },
+    {
+      "id": "enum_sim_nao",
+      "name": "SimNao",
+      "description": "Valores Sim/Não",
+      "values": [
+        { "code": "S", "label": "Sim" },
+        { "code": "N", "label": "Não" }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "id": "banco",
+      "name": "Banco",
+      "displayName": "Bancos",
+      "tableName": "Banco",
+      "description": "Cadastro de bancos",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nomeBanco", "direction": "asc" },
+      "fields": [
+        {
+          "id": "banco_id",
+          "name": "idBanco",
+          "columnName": "id_Banco",
+          "label": "Código",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 3,
+          "primaryKey": true,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "banco_nome",
+          "name": "nomeBanco",
+          "columnName": "NomeBanco",
+          "label": "Nome do Banco",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 40,
+          "required": false,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "bairro",
+      "name": "Bairro",
+      "displayName": "Bairros",
+      "tableName": "Bairro",
+      "description": "Cadastro de bairros",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nomeBairro", "direction": "asc" },
+      "fields": [
+        {
+          "id": "bairro_id",
+          "name": "idBairro",
+          "columnName": "id_Bairro",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "bairro_nome",
+          "name": "nomeBairro",
+          "columnName": "NomeBairro",
+          "label": "Nome do Bairro",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 40,
+          "required": false,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2, "sortable": true },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "cidade",
+      "name": "Cidade",
+      "displayName": "Cidades",
+      "tableName": "Cidade",
+      "description": "Cadastro de cidades",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nomeCidade", "direction": "asc" },
+      "fields": [
+        {
+          "id": "cidade_id",
+          "name": "idCidade",
+          "columnName": "id_Cidade",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "cidade_nome",
+          "name": "nomeCidade",
+          "columnName": "NomeCidade",
+          "label": "Nome da Cidade",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 40,
+          "required": false,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2 },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        },
+        {
+          "id": "cidade_uf",
+          "name": "uf",
+          "columnName": "UF",
+          "label": "UF",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 2,
+          "required": false,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 3, "width": 60 },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "cidade_ddd",
+          "name": "ddd",
+          "columnName": "DDD",
+          "label": "DDD",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 2,
+          "required": false,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 4, "width": 60 },
+            "form": { "visible": true, "order": 4 }
+          }
+        },
+        {
+          "id": "cidade_iss",
+          "name": "iss",
+          "columnName": "ISS",
+          "label": "ISS (%)",
+          "dataType": "DECIMAL",
+          "databaseType": "numeric",
+          "precision": 5,
+          "scale": 2,
+          "required": false,
+          "ui": {
+            "component": "DECIMAL",
+            "grid": { "visible": true, "order": 5, "width": 80 },
+            "form": { "visible": true, "order": 5 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "conselho",
+      "name": "Conselho",
+      "displayName": "Conselhos",
+      "tableName": "Conselho",
+      "description": "Cadastro de conselhos profissionais",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nomeConselho", "direction": "asc" },
+      "fields": [
+        {
+          "id": "conselho_id",
+          "name": "idConselho",
+          "columnName": "id_Conselho",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "conselho_nome",
+          "name": "nomeConselho",
+          "columnName": "NomeConselho",
+          "label": "Nome do Conselho",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 50,
+          "required": false,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2 },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        },
+        {
+          "id": "conselho_sigla",
+          "name": "sigla",
+          "columnName": "Sigla",
+          "label": "Sigla",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 12,
+          "required": false,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 3, "width": 100 },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "especialidade",
+      "name": "Especialidade",
+      "displayName": "Especialidades",
+      "tableName": "Especialidade",
+      "description": "Cadastro de especialidades médicas",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nomeEspecialidade", "direction": "asc" },
+      "fields": [
+        {
+          "id": "especialidade_id",
+          "name": "idEspecialidade",
+          "columnName": "id_Especialidade",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "especialidade_nome",
+          "name": "nomeEspecialidade",
+          "columnName": "NomeEspecialidade",
+          "label": "Nome da Especialidade",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 50,
+          "required": false,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2 },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "estado_civil",
+      "name": "EstadoCivil",
+      "displayName": "Estados Civis",
+      "tableName": "EstadoCivil",
+      "description": "Cadastro de estados civis",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nomeEstadoCivil", "direction": "asc" },
+      "fields": [
+        {
+          "id": "estado_civil_id",
+          "name": "idEstadoCivil",
+          "columnName": "id_EstadoCivil",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "estado_civil_nome",
+          "name": "nomeEstadoCivil",
+          "columnName": "NomeEstadoCivil",
+          "label": "Estado Civil",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 30,
+          "required": false,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2 },
+            "form": { "visible": true, "order": 2 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "operadora",
+      "name": "Operadora",
+      "displayName": "Operadoras",
+      "tableName": "Operadora",
+      "description": "Cadastro de operadoras",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nomeOperadora", "direction": "asc" },
+      "fields": [
+        {
+          "id": "operadora_id",
+          "name": "idOperadora",
+          "columnName": "id_Operadora",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "operadora_nome",
+          "name": "nomeOperadora",
+          "columnName": "NomeOperadora",
+          "label": "Nome da Operadora",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 50,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2 },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tipo_servico",
+      "name": "TipoServico",
+      "displayName": "Tipos de Serviço",
+      "tableName": "TipoServico",
+      "description": "Cadastro de tipos de serviço",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nomeTipoServico", "direction": "asc" },
+      "fields": [
+        {
+          "id": "tipo_servico_id",
+          "name": "idTipoServico",
+          "columnName": "id_TipoServico",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "tipo_servico_nome",
+          "name": "nomeTipoServico",
+          "columnName": "NomeTipoServico",
+          "label": "Tipo de Serviço",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 50,
+          "required": false,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2 },
+            "form": { "visible": true, "order": 2 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "tipo_contato",
+      "name": "TipoContato",
+      "displayName": "Tipos de Contato",
+      "tableName": "TipoContato",
+      "description": "Cadastro de tipos de contato",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nomeTipoContato", "direction": "asc" },
+      "fields": [
+        {
+          "id": "tipo_contato_id",
+          "name": "idTipoContato",
+          "columnName": "id_TipoContato",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "tipo_contato_nome",
+          "name": "nomeTipoContato",
+          "columnName": "NomeTipoContato",
+          "label": "Tipo de Contato",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 50,
+          "required": false,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2 },
+            "form": { "visible": true, "order": 2 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "cbo",
+      "name": "CBO",
+      "displayName": "CBO",
+      "tableName": "CBO",
+      "description": "Cadastro Brasileiro de Ocupações",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nomeCBO", "direction": "asc" },
+      "fields": [
+        {
+          "id": "cbo_id",
+          "name": "idCBO",
+          "columnName": "id_CBO",
+          "label": "Código CBO",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 6,
+          "primaryKey": true,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 1, "width": 100 },
+            "form": { "visible": true, "order": 1 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "cbo_nome",
+          "name": "nomeCBO",
+          "columnName": "NomeCBO",
+          "label": "Descrição",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 100,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2 },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        }
+      ]
+    },
+    {
+      "id": "usuario",
+      "name": "Usuario",
+      "displayName": "Usuários",
+      "tableName": "Usuario",
+      "description": "Cadastro de usuários do sistema",
+      "schema": "dbo",
+      "type": "CONFIG",
+      "defaultSort": { "field": "usuarioNome", "direction": "asc" },
+      "fields": [
+        {
+          "id": "usuario_id",
+          "name": "idUsuario",
+          "columnName": "id_Usuario",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "usuario_nome",
+          "name": "usuarioNome",
+          "columnName": "UsuarioNome",
+          "label": "Nome",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 60,
+          "required": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2 },
+            "form": { "visible": true, "order": 2 },
+            "search": { "enabled": true, "operator": "CONTAINS" }
+          }
+        },
+        {
+          "id": "usuario_login",
+          "name": "usuarioLogin",
+          "columnName": "UsuarioLogin",
+          "label": "Login",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 30,
+          "required": true,
+          "unique": true,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 3 },
+            "form": { "visible": true, "order": 3 },
+            "search": { "enabled": true, "operator": "EQUALS" }
+          }
+        },
+        {
+          "id": "usuario_senha",
+          "name": "usuarioSenha",
+          "columnName": "UsuarioSenha",
+          "label": "Senha",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 50,
+          "required": true,
+          "ui": {
+            "component": "PASSWORD",
+            "grid": { "visible": false },
+            "form": { "visible": true, "order": 4 }
+          }
+        },
+        {
+          "id": "usuario_nivel_acesso",
+          "name": "usuarioNivelAcesso",
+          "columnName": "UsuarioNivelAcesso",
+          "label": "Nível de Acesso",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "required": false,
+          "ui": {
+            "component": "SELECT",
+            "grid": { "visible": true, "order": 4 },
+            "form": { "visible": true, "order": 5 }
+          }
+        },
+        {
+          "id": "usuario_inativo",
+          "name": "usuarioInativo",
+          "columnName": "UsuarioInativo",
+          "label": "Inativo",
+          "dataType": "BOOLEAN",
+          "databaseType": "bit",
+          "required": false,
+          "ui": {
+            "component": "CHECKBOX",
+            "grid": { "visible": true, "order": 5, "width": 80 },
+            "form": { "visible": true, "order": 6 }
+          }
+        },
+        {
+          "id": "usuario_data_inicio",
+          "name": "usuarioDataInicio",
+          "columnName": "UsuarioDataInicio",
+          "label": "Data de Início",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "required": false,
+          "ui": {
+            "component": "DATE",
+            "grid": { "visible": true, "order": 6 },
+            "form": { "visible": true, "order": 7 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "parametro_email",
+      "name": "ParametroEmail",
+      "displayName": "Parâmetros de E-mail",
+      "tableName": "ParametroEmail",
+      "description": "Parâmetros de configuração de e-mail",
+      "schema": "dbo",
+      "type": "CONFIG",
+      "fields": [
+        {
+          "id": "param_email_id",
+          "name": "idParametro",
+          "columnName": "id_Parametro",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "param_email_assunto",
+          "name": "assuntoEmail",
+          "columnName": "AssuntoEmail",
+          "label": "Assunto Padrão",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 100,
+          "required": false,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 2 },
+            "form": { "visible": true, "order": 2 }
+          }
+        },
+        {
+          "id": "param_email_smtp",
+          "name": "smtp",
+          "columnName": "SMTP",
+          "label": "Servidor SMTP",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 100,
+          "required": false,
+          "ui": {
+            "component": "TEXT",
+            "grid": { "visible": true, "order": 3 },
+            "form": { "visible": true, "order": 3 }
+          }
+        },
+        {
+          "id": "param_email_conta",
+          "name": "contaEmail",
+          "columnName": "ContaEmail",
+          "label": "Conta de E-mail",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 100,
+          "required": false,
+          "ui": {
+            "component": "EMAIL",
+            "grid": { "visible": true, "order": 4 },
+            "form": { "visible": true, "order": 4 }
+          }
+        },
+        {
+          "id": "param_email_senha",
+          "name": "senhaEmail",
+          "columnName": "SenhaEmail",
+          "label": "Senha",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 100,
+          "required": false,
+          "ui": {
+            "component": "PASSWORD",
+            "grid": { "visible": false },
+            "form": { "visible": true, "order": 5 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "imposto_de_renda",
+      "name": "ImpostoDeRenda",
+      "displayName": "Tabela IR",
+      "tableName": "ImpostoDeRenda",
+      "description": "Tabela de Imposto de Renda",
+      "schema": "dbo",
+      "type": "CONFIG",
+      "defaultSort": { "field": "data", "direction": "desc" },
+      "fields": [
+        {
+          "id": "ir_data",
+          "name": "data",
+          "columnName": "Data",
+          "label": "Data Vigência",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "primaryKey": true,
+          "required": true,
+          "ui": {
+            "component": "DATE",
+            "grid": { "visible": true, "order": 1 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "ir_de",
+          "name": "de",
+          "columnName": "de",
+          "label": "De (R$)",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "primaryKey": true,
+          "required": true,
+          "ui": {
+            "component": "DECIMAL",
+            "grid": { "visible": true, "order": 2 },
+            "form": { "visible": true, "order": 2 }
+          }
+        },
+        {
+          "id": "ir_ate",
+          "name": "ate",
+          "columnName": "ate",
+          "label": "Até (R$)",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "required": false,
+          "ui": {
+            "component": "DECIMAL",
+            "grid": { "visible": true, "order": 3 },
+            "form": { "visible": true, "order": 3 }
+          }
+        },
+        {
+          "id": "ir_aliquota",
+          "name": "aliquota",
+          "columnName": "aliquota",
+          "label": "Alíquota (%)",
+          "dataType": "DECIMAL",
+          "databaseType": "numeric",
+          "precision": 5,
+          "scale": 2,
+          "required": false,
+          "ui": {
+            "component": "DECIMAL",
+            "grid": { "visible": true, "order": 4 },
+            "form": { "visible": true, "order": 4 }
+          }
+        },
+        {
+          "id": "ir_valor_deduzir",
+          "name": "valorDeduzir",
+          "columnName": "valordeduzir",
+          "label": "Valor a Deduzir",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "required": false,
+          "ui": {
+            "component": "DECIMAL",
+            "grid": { "visible": true, "order": 5 },
+            "form": { "visible": true, "order": 5 }
+          }
+        },
+        {
+          "id": "ir_deducao_dependente",
+          "name": "deducaoDependente",
+          "columnName": "DeducaoDependente",
+          "label": "Dedução por Dependente",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "required": false,
+          "ui": {
+            "component": "DECIMAL",
+            "grid": { "visible": true, "order": 6 },
+            "form": { "visible": true, "order": 6 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "parametro_nf",
+      "name": "ParametroNF",
+      "displayName": "Parâmetros NF",
+      "tableName": "ParametroNF",
+      "description": "Parâmetros de Nota Fiscal",
+      "schema": "dbo",
+      "type": "CONFIG",
+      "fields": [
+        {
+          "id": "param_nf_cofins",
+          "name": "cofins",
+          "columnName": "Cofins",
+          "label": "COFINS (%)",
+          "dataType": "DECIMAL",
+          "databaseType": "numeric",
+          "precision": 5,
+          "scale": 2,
+          "required": false,
+          "ui": {
+            "component": "DECIMAL",
+            "grid": { "visible": true, "order": 1 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "param_nf_pis",
+          "name": "pis",
+          "columnName": "Pis",
+          "label": "PIS (%)",
+          "dataType": "DECIMAL",
+          "databaseType": "numeric",
+          "precision": 5,
+          "scale": 2,
+          "required": false,
+          "ui": {
+            "component": "DECIMAL",
+            "grid": { "visible": true, "order": 2 },
+            "form": { "visible": true, "order": 2 }
+          }
+        },
+        {
+          "id": "param_nf_csll",
+          "name": "csll",
+          "columnName": "CSLL",
+          "label": "CSLL (%)",
+          "dataType": "DECIMAL",
+          "databaseType": "numeric",
+          "precision": 5,
+          "scale": 2,
+          "required": false,
+          "ui": {
+            "component": "DECIMAL",
+            "grid": { "visible": true, "order": 3 },
+            "form": { "visible": true, "order": 3 }
+          }
+        },
+        {
+          "id": "param_nf_irrf",
+          "name": "irrf",
+          "columnName": "IRRF",
+          "label": "IRRF (%)",
+          "dataType": "DECIMAL",
+          "databaseType": "numeric",
+          "precision": 5,
+          "scale": 2,
+          "required": false,
+          "ui": {
+            "component": "DECIMAL",
+            "grid": { "visible": true, "order": 4 },
+            "form": { "visible": true, "order": 4 }
+          }
+        },
+        {
+          "id": "param_nf_teto",
+          "name": "tetoImposto",
+          "columnName": "TetoImposto",
+          "label": "Teto Imposto",
+          "dataType": "DECIMAL",
+          "databaseType": "numeric",
+          "precision": 10,
+          "scale": 2,
+          "required": false,
+          "ui": {
+            "component": "DECIMAL",
+            "grid": { "visible": true, "order": 5 },
+            "form": { "visible": true, "order": 5 }
+          }
+        },
+        {
+          "id": "param_nf_base",
+          "name": "basePisCofinsCsll",
+          "columnName": "BasePisCofinsCsll",
+          "label": "Base PIS/COFINS/CSLL",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "required": false,
+          "ui": {
+            "component": "DECIMAL",
+            "grid": { "visible": true, "order": 6 },
+            "form": { "visible": true, "order": 6 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "indicacao",
+      "name": "Indicacao",
+      "displayName": "Indicações",
+      "tableName": "Indicacao",
+      "description": "Programas de indicação",
+      "schema": "dbo",
+      "type": "CONFIG",
+      "defaultSort": { "field": "de", "direction": "desc" },
+      "fields": [
+        {
+          "id": "indicacao_id",
+          "name": "idIndicacao",
+          "columnName": "id_Indicacao",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 1, "width": 80 },
+            "form": { "visible": true, "order": 1 }
+          }
+        },
+        {
+          "id": "indicacao_de",
+          "name": "de",
+          "columnName": "de",
+          "label": "Data Início",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "required": false,
+          "ui": {
+            "component": "DATE",
+            "grid": { "visible": true, "order": 2 },
+            "form": { "visible": true, "order": 2 }
+          }
+        },
+        {
+          "id": "indicacao_ate",
+          "name": "ate",
+          "columnName": "ate",
+          "label": "Data Fim",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "required": false,
+          "ui": {
+            "component": "DATE",
+            "grid": { "visible": true, "order": 3 },
+            "form": { "visible": true, "order": 3 }
+          }
+        },
+        {
+          "id": "indicacao_minima",
+          "name": "indicacaoMinima",
+          "columnName": "IndicacaoMinima",
+          "label": "Indicação Mínima",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "required": false,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 4 },
+            "form": { "visible": true, "order": 4 }
+          }
+        },
+        {
+          "id": "indicacao_maxima",
+          "name": "indicacaoMaxima",
+          "columnName": "IndicacaoMaxima",
+          "label": "Indicação Máxima",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "required": false,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 5 },
+            "form": { "visible": true, "order": 5 }
+          }
+        },
+        {
+          "id": "indicacao_indice",
+          "name": "indice",
+          "columnName": "Indice",
+          "label": "Índice (%)",
+          "dataType": "DECIMAL",
+          "databaseType": "numeric",
+          "precision": 5,
+          "scale": 2,
+          "required": false,
+          "ui": {
+            "component": "DECIMAL",
+            "grid": { "visible": true, "order": 6 },
+            "form": { "visible": true, "order": 6 }
+          }
+        },
+        {
+          "id": "indicacao_teto_indice",
+          "name": "tetoIndice",
+          "columnName": "TetoIndice",
+          "label": "Teto do Índice",
+          "dataType": "DECIMAL",
+          "databaseType": "numeric",
+          "precision": 10,
+          "scale": 2,
+          "required": false,
+          "ui": {
+            "component": "DECIMAL",
+            "grid": { "visible": true, "order": 7 },
+            "form": { "visible": true, "order": 7 }
+          }
+        },
+        {
+          "id": "indicacao_grupo",
+          "name": "grupoIndicados",
+          "columnName": "GrupoIndicados",
+          "label": "Grupo de Indicados",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "required": false,
+          "ui": {
+            "component": "NUMBER",
+            "grid": { "visible": true, "order": 8 },
+            "form": { "visible": true, "order": 8 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "empresa",
+      "name": "Empresa",
+      "displayName": "Empresas",
+      "tableName": "Empresa",
+      "description": "Cadastro de empresas",
+      "schema": "dbo",
+      "type": "MAIN",
+      "defaultSort": { "field": "nomeEmpresa", "direction": "asc" },
+      "fields": [
+        {
+          "id": "empresa_id",
+          "name": "idEmpresa",
+          "columnName": "id_Empresa",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": { "component": "NUMBER", "grid": { "visible": true, "order": 1, "width": 80 }, "form": { "visible": true, "order": 1 } }
+        },
+        {
+          "id": "empresa_nome",
+          "name": "nomeEmpresa",
+          "columnName": "NomeEmpresa",
+          "label": "Razão Social",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 70,
+          "required": true,
+          "ui": { "component": "TEXT", "grid": { "visible": true, "order": 2 }, "form": { "visible": true, "order": 2 }, "search": { "enabled": true, "operator": "CONTAINS" } }
+        },
+        {
+          "id": "empresa_fantasia",
+          "name": "fantasiaEmpresa",
+          "columnName": "FantasiaEmpresa",
+          "label": "Nome Fantasia",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 30,
+          "ui": { "component": "TEXT", "grid": { "visible": true, "order": 3 }, "form": { "visible": true, "order": 3 } }
+        },
+        {
+          "id": "empresa_cnpj",
+          "name": "cnpj",
+          "columnName": "CNPJ",
+          "label": "CNPJ",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 14,
+          "ui": { "component": "CNPJ", "mask": "##.###.###/####-##", "grid": { "visible": true, "order": 4 }, "form": { "visible": true, "order": 4 } }
+        },
+        {
+          "id": "empresa_taxa_retencao",
+          "name": "taxaRetencao",
+          "columnName": "TaxaRetencao",
+          "label": "Taxa Retenção (%)",
+          "dataType": "DECIMAL",
+          "databaseType": "numeric",
+          "precision": 18,
+          "scale": 2,
+          "required": true,
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 5 }, "form": { "visible": true, "order": 5 } }
+        },
+        {
+          "id": "empresa_inativa",
+          "name": "inativa",
+          "columnName": "Inativa",
+          "label": "Inativa",
+          "dataType": "BOOLEAN",
+          "databaseType": "bit",
+          "ui": { "component": "CHECKBOX", "grid": { "visible": true, "order": 6, "width": 80 }, "form": { "visible": true, "order": 6 } }
+        }
+      ]
+    },
+    {
+      "id": "plano_retencao",
+      "name": "PlanoRetencao",
+      "displayName": "Planos de Retenção",
+      "tableName": "PlanoRetencao",
+      "description": "Cadastro de planos de retenção",
+      "schema": "dbo",
+      "type": "CONFIG",
+      "defaultSort": { "field": "nomePlanoRetencao", "direction": "asc" },
+      "fields": [
+        {
+          "id": "plano_retencao_id",
+          "name": "idPlanoRetencao",
+          "columnName": "id_PlanoRetencao",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": { "component": "NUMBER", "grid": { "visible": true, "order": 1, "width": 80 }, "form": { "visible": true, "order": 1 } }
+        },
+        {
+          "id": "plano_retencao_nome",
+          "name": "nomePlanoRetencao",
+          "columnName": "NomePlanoRetencao",
+          "label": "Nome do Plano",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 50,
+          "ui": { "component": "TEXT", "grid": { "visible": true, "order": 2 }, "form": { "visible": true, "order": 2 }, "search": { "enabled": true, "operator": "CONTAINS" } }
+        },
+        {
+          "id": "plano_retencao_inativo",
+          "name": "inativo",
+          "columnName": "Inativo",
+          "label": "Inativo",
+          "dataType": "BOOLEAN",
+          "databaseType": "bit",
+          "ui": { "component": "CHECKBOX", "grid": { "visible": true, "order": 3, "width": 80 }, "form": { "visible": true, "order": 3 } }
+        },
+        {
+          "id": "plano_retencao_libera_despesas",
+          "name": "liberaDespesas",
+          "columnName": "LiberaDespesas",
+          "label": "Libera Despesas",
+          "dataType": "BOOLEAN",
+          "databaseType": "bit",
+          "ui": { "component": "CHECKBOX", "grid": { "visible": true, "order": 4, "width": 120 }, "form": { "visible": true, "order": 4 } }
+        }
+      ]
+    },
+    {
+      "id": "despesa_receita",
+      "name": "DespesaReceita",
+      "displayName": "Despesas e Receitas",
+      "tableName": "DespesaReceita",
+      "description": "Cadastro de despesas e receitas",
+      "schema": "dbo",
+      "type": "CONFIG",
+      "defaultSort": { "field": "nomeDespesaReceita", "direction": "asc" },
+      "fields": [
+        {
+          "id": "despesa_receita_id",
+          "name": "idDespesaReceita",
+          "columnName": "id_DespesaReceita",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": { "component": "NUMBER", "grid": { "visible": true, "order": 1, "width": 80 }, "form": { "visible": true, "order": 1 } }
+        },
+        {
+          "id": "despesa_receita_sigla",
+          "name": "siglaDespesaReceita",
+          "columnName": "SiglaDespesaReceita",
+          "label": "Sigla",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 10,
+          "required": true,
+          "ui": { "component": "TEXT", "grid": { "visible": true, "order": 2, "width": 100 }, "form": { "visible": true, "order": 2 }, "search": { "enabled": true, "operator": "EQUALS" } }
+        },
+        {
+          "id": "despesa_receita_nome",
+          "name": "nomeDespesaReceita",
+          "columnName": "NomeDespesaReceita",
+          "label": "Nome",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 60,
+          "required": true,
+          "ui": { "component": "TEXT", "grid": { "visible": true, "order": 3 }, "form": { "visible": true, "order": 3 }, "search": { "enabled": true, "operator": "CONTAINS" } }
+        },
+        {
+          "id": "despesa_receita_despesa",
+          "name": "despesa",
+          "columnName": "Despesa",
+          "label": "É Despesa",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "required": true,
+          "ui": { "component": "CHECKBOX", "grid": { "visible": true, "order": 4, "width": 100 }, "form": { "visible": true, "order": 4 } }
+        },
+        {
+          "id": "despesa_receita_tem_rateio",
+          "name": "temRateio",
+          "columnName": "TemRateio",
+          "label": "Tem Rateio",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "required": true,
+          "ui": { "component": "CHECKBOX", "grid": { "visible": true, "order": 5, "width": 100 }, "form": { "visible": true, "order": 5 } }
+        },
+        {
+          "id": "despesa_receita_inativa",
+          "name": "inativa",
+          "columnName": "Inativa",
+          "label": "Inativa",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "required": true,
+          "ui": { "component": "CHECKBOX", "grid": { "visible": true, "order": 6, "width": 80 }, "form": { "visible": true, "order": 6 } }
+        },
+        {
+          "id": "despesa_receita_valor",
+          "name": "valor",
+          "columnName": "Valor",
+          "label": "Valor",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 7 }, "form": { "visible": true, "order": 7 } }
+        },
+        {
+          "id": "despesa_receita_parcelas",
+          "name": "parcelas",
+          "columnName": "Parcelas",
+          "label": "Parcelas",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "ui": { "component": "NUMBER", "grid": { "visible": true, "order": 8, "width": 80 }, "form": { "visible": true, "order": 8 } }
+        }
+      ]
+    },
+    {
+      "id": "cartorio",
+      "name": "Cartorio",
+      "displayName": "Cartórios",
+      "tableName": "Cartorio",
+      "description": "Cadastro de cartórios",
+      "schema": "dbo",
+      "type": "LOOKUP",
+      "defaultSort": { "field": "nomeCartorio", "direction": "asc" },
+      "fields": [
+        {
+          "id": "cartorio_id",
+          "name": "idCartorio",
+          "columnName": "id_Cartorio",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": { "component": "NUMBER", "grid": { "visible": true, "order": 1, "width": 80 }, "form": { "visible": true, "order": 1 } }
+        },
+        {
+          "id": "cartorio_nome",
+          "name": "nomeCartorio",
+          "columnName": "NomeCartorio",
+          "label": "Nome do Cartório",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 60,
+          "ui": { "component": "TEXT", "grid": { "visible": true, "order": 2 }, "form": { "visible": true, "order": 2 }, "search": { "enabled": true, "operator": "CONTAINS" } }
+        },
+        {
+          "id": "cartorio_endereco",
+          "name": "endereco",
+          "columnName": "Endereco",
+          "label": "Endereço",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 60,
+          "ui": { "component": "TEXT", "grid": { "visible": true, "order": 3 }, "form": { "visible": true, "order": 3 } }
+        },
+        {
+          "id": "cartorio_bairro",
+          "name": "idBairro",
+          "columnName": "id_Bairro",
+          "label": "Bairro",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Bairro",
+            "targetField": "idBairro",
+            "displayField": "nomeBairro"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": true, "order": 4 }, "form": { "visible": true, "order": 4 } }
+        },
+        {
+          "id": "cartorio_cidade",
+          "name": "idCidade",
+          "columnName": "id_Cidade",
+          "label": "Cidade",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Cidade",
+            "targetField": "idCidade",
+            "displayField": "nomeCidade"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": true, "order": 5 }, "form": { "visible": true, "order": 5 } }
+        },
+        {
+          "id": "cartorio_telefone",
+          "name": "telefone",
+          "columnName": "Telefone",
+          "label": "Telefone",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 9,
+          "ui": { "component": "PHONE", "grid": { "visible": true, "order": 6, "width": 120 }, "form": { "visible": true, "order": 6 } }
+        }
+      ]
+    },
+    {
+      "id": "pessoa",
+      "name": "Pessoa",
+      "displayName": "Pessoas",
+      "tableName": "Pessoa",
+      "description": "Cadastro de pessoas (sócios/médicos)",
+      "schema": "dbo",
+      "type": "MAIN",
+      "defaultSort": { "field": "nome", "direction": "asc" },
+      "fields": [
+        {
+          "id": "pessoa_id",
+          "name": "idPessoa",
+          "columnName": "id_Pessoa",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "required": true,
+          "ui": { "component": "NUMBER", "grid": { "visible": true, "order": 1, "width": 80 }, "form": { "visible": true, "order": 1 } }
+        },
+        {
+          "id": "pessoa_nome",
+          "name": "nome",
+          "columnName": "Nome",
+          "label": "Nome",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 60,
+          "ui": { "component": "TEXT", "grid": { "visible": true, "order": 2 }, "form": { "visible": true, "order": 2 }, "search": { "enabled": true, "operator": "CONTAINS" } }
+        },
+        {
+          "id": "pessoa_cpf",
+          "name": "cpf",
+          "columnName": "CPF",
+          "label": "CPF",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 11,
+          "ui": { "component": "CPF", "mask": "###.###.###-##", "grid": { "visible": true, "order": 3, "width": 140 }, "form": { "visible": true, "order": 3 }, "search": { "enabled": true, "operator": "EQUALS" } }
+        },
+        {
+          "id": "pessoa_conselho",
+          "name": "idConselho",
+          "columnName": "id_Conselho",
+          "label": "Conselho",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Conselho",
+            "targetField": "idConselho",
+            "displayField": "sigla"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": true, "order": 4, "width": 100 }, "form": { "visible": true, "order": 4 } }
+        },
+        {
+          "id": "pessoa_numero_conselho",
+          "name": "numeroConselho",
+          "columnName": "NumeroConselho",
+          "label": "Nº Conselho",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "ui": { "component": "NUMBER", "grid": { "visible": true, "order": 5, "width": 100 }, "form": { "visible": true, "order": 5 } }
+        },
+        {
+          "id": "pessoa_nascimento",
+          "name": "nascimento",
+          "columnName": "Nascimento",
+          "label": "Nascimento",
+          "dataType": "DATETIME",
+          "databaseType": "smalldatetime",
+          "ui": { "component": "DATE", "grid": { "visible": true, "order": 6 }, "form": { "visible": true, "order": 6 } }
+        },
+        {
+          "id": "pessoa_rg",
+          "name": "rg",
+          "columnName": "RG",
+          "label": "RG",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 14,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 7 } }
+        },
+        {
+          "id": "pessoa_email",
+          "name": "email",
+          "columnName": "Email",
+          "label": "E-mail",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 50,
+          "ui": { "component": "EMAIL", "grid": { "visible": true, "order": 7 }, "form": { "visible": true, "order": 8 } }
+        },
+        {
+          "id": "pessoa_telefone",
+          "name": "telefone",
+          "columnName": "Telefone",
+          "label": "Telefone",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 9,
+          "ui": { "component": "PHONE", "grid": { "visible": false }, "form": { "visible": true, "order": 9 } }
+        },
+        {
+          "id": "pessoa_celular",
+          "name": "celular",
+          "columnName": "Celular",
+          "label": "Celular",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 9,
+          "ui": { "component": "PHONE", "grid": { "visible": true, "order": 8, "width": 120 }, "form": { "visible": true, "order": 10 } }
+        },
+        {
+          "id": "pessoa_endereco",
+          "name": "endereco",
+          "columnName": "Endereco",
+          "label": "Endereço",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 60,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 11 } }
+        },
+        {
+          "id": "pessoa_bairro",
+          "name": "idBairro",
+          "columnName": "id_Bairro",
+          "label": "Bairro",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Bairro",
+            "targetField": "idBairro",
+            "displayField": "nomeBairro"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": false }, "form": { "visible": true, "order": 12 } }
+        },
+        {
+          "id": "pessoa_cidade",
+          "name": "idCidade",
+          "columnName": "id_Cidade",
+          "label": "Cidade",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Cidade",
+            "targetField": "idCidade",
+            "displayField": "nomeCidade"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": false }, "form": { "visible": true, "order": 13 } }
+        },
+        {
+          "id": "pessoa_cep",
+          "name": "cep",
+          "columnName": "CEP",
+          "label": "CEP",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 8,
+          "ui": { "component": "CEP", "mask": "#####-###", "grid": { "visible": false }, "form": { "visible": true, "order": 14 } }
+        },
+        {
+          "id": "pessoa_estado_civil",
+          "name": "idEstadoCivil",
+          "columnName": "id_EstadoCivil",
+          "label": "Estado Civil",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "EstadoCivil",
+            "targetField": "idEstadoCivil",
+            "displayField": "nomeEstadoCivil"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": false }, "form": { "visible": true, "order": 15 } }
+        },
+        {
+          "id": "pessoa_data_adesao",
+          "name": "dataAdesao",
+          "columnName": "DataAdesao",
+          "label": "Data Adesão",
+          "dataType": "DATETIME",
+          "databaseType": "smalldatetime",
+          "ui": { "component": "DATE", "grid": { "visible": true, "order": 9 }, "form": { "visible": true, "order": 16 } }
+        },
+        {
+          "id": "pessoa_data_inativo",
+          "name": "dataInativo",
+          "columnName": "DataInativo",
+          "label": "Data Inativo",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "ui": { "component": "DATE", "grid": { "visible": true, "order": 10 }, "form": { "visible": true, "order": 17 } }
+        },
+        {
+          "id": "pessoa_banco",
+          "name": "idBanco",
+          "columnName": "id_Banco",
+          "label": "Banco",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 3,
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Banco",
+            "targetField": "idBanco",
+            "displayField": "nomeBanco"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": false }, "form": { "visible": true, "order": 18 } }
+        },
+        {
+          "id": "pessoa_agencia",
+          "name": "agencia",
+          "columnName": "Agencia",
+          "label": "Agência",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 5,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 19 } }
+        },
+        {
+          "id": "pessoa_conta",
+          "name": "conta",
+          "columnName": "Conta",
+          "label": "Conta",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 11,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 20 } }
+        },
+        {
+          "id": "pessoa_plano_retencao",
+          "name": "idPlanoRetencao",
+          "columnName": "id_PlanoRetencao",
+          "label": "Plano de Retenção",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "PlanoRetencao",
+            "targetField": "idPlanoRetencao",
+            "displayField": "nomePlanoRetencao"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": false }, "form": { "visible": true, "order": 21 } }
+        },
+        {
+          "id": "pessoa_operadora",
+          "name": "idOperadora",
+          "columnName": "id_Operadora",
+          "label": "Operadora",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Operadora",
+            "targetField": "idOperadora",
+            "displayField": "nomeOperadora"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": false }, "form": { "visible": true, "order": 22 } }
+        }
+      ]
+    },
+    {
+      "id": "cliente",
+      "name": "Cliente",
+      "displayName": "Clientes",
+      "tableName": "Cliente",
+      "description": "Cadastro de clientes",
+      "schema": "dbo",
+      "type": "MAIN",
+      "defaultSort": { "field": "nomeCliente", "direction": "asc" },
+      "fields": [
+        {
+          "id": "cliente_id",
+          "name": "idCliente",
+          "columnName": "id_Cliente",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "ui": { "component": "NUMBER", "grid": { "visible": true, "order": 1, "width": 80 }, "form": { "visible": true, "order": 1 } }
+        },
+        {
+          "id": "cliente_nome",
+          "name": "nomeCliente",
+          "columnName": "NomeCliente",
+          "label": "Razão Social",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 70,
+          "required": true,
+          "ui": { "component": "TEXT", "grid": { "visible": true, "order": 2 }, "form": { "visible": true, "order": 2 }, "search": { "enabled": true, "operator": "CONTAINS" } }
+        },
+        {
+          "id": "cliente_fantasia",
+          "name": "fantasiaCliente",
+          "columnName": "FantasiaCliente",
+          "label": "Nome Fantasia",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 40,
+          "ui": { "component": "TEXT", "grid": { "visible": true, "order": 3 }, "form": { "visible": true, "order": 3 } }
+        },
+        {
+          "id": "cliente_cnpj",
+          "name": "cnpj",
+          "columnName": "CNPJ",
+          "label": "CNPJ",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 14,
+          "ui": { "component": "CNPJ", "mask": "##.###.###/####-##", "grid": { "visible": true, "order": 4, "width": 160 }, "form": { "visible": true, "order": 4 }, "search": { "enabled": true, "operator": "EQUALS" } }
+        },
+        {
+          "id": "cliente_data_contrato",
+          "name": "dataContrato",
+          "columnName": "DataContrato",
+          "label": "Data Contrato",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "ui": { "component": "DATE", "grid": { "visible": true, "order": 5 }, "form": { "visible": true, "order": 5 } }
+        },
+        {
+          "id": "cliente_taxa_adm",
+          "name": "taxaADM",
+          "columnName": "TaxaADM",
+          "label": "Taxa ADM (%)",
+          "dataType": "DECIMAL",
+          "databaseType": "numeric",
+          "precision": 6,
+          "scale": 2,
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 6 }, "form": { "visible": true, "order": 6 } }
+        },
+        {
+          "id": "cliente_endereco",
+          "name": "endereco",
+          "columnName": "Endereco",
+          "label": "Endereço",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 60,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 7 } }
+        },
+        {
+          "id": "cliente_cep",
+          "name": "cep",
+          "columnName": "CEP",
+          "label": "CEP",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 8,
+          "ui": { "component": "CEP", "mask": "#####-###", "grid": { "visible": false }, "form": { "visible": true, "order": 8 } }
+        },
+        {
+          "id": "cliente_bairro",
+          "name": "idBairro",
+          "columnName": "id_Bairro",
+          "label": "Bairro",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Bairro",
+            "targetField": "idBairro",
+            "displayField": "nomeBairro"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": false }, "form": { "visible": true, "order": 9 } }
+        },
+        {
+          "id": "cliente_cidade",
+          "name": "idCidade",
+          "columnName": "id_Cidade",
+          "label": "Cidade",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Cidade",
+            "targetField": "idCidade",
+            "displayField": "nomeCidade"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": false }, "form": { "visible": true, "order": 10 } }
+        },
+        {
+          "id": "cliente_contato",
+          "name": "contato",
+          "columnName": "Contato",
+          "label": "Contato",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 30,
+          "ui": { "component": "TEXT", "grid": { "visible": true, "order": 7 }, "form": { "visible": true, "order": 11 } }
+        },
+        {
+          "id": "cliente_fone1",
+          "name": "fone1",
+          "columnName": "Fone1",
+          "label": "Telefone 1",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 9,
+          "ui": { "component": "PHONE", "grid": { "visible": false }, "form": { "visible": true, "order": 12 } }
+        },
+        {
+          "id": "cliente_fone2",
+          "name": "fone2",
+          "columnName": "Fone2",
+          "label": "Telefone 2",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 9,
+          "ui": { "component": "PHONE", "grid": { "visible": false }, "form": { "visible": true, "order": 13 } }
+        },
+        {
+          "id": "cliente_email",
+          "name": "email",
+          "columnName": "email",
+          "label": "E-mail",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 50,
+          "ui": { "component": "EMAIL", "grid": { "visible": true, "order": 8 }, "form": { "visible": true, "order": 14 } }
+        },
+        {
+          "id": "cliente_pessoa_juridica",
+          "name": "pessoaJuridica",
+          "columnName": "PessoaJuridica",
+          "label": "Pessoa Jurídica",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "ui": { "component": "CHECKBOX", "grid": { "visible": false }, "form": { "visible": true, "order": 15 } }
+        }
+      ]
+    },
+    {
+      "id": "lancamento",
+      "name": "Lancamento",
+      "displayName": "Lançamentos",
+      "tableName": "Lancamento",
+      "description": "Lançamentos financeiros",
+      "schema": "dbo",
+      "type": "MAIN",
+      "defaultSort": { "field": "data", "direction": "desc" },
+      "sessionContextField": "idEmpresa",
+      "fields": [
+        {
+          "id": "lancamento_id",
+          "name": "idLancamento",
+          "columnName": "id_lancamento",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "required": true,
+          "autoIncrement": true,
+          "ui": { "component": "NUMBER", "grid": { "visible": true, "order": 1, "width": 80 }, "form": { "visible": true, "order": 1 } }
+        },
+        {
+          "id": "lancamento_data",
+          "name": "data",
+          "columnName": "Data",
+          "label": "Data",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "required": true,
+          "ui": { "component": "DATE", "grid": { "visible": true, "order": 2, "width": 110 }, "form": { "visible": true, "order": 2 }, "search": { "enabled": true, "operator": "BETWEEN" } }
+        },
+        {
+          "id": "lancamento_empresa",
+          "name": "idEmpresa",
+          "columnName": "id_Empresa",
+          "label": "Empresa",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "required": true,
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Empresa",
+            "targetField": "idEmpresa",
+            "displayField": "fantasiaEmpresa"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": true, "order": 3 }, "form": { "visible": true, "order": 3 } }
+        },
+        {
+          "id": "lancamento_cliente",
+          "name": "idCliente",
+          "columnName": "id_Cliente",
+          "label": "Cliente",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "required": true,
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Cliente",
+            "targetField": "idCliente",
+            "displayField": "fantasiaCliente"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": true, "order": 4 }, "form": { "visible": true, "order": 4 }, "search": { "enabled": true, "operator": "EQUALS" } }
+        },
+        {
+          "id": "lancamento_pessoa",
+          "name": "idPessoa",
+          "columnName": "id_Pessoa",
+          "label": "Pessoa",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "required": true,
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Pessoa",
+            "targetField": "idPessoa",
+            "displayField": "nome"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": true, "order": 5 }, "form": { "visible": true, "order": 5 }, "search": { "enabled": true, "operator": "EQUALS" } }
+        },
+        {
+          "id": "lancamento_nf",
+          "name": "nf",
+          "columnName": "NF",
+          "label": "NF",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "ui": { "component": "NUMBER", "grid": { "visible": true, "order": 6, "width": 80 }, "form": { "visible": true, "order": 6 } }
+        },
+        {
+          "id": "lancamento_valor_bruto",
+          "name": "valorBruto",
+          "columnName": "ValorBruto",
+          "label": "Valor Bruto",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 7 }, "form": { "visible": true, "order": 7 } }
+        },
+        {
+          "id": "lancamento_despesas",
+          "name": "despesas",
+          "columnName": "Despesas",
+          "label": "Despesas",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 8 } }
+        },
+        {
+          "id": "lancamento_retencao",
+          "name": "retencao",
+          "columnName": "Retencao",
+          "label": "Retenção",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 8 }, "form": { "visible": true, "order": 9 } }
+        },
+        {
+          "id": "lancamento_valor_liquido",
+          "name": "valorLiquido",
+          "columnName": "ValorLiquido",
+          "label": "Valor Líquido",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 9 }, "form": { "visible": true, "order": 10 } }
+        },
+        {
+          "id": "lancamento_valor_taxa",
+          "name": "valorTaxa",
+          "columnName": "ValorTaxa",
+          "label": "Valor Taxa",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 11 } }
+        },
+        {
+          "id": "lancamento_valor_repasse",
+          "name": "valorRepasse",
+          "columnName": "ValorRepasse",
+          "label": "Valor Repasse",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 10 }, "form": { "visible": true, "order": 12 } }
+        },
+        {
+          "id": "lancamento_baixa",
+          "name": "baixa",
+          "columnName": "Baixa",
+          "label": "Data Baixa",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "ui": { "component": "DATE", "grid": { "visible": true, "order": 11 }, "form": { "visible": true, "order": 13 } }
+        },
+        {
+          "id": "lancamento_mes_ano",
+          "name": "mesAno",
+          "columnName": "MesAno",
+          "label": "Mês/Ano",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 6,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 14 } }
+        },
+        {
+          "id": "lancamento_taxa",
+          "name": "taxa",
+          "columnName": "Taxa",
+          "label": "Taxa (%)",
+          "dataType": "DECIMAL",
+          "databaseType": "numeric",
+          "precision": 6,
+          "scale": 2,
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 15 } }
+        },
+        {
+          "id": "lancamento_tipo_servico",
+          "name": "idTipoServico",
+          "columnName": "id_TipoServico",
+          "label": "Tipo de Serviço",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "TipoServico",
+            "targetField": "idTipoServico",
+            "displayField": "nomeTipoServico"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": false }, "form": { "visible": true, "order": 16 } }
+        }
+      ]
+    },
+    {
+      "id": "nf",
+      "name": "NF",
+      "displayName": "Notas Fiscais",
+      "tableName": "NF",
+      "description": "Notas fiscais",
+      "schema": "dbo",
+      "type": "MAIN",
+      "defaultSort": { "field": "emissao", "direction": "desc" },
+      "sessionContextField": "idEmpresa",
+      "compositeKey": ["idEmpresa", "nf"],
+      "fields": [
+        {
+          "id": "nf_empresa",
+          "name": "idEmpresa",
+          "columnName": "id_Empresa",
+          "label": "Empresa",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Empresa",
+            "targetField": "idEmpresa",
+            "displayField": "fantasiaEmpresa"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": true, "order": 1 }, "form": { "visible": true, "order": 1 } }
+        },
+        {
+          "id": "nf_numero",
+          "name": "nf",
+          "columnName": "NF",
+          "label": "Nº NF",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "required": true,
+          "ui": { "component": "NUMBER", "grid": { "visible": true, "order": 2, "width": 100 }, "form": { "visible": true, "order": 2 }, "search": { "enabled": true, "operator": "EQUALS" } }
+        },
+        {
+          "id": "nf_cliente",
+          "name": "idCliente",
+          "columnName": "id_cliente",
+          "label": "Cliente",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "required": true,
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Cliente",
+            "targetField": "idCliente",
+            "displayField": "fantasiaCliente"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": true, "order": 3 }, "form": { "visible": true, "order": 3 }, "search": { "enabled": true, "operator": "EQUALS" } }
+        },
+        {
+          "id": "nf_emissao",
+          "name": "emissao",
+          "columnName": "Emissao",
+          "label": "Emissão",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "required": true,
+          "ui": { "component": "DATE", "grid": { "visible": true, "order": 4, "width": 110 }, "form": { "visible": true, "order": 4 }, "search": { "enabled": true, "operator": "BETWEEN" } }
+        },
+        {
+          "id": "nf_vencimento",
+          "name": "vencimento",
+          "columnName": "Vencimento",
+          "label": "Vencimento",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "ui": { "component": "DATE", "grid": { "visible": true, "order": 5, "width": 110 }, "form": { "visible": true, "order": 5 } }
+        },
+        {
+          "id": "nf_total",
+          "name": "total",
+          "columnName": "Total",
+          "label": "Total",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 6 }, "form": { "visible": true, "order": 6 } }
+        },
+        {
+          "id": "nf_irrf",
+          "name": "irrf",
+          "columnName": "IRRF",
+          "label": "IRRF",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 7 } }
+        },
+        {
+          "id": "nf_pis",
+          "name": "pis",
+          "columnName": "PIS",
+          "label": "PIS",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 8 } }
+        },
+        {
+          "id": "nf_cofins",
+          "name": "cofins",
+          "columnName": "Cofins",
+          "label": "COFINS",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 9 } }
+        },
+        {
+          "id": "nf_csll",
+          "name": "csll",
+          "columnName": "CSLL",
+          "label": "CSLL",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 10 } }
+        },
+        {
+          "id": "nf_iss",
+          "name": "iss",
+          "columnName": "ISS",
+          "label": "ISS",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 11 } }
+        },
+        {
+          "id": "nf_baixa",
+          "name": "baixa",
+          "columnName": "Baixa",
+          "label": "Data Baixa",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "ui": { "component": "DATE", "grid": { "visible": true, "order": 7 }, "form": { "visible": true, "order": 12 } }
+        },
+        {
+          "id": "nf_valor_quitado",
+          "name": "valorQuitado",
+          "columnName": "ValorQuitado",
+          "label": "Valor Quitado",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 8 }, "form": { "visible": true, "order": 13 } }
+        },
+        {
+          "id": "nf_cancelada",
+          "name": "cancelada",
+          "columnName": "Cancelada",
+          "label": "Cancelada",
+          "dataType": "BOOLEAN",
+          "databaseType": "bit",
+          "ui": { "component": "CHECKBOX", "grid": { "visible": true, "order": 9, "width": 90 }, "form": { "visible": true, "order": 14 } }
+        },
+        {
+          "id": "nf_observacao",
+          "name": "observacao",
+          "columnName": "Observacao",
+          "label": "Observação",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 50,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 15 } }
+        }
+      ]
+    },
+    {
+      "id": "contas_pagar_receber",
+      "name": "ContasPagarReceber",
+      "displayName": "Contas a Pagar/Receber",
+      "tableName": "ContasPagarReceber",
+      "description": "Contas a pagar e receber",
+      "schema": "dbo",
+      "type": "MAIN",
+      "defaultSort": { "field": "dataVencimento", "direction": "asc" },
+      "sessionContextField": "idEmpresa",
+      "fields": [
+        {
+          "id": "contas_id",
+          "name": "idContasPagarReceber",
+          "columnName": "id_ContasPagarReceber",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "required": true,
+          "autoIncrement": true,
+          "ui": { "component": "NUMBER", "grid": { "visible": true, "order": 1, "width": 80 }, "form": { "visible": true, "order": 1 } }
+        },
+        {
+          "id": "contas_data_lancamento",
+          "name": "dataLancamento",
+          "columnName": "DataLancamento",
+          "label": "Data Lançamento",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "required": true,
+          "ui": { "component": "DATE", "grid": { "visible": true, "order": 2, "width": 130 }, "form": { "visible": true, "order": 2 } }
+        },
+        {
+          "id": "contas_valor_original",
+          "name": "valorOriginal",
+          "columnName": "ValorOriginal",
+          "label": "Valor Original",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "required": true,
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 3 }, "form": { "visible": true, "order": 3 } }
+        },
+        {
+          "id": "contas_valor_parcela",
+          "name": "valorParcela",
+          "columnName": "ValorParcela",
+          "label": "Valor Parcela",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "required": true,
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 4 }, "form": { "visible": true, "order": 4 } }
+        },
+        {
+          "id": "contas_data_vencimento",
+          "name": "dataVencimento",
+          "columnName": "DataVencimento",
+          "label": "Vencimento",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "required": true,
+          "ui": { "component": "DATE", "grid": { "visible": true, "order": 5, "width": 110 }, "form": { "visible": true, "order": 5 }, "search": { "enabled": true, "operator": "BETWEEN" } }
+        },
+        {
+          "id": "contas_data_baixa",
+          "name": "dataBaixa",
+          "columnName": "DataBaixa",
+          "label": "Data Baixa",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "ui": { "component": "DATE", "grid": { "visible": true, "order": 6, "width": 110 }, "form": { "visible": true, "order": 6 } }
+        },
+        {
+          "id": "contas_valor_baixado",
+          "name": "valorBaixado",
+          "columnName": "ValorBaixado",
+          "label": "Valor Baixado",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 7 }, "form": { "visible": true, "order": 7 } }
+        },
+        {
+          "id": "contas_empresa",
+          "name": "idEmpresa",
+          "columnName": "id_Empresa",
+          "label": "Empresa",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Empresa",
+            "targetField": "idEmpresa",
+            "displayField": "fantasiaEmpresa"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": true, "order": 8 }, "form": { "visible": true, "order": 8 } }
+        },
+        {
+          "id": "contas_pessoa",
+          "name": "idPessoa",
+          "columnName": "id_Pessoa",
+          "label": "Pessoa",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Pessoa",
+            "targetField": "idPessoa",
+            "displayField": "nome"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": false }, "form": { "visible": true, "order": 9 } }
+        },
+        {
+          "id": "contas_mes_ano_ref",
+          "name": "mesAnoReferencia",
+          "columnName": "MesAnoReferencia",
+          "label": "Mês/Ano Ref.",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 10,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 10 } }
+        },
+        {
+          "id": "contas_historico",
+          "name": "historico",
+          "columnName": "Historico",
+          "label": "Histórico",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 100,
+          "ui": { "component": "TEXT", "grid": { "visible": true, "order": 9 }, "form": { "visible": true, "order": 11 }, "search": { "enabled": true, "operator": "CONTAINS" } }
+        },
+        {
+          "id": "contas_despesa_receita",
+          "name": "idDespesaReceita",
+          "columnName": "id_DespesaReceita",
+          "label": "Despesa/Receita",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "DespesaReceita",
+            "targetField": "idDespesaReceita",
+            "displayField": "nomeDespesaReceita"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": true, "order": 10 }, "form": { "visible": true, "order": 12 } }
+        }
+      ]
+    },
+    {
+      "id": "pagamento_nao_socio",
+      "name": "PagamentoNaoSocio",
+      "displayName": "Pagamentos Não-Sócios",
+      "tableName": "PagamentoNaoSocio",
+      "description": "Pagamentos para não sócios",
+      "schema": "dbo",
+      "type": "MAIN",
+      "defaultSort": { "field": "data", "direction": "desc" },
+      "sessionContextField": "idEmpresa",
+      "compositeKey": ["data", "idEmpresa", "idCliente", "idPessoaNaoSocio"],
+      "fields": [
+        {
+          "id": "pag_nao_socio_data",
+          "name": "data",
+          "columnName": "Data",
+          "label": "Data",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "primaryKey": true,
+          "required": true,
+          "ui": { "component": "DATE", "grid": { "visible": true, "order": 1, "width": 110 }, "form": { "visible": true, "order": 1 }, "search": { "enabled": true, "operator": "BETWEEN" } }
+        },
+        {
+          "id": "pag_nao_socio_empresa",
+          "name": "idEmpresa",
+          "columnName": "id_Empresa",
+          "label": "Empresa",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Empresa",
+            "targetField": "idEmpresa",
+            "displayField": "fantasiaEmpresa"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": true, "order": 2 }, "form": { "visible": true, "order": 2 } }
+        },
+        {
+          "id": "pag_nao_socio_cliente",
+          "name": "idCliente",
+          "columnName": "id_Cliente",
+          "label": "Cliente",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Cliente",
+            "targetField": "idCliente",
+            "displayField": "fantasiaCliente"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": true, "order": 3 }, "form": { "visible": true, "order": 3 } }
+        },
+        {
+          "id": "pag_nao_socio_pessoa",
+          "name": "idPessoaNaoSocio",
+          "columnName": "id_PessoaNaoSocio",
+          "label": "Pessoa Não Sócio",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "required": true,
+          "ui": { "component": "NUMBER", "grid": { "visible": true, "order": 4, "width": 120 }, "form": { "visible": true, "order": 4 } }
+        },
+        {
+          "id": "pag_nao_socio_nf",
+          "name": "nf",
+          "columnName": "NF",
+          "label": "NF",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "ui": { "component": "NUMBER", "grid": { "visible": true, "order": 5, "width": 80 }, "form": { "visible": true, "order": 5 } }
+        },
+        {
+          "id": "pag_nao_socio_valor_bruto",
+          "name": "valorBruto",
+          "columnName": "ValorBruto",
+          "label": "Valor Bruto",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 6 }, "form": { "visible": true, "order": 6 } }
+        },
+        {
+          "id": "pag_nao_socio_retencao",
+          "name": "retencao",
+          "columnName": "Retencao",
+          "label": "Retenção",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 7 }, "form": { "visible": true, "order": 7 } }
+        },
+        {
+          "id": "pag_nao_socio_valor_liquido",
+          "name": "valorLiquido",
+          "columnName": "ValorLiquido",
+          "label": "Valor Líquido",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 8 }, "form": { "visible": true, "order": 8 } }
+        },
+        {
+          "id": "pag_nao_socio_valor_taxa",
+          "name": "valorTaxa",
+          "columnName": "ValorTaxa",
+          "label": "Valor Taxa",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 9 } }
+        },
+        {
+          "id": "pag_nao_socio_valor_repasse",
+          "name": "valorRepasse",
+          "columnName": "ValorRepasse",
+          "label": "Valor Repasse",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 9 }, "form": { "visible": true, "order": 10 } }
+        }
+      ]
+    },
+    {
+      "id": "repasse_anual",
+      "name": "RepasseAnual",
+      "displayName": "Repasse Anual",
+      "tableName": "RepasseAnual",
+      "description": "Repasse anual consolidado",
+      "schema": "dbo",
+      "type": "MAIN",
+      "defaultSort": { "field": "ano", "direction": "desc" },
+      "sessionContextField": "idEmpresa",
+      "compositeKey": ["ano", "idEmpresa", "idPessoa"],
+      "fields": [
+        {
+          "id": "repasse_ano",
+          "name": "ano",
+          "columnName": "Ano",
+          "label": "Ano",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 4,
+          "primaryKey": true,
+          "required": true,
+          "ui": { "component": "TEXT", "grid": { "visible": true, "order": 1, "width": 80 }, "form": { "visible": true, "order": 1 }, "search": { "enabled": true, "operator": "EQUALS" } }
+        },
+        {
+          "id": "repasse_empresa",
+          "name": "idEmpresa",
+          "columnName": "id_Empresa",
+          "label": "Empresa",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Empresa",
+            "targetField": "idEmpresa",
+            "displayField": "fantasiaEmpresa"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": true, "order": 2 }, "form": { "visible": true, "order": 2 } }
+        },
+        {
+          "id": "repasse_pessoa",
+          "name": "idPessoa",
+          "columnName": "id_Pessoa",
+          "label": "Pessoa",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "primaryKey": true,
+          "required": true,
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Pessoa",
+            "targetField": "idPessoa",
+            "displayField": "nome"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": true, "order": 3 }, "form": { "visible": true, "order": 3 }, "search": { "enabled": true, "operator": "EQUALS" } }
+        },
+        {
+          "id": "repasse_jan_bruto",
+          "name": "janBruto",
+          "columnName": "JanBruto",
+          "label": "Jan Bruto",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 4 }, "form": { "visible": true, "order": 4 } }
+        },
+        {
+          "id": "repasse_jan_taxa",
+          "name": "janTaxa",
+          "columnName": "JanTaxa",
+          "label": "Jan Taxa",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 5 } }
+        },
+        {
+          "id": "repasse_fev_bruto",
+          "name": "fevBruto",
+          "columnName": "FevBruto",
+          "label": "Fev Bruto",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 5 }, "form": { "visible": true, "order": 6 } }
+        },
+        {
+          "id": "repasse_fev_taxa",
+          "name": "fevTaxa",
+          "columnName": "FevTaxa",
+          "label": "Fev Taxa",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 7 } }
+        },
+        {
+          "id": "repasse_mar_bruto",
+          "name": "marBruto",
+          "columnName": "MarBruto",
+          "label": "Mar Bruto",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 6 }, "form": { "visible": true, "order": 8 } }
+        },
+        {
+          "id": "repasse_mar_taxa",
+          "name": "marTaxa",
+          "columnName": "MarTaxa",
+          "label": "Mar Taxa",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 9 } }
+        },
+        {
+          "id": "repasse_abr_bruto",
+          "name": "abrBruto",
+          "columnName": "AbrBruto",
+          "label": "Abr Bruto",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 7 }, "form": { "visible": true, "order": 10 } }
+        },
+        {
+          "id": "repasse_abr_taxa",
+          "name": "abrTaxa",
+          "columnName": "AbrTaxa",
+          "label": "Abr Taxa",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 11 } }
+        },
+        {
+          "id": "repasse_mai_bruto",
+          "name": "maiBruto",
+          "columnName": "MaiBruto",
+          "label": "Mai Bruto",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 8 }, "form": { "visible": true, "order": 12 } }
+        },
+        {
+          "id": "repasse_mai_taxa",
+          "name": "maiTaxa",
+          "columnName": "MaiTaxa",
+          "label": "Mai Taxa",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 13 } }
+        },
+        {
+          "id": "repasse_jun_bruto",
+          "name": "junBruto",
+          "columnName": "JunBruto",
+          "label": "Jun Bruto",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 9 }, "form": { "visible": true, "order": 14 } }
+        },
+        {
+          "id": "repasse_jun_taxa",
+          "name": "junTaxa",
+          "columnName": "JunTaxa",
+          "label": "Jun Taxa",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 15 } }
+        },
+        {
+          "id": "repasse_jul_bruto",
+          "name": "julBruto",
+          "columnName": "JulBruto",
+          "label": "Jul Bruto",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 16 } }
+        },
+        {
+          "id": "repasse_jul_taxa",
+          "name": "julTaxa",
+          "columnName": "JulTaxa",
+          "label": "Jul Taxa",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 17 } }
+        },
+        {
+          "id": "repasse_ago_bruto",
+          "name": "agoBruto",
+          "columnName": "AgoBruto",
+          "label": "Ago Bruto",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 18 } }
+        },
+        {
+          "id": "repasse_ago_taxa",
+          "name": "agoTaxa",
+          "columnName": "AgoTaxa",
+          "label": "Ago Taxa",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 19 } }
+        },
+        {
+          "id": "repasse_set_bruto",
+          "name": "setBruto",
+          "columnName": "SetBruto",
+          "label": "Set Bruto",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 20 } }
+        },
+        {
+          "id": "repasse_set_taxa",
+          "name": "setTaxa",
+          "columnName": "SetTaxa",
+          "label": "Set Taxa",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 21 } }
+        },
+        {
+          "id": "repasse_out_bruto",
+          "name": "outBruto",
+          "columnName": "OutBruto",
+          "label": "Out Bruto",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 22 } }
+        },
+        {
+          "id": "repasse_out_taxa",
+          "name": "outTaxa",
+          "columnName": "OutTaxa",
+          "label": "Out Taxa",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 23 } }
+        },
+        {
+          "id": "repasse_nov_bruto",
+          "name": "novBruto",
+          "columnName": "NovBruto",
+          "label": "Nov Bruto",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 24 } }
+        },
+        {
+          "id": "repasse_nov_taxa",
+          "name": "novTaxa",
+          "columnName": "NovTaxa",
+          "label": "Nov Taxa",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 25 } }
+        },
+        {
+          "id": "repasse_dez_bruto",
+          "name": "dezBruto",
+          "columnName": "DezBruto",
+          "label": "Dez Bruto",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 26 } }
+        },
+        {
+          "id": "repasse_dez_taxa",
+          "name": "dezTaxa",
+          "columnName": "DezTaxa",
+          "label": "Dez Taxa",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 27 } }
+        }
+      ]
+    },
+    {
+      "id": "anuidade_cremeb",
+      "name": "AnuidadeCremeb",
+      "displayName": "Anuidades CREMEB",
+      "tableName": "AnuidadeCremeb",
+      "description": "Anuidades do CREMEB",
+      "schema": "dbo",
+      "type": "MAIN",
+      "defaultSort": { "field": "anoExercicio", "direction": "desc" },
+      "sessionContextField": "idEmpresa",
+      "fields": [
+        {
+          "id": "anuidade_id",
+          "name": "idAnuidadeCremeb",
+          "columnName": "id_AnuidadeCremeb",
+          "label": "Código",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "primaryKey": true,
+          "required": true,
+          "ui": { "component": "NUMBER", "grid": { "visible": true, "order": 1, "width": 80 }, "form": { "visible": true, "order": 1 } }
+        },
+        {
+          "id": "anuidade_ano_exercicio",
+          "name": "anoExercicio",
+          "columnName": "AnoExercicio",
+          "label": "Ano Exercício",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 4,
+          "ui": { "component": "TEXT", "grid": { "visible": true, "order": 2, "width": 100 }, "form": { "visible": true, "order": 2 }, "search": { "enabled": true, "operator": "EQUALS" } }
+        },
+        {
+          "id": "anuidade_data_inicio",
+          "name": "dataInicio",
+          "columnName": "DataInicio",
+          "label": "Data Início",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "ui": { "component": "DATE", "grid": { "visible": true, "order": 3, "width": 110 }, "form": { "visible": true, "order": 3 } }
+        },
+        {
+          "id": "anuidade_data_fim",
+          "name": "dataFim",
+          "columnName": "DataFim",
+          "label": "Data Fim",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "ui": { "component": "DATE", "grid": { "visible": true, "order": 4, "width": 110 }, "form": { "visible": true, "order": 4 } }
+        },
+        {
+          "id": "anuidade_valor_total",
+          "name": "valorTotal",
+          "columnName": "ValorTotal",
+          "label": "Valor Total",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": true, "order": 5 }, "form": { "visible": true, "order": 5 } }
+        },
+        {
+          "id": "anuidade_empresa",
+          "name": "idEmpresa",
+          "columnName": "id_Empresa",
+          "label": "Empresa",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Empresa",
+            "targetField": "idEmpresa",
+            "displayField": "fantasiaEmpresa"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": true, "order": 6 }, "form": { "visible": true, "order": 6 } }
+        }
+      ]
+    }
+  ]
+}

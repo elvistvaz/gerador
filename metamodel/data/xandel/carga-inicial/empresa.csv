@@ -1,0 +1,4 @@
+id_Empresa;NomeEmpresa;FantasiaEmpresa;CNPJ;TaxaRetencao;Inativa
+1;Sociedade Medica Alpha Ltda;Alpha Med;12345678000100;10.00;false
+2;Clinica Beta Servicos Medicos;Beta Clinica;98765432000199;8.50;false
+3;Centro Medico Gamma S/S;Gamma Saude;11222333000144;12.00;false
