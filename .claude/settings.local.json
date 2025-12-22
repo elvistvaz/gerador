@@ -81,7 +81,13 @@
       "Bash(c:nvm4wnodejsnpx.cmd ng build)",
       "Bash(cmd /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\xandel\\\\front && npx ng build\")",
       "Bash(cmd /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\xandel\\\\front && c:\\\\nvm4w\\\\nodejs\\\\npx.cmd ng build 2>&1\")",
-      "Bash(c:nvm4wnodejsnpx.cmd ng build --project=xandel --configuration=development)"
+      "Bash(c:nvm4wnodejsnpx.cmd ng build --project=xandel --configuration=development)",
+      "Bash(cmd /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\icep\\\\front && c:\\\\nvm4w\\\\nodejs\\\\npm.cmd start\")",
+      "Bash(npx ng version)",
+      "Bash(cmd /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\icep\\\\front && c:\\\\nvm4w\\\\nodejs\\\\npx.cmd ng version\")",
+      "Bash(c:nvm4wnodejsnode.exe c:nvm4wnodejsnode_modulesnpmbinnpm-cli.js --prefix c:javaworkspaceGeradorgeneratedicepfront start)",
+      "Bash(cmd /c \"c:\\\\nvm4w\\\\nodejs\\\\npm.cmd start --prefix c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\icep\\\\front\")",
+      "Bash(cmd /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\icep\\\\front && set PATH=c:\\\\nvm4w\\\\nodejs;%PATH% && npm start\")"
     ]
   }
 }

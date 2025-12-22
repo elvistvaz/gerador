@@ -34,6 +34,6 @@ public interface CargaHorariaFormacaoTerritorioRepository extends JpaRepository<
     /**
      * Busca paginada filtrada por avaliacaoId.
      */
-    Page<CargaHorariaFormacaoTerritorio> findByAvaliacaoId(Long avaliacaoId, Pageable pageable);
+    Page<CargaHorariaFormacaoTerritorio> findByAvaliacaoId(Integer avaliacaoId, Pageable pageable);
 
 }

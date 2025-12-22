@@ -34,16 +34,16 @@ public interface CargaHorariaFormacaoRepository extends JpaRepository<CargaHorar
     /**
      * Busca paginada filtrada por municipioId.
      */
-    Page<CargaHorariaFormacao> findByMunicipioId(Long municipioId, Pageable pageable);
+    Page<CargaHorariaFormacao> findByMunicipioId(Integer municipioId, Pageable pageable);
 
     /**
      * Busca paginada filtrada por avaliacaoId.
      */
-    Page<CargaHorariaFormacao> findByAvaliacaoId(Long avaliacaoId, Pageable pageable);
+    Page<CargaHorariaFormacao> findByAvaliacaoId(Integer avaliacaoId, Pageable pageable);
 
     /**
      * Busca paginada filtrada por municipioId e avaliacaoId.
      */
-    Page<CargaHorariaFormacao> findByMunicipioIdAndAvaliacaoId(Long municipioId, Long avaliacaoId, Pageable pageable);
+    Page<CargaHorariaFormacao> findByMunicipioIdAndAvaliacaoId(Integer municipioId, Integer avaliacaoId, Pageable pageable);
 
 }

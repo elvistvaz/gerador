@@ -36,7 +36,7 @@ public class AtendimentoMunicipioService {
      * Lista todos os registros com paginação.
      */
     @Transactional(readOnly = true)
-    public Page<AtendimentoMunicipioListDTO> findAll(Long municipioId, Long avaliacaoId, Pageable pageable) {
+    public Page<AtendimentoMunicipioListDTO> findAll(Integer municipioId, Integer avaliacaoId, Pageable pageable) {
         if (municipioId != null && avaliacaoId != null) {
             return repository.findByMunicipioIdAndAvaliacaoId(municipioId, avaliacaoId, pageable)
                 .map(mapper::toListDTO);

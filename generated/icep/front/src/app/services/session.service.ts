@@ -3,9 +3,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface SessionContextData {
   avaliacaoId: number | null;
-  avaliacaoNome: string | null;
+  avaliacaoIdNome: string | null;
   municipioId: number | null;
-  municipioNome: string | null;
+  municipioIdNome: string | null;
 }
 
 @Injectable({
@@ -21,8 +21,8 @@ export class SessionService {
   readonly avaliacaoId$: Observable<number | null> = this._avaliacaoIdSubject.asObservable();
   readonly municipioId$: Observable<number | null> = this._municipioIdSubject.asObservable();
 
-  private _avaliacaoNome: string | null = null;
-  private _municipioNome: string | null = null;
+  private _avaliacaoIdNome: string | null = null;
+  private _municipioIdNome: string | null = null;
 
   constructor() {
     this.loadFromStorage();
@@ -35,11 +35,11 @@ export class SessionService {
         const data: SessionContextData = JSON.parse(stored);
         if (data.avaliacaoId) {
           this._avaliacaoIdSubject.next(data.avaliacaoId);
-          this._avaliacaoNome = data.avaliacaoNome || null;
+          this._avaliacaoIdNome = data.avaliacaoIdNome || null;
         }
         if (data.municipioId) {
           this._municipioIdSubject.next(data.municipioId);
-          this._municipioNome = data.municipioNome || null;
+          this._municipioIdNome = data.municipioIdNome || null;
         }
       }
     } catch (e) {
@@ -50,9 +50,9 @@ export class SessionService {
   private saveToStorage(): void {
     const data: SessionContextData = {
       avaliacaoId: this._avaliacaoIdSubject.getValue(),
-      avaliacaoNome: this._avaliacaoNome,
+      avaliacaoIdNome: this._avaliacaoIdNome,
       municipioId: this._municipioIdSubject.getValue(),
-      municipioNome: this._municipioNome
+      municipioIdNome: this._municipioIdNome
     };
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(data));
   }
@@ -61,13 +61,13 @@ export class SessionService {
     return this._avaliacaoIdSubject.getValue();
   }
 
-  getAvaliacaoNome(): string | null {
-    return this._avaliacaoNome;
+  getAvaliacaoIdNome(): string | null {
+    return this._avaliacaoIdNome;
   }
 
   setAvaliacaoId(id: number | null, nome?: string): void {
     this._avaliacaoIdSubject.next(id);
-    this._avaliacaoNome = nome || null;
+    this._avaliacaoIdNome = nome || null;
     this.saveToStorage();
   }
 
@@ -75,13 +75,13 @@ export class SessionService {
     return this._municipioIdSubject.getValue();
   }
 
-  getMunicipioNome(): string | null {
-    return this._municipioNome;
+  getMunicipioIdNome(): string | null {
+    return this._municipioIdNome;
   }
 
   setMunicipioId(id: number | null, nome?: string): void {
     this._municipioIdSubject.next(id);
-    this._municipioNome = nome || null;
+    this._municipioIdNome = nome || null;
     this.saveToStorage();
   }
 
@@ -91,9 +91,9 @@ export class SessionService {
 
   clearContext(): void {
     this._avaliacaoIdSubject.next(null);
-    this._avaliacaoNome = null;
+    this._avaliacaoIdNome = null;
     this._municipioIdSubject.next(null);
-    this._municipioNome = null;
+    this._municipioIdNome = null;
     localStorage.removeItem(this.STORAGE_KEY);
   }
 }

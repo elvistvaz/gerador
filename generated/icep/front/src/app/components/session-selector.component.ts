@@ -81,7 +81,7 @@ export class SessionSelectorComponent implements OnInit {
     if (!this.selectedAvaliacaoId) {
       return 'Selecione...';
     }
-    const selected = this.avaliacaoOptions.find(opt => opt.id === this.selectedAvaliacaoId);
+    const selected = this.avaliacaoOptions.find(opt => opt.avaliacaoId === this.selectedAvaliacaoId);
     return selected ? String(selected.avaliacao) : 'Selecione...';
   }
 
@@ -123,17 +123,17 @@ export class SessionSelectorComponent implements OnInit {
     if (!this.selectedMunicipioId) {
       return 'Selecione...';
     }
-    const selected = this.municipioOptions.find(opt => opt.id === this.selectedMunicipioId);
+    const selected = this.municipioOptions.find(opt => opt.municipioId === this.selectedMunicipioId);
     return selected ? String(selected.nome) : 'Selecione...';
   }
 
   confirmar(): void {
-    const avaliacaoSelected = this.avaliacaoOptions.find(opt => opt.id === this.selectedAvaliacaoId);
+    const avaliacaoSelected = this.avaliacaoOptions.find(opt => opt.avaliacaoId === this.selectedAvaliacaoId);
     this.sessionService.setAvaliacaoId(
       this.selectedAvaliacaoId,
       avaliacaoSelected ? String(avaliacaoSelected.avaliacao) : undefined
     );
-    const municipioSelected = this.municipioOptions.find(opt => opt.id === this.selectedMunicipioId);
+    const municipioSelected = this.municipioOptions.find(opt => opt.municipioId === this.selectedMunicipioId);
     this.sessionService.setMunicipioId(
       this.selectedMunicipioId,
       municipioSelected ? String(municipioSelected.nome) : undefined

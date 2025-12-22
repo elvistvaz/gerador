@@ -34,16 +34,16 @@ public interface ComentarioIndicadorRepository extends JpaRepository<ComentarioI
     /**
      * Busca paginada filtrada por municipioId.
      */
-    Page<ComentarioIndicador> findByMunicipioId(Long municipioId, Pageable pageable);
+    Page<ComentarioIndicador> findByMunicipioId(Integer municipioId, Pageable pageable);
 
     /**
      * Busca paginada filtrada por avaliacaoId.
      */
-    Page<ComentarioIndicador> findByAvaliacaoId(Long avaliacaoId, Pageable pageable);
+    Page<ComentarioIndicador> findByAvaliacaoId(Integer avaliacaoId, Pageable pageable);
 
     /**
      * Busca paginada filtrada por municipioId e avaliacaoId.
      */
-    Page<ComentarioIndicador> findByMunicipioIdAndAvaliacaoId(Long municipioId, Long avaliacaoId, Pageable pageable);
+    Page<ComentarioIndicador> findByMunicipioIdAndAvaliacaoId(Integer municipioId, Integer avaliacaoId, Pageable pageable);
 
 }

@@ -39,16 +39,16 @@ public interface AvaliacaoSDARepository extends JpaRepository<AvaliacaoSDA, Inte
     /**
      * Busca paginada filtrada por municipioId.
      */
-    Page<AvaliacaoSDA> findByMunicipioId(Long municipioId, Pageable pageable);
+    Page<AvaliacaoSDA> findByMunicipioId(Integer municipioId, Pageable pageable);
 
     /**
      * Busca paginada filtrada por avaliacaoId.
      */
-    Page<AvaliacaoSDA> findByAvaliacaoId(Long avaliacaoId, Pageable pageable);
+    Page<AvaliacaoSDA> findByAvaliacaoId(Integer avaliacaoId, Pageable pageable);
 
     /**
      * Busca paginada filtrada por municipioId e avaliacaoId.
      */
-    Page<AvaliacaoSDA> findByMunicipioIdAndAvaliacaoId(Long municipioId, Long avaliacaoId, Pageable pageable);
+    Page<AvaliacaoSDA> findByMunicipioIdAndAvaliacaoId(Integer municipioId, Integer avaliacaoId, Pageable pageable);
 
 }

@@ -36,7 +36,7 @@ public class AvaliacaoSDAService {
      * Lista todos os registros com paginação.
      */
     @Transactional(readOnly = true)
-    public Page<AvaliacaoSDAListDTO> findAll(Long municipioId, Long avaliacaoId, Pageable pageable) {
+    public Page<AvaliacaoSDAListDTO> findAll(Integer municipioId, Integer avaliacaoId, Pageable pageable) {
         if (municipioId != null && avaliacaoId != null) {
             return repository.findByMunicipioIdAndAvaliacaoId(municipioId, avaliacaoId, pageable)
                 .map(mapper::toListDTO);

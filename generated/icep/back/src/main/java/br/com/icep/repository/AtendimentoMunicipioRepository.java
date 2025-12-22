@@ -34,16 +34,16 @@ public interface AtendimentoMunicipioRepository extends JpaRepository<Atendiment
     /**
      * Busca paginada filtrada por municipioId.
      */
-    Page<AtendimentoMunicipio> findByMunicipioId(Long municipioId, Pageable pageable);
+    Page<AtendimentoMunicipio> findByMunicipioId(Integer municipioId, Pageable pageable);
 
     /**
      * Busca paginada filtrada por avaliacaoId.
      */
-    Page<AtendimentoMunicipio> findByAvaliacaoId(Long avaliacaoId, Pageable pageable);
+    Page<AtendimentoMunicipio> findByAvaliacaoId(Integer avaliacaoId, Pageable pageable);
 
     /**
      * Busca paginada filtrada por municipioId e avaliacaoId.
      */
-    Page<AtendimentoMunicipio> findByMunicipioIdAndAvaliacaoId(Long municipioId, Long avaliacaoId, Pageable pageable);
+    Page<AtendimentoMunicipio> findByMunicipioIdAndAvaliacaoId(Integer municipioId, Integer avaliacaoId, Pageable pageable);
 
 }

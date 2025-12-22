@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { UsuarioRequest, Perfil } from '../models/usuario.model';
+import { UsuarioRequest } from '../models/usuario.model';
+import { Perfil } from '../models/perfil.model';
 import { UsuarioService } from '../services/usuario.service';
 
 @Component({

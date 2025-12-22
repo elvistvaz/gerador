@@ -34,16 +34,16 @@ public interface AvaliacaoIndicadorRepository extends JpaRepository<AvaliacaoInd
     /**
      * Busca paginada filtrada por municipioId.
      */
-    Page<AvaliacaoIndicador> findByMunicipioId(Long municipioId, Pageable pageable);
+    Page<AvaliacaoIndicador> findByMunicipioId(Integer municipioId, Pageable pageable);
 
     /**
      * Busca paginada filtrada por avaliacaoId.
      */
-    Page<AvaliacaoIndicador> findByAvaliacaoId(Long avaliacaoId, Pageable pageable);
+    Page<AvaliacaoIndicador> findByAvaliacaoId(Integer avaliacaoId, Pageable pageable);
 
     /**
      * Busca paginada filtrada por municipioId e avaliacaoId.
      */
-    Page<AvaliacaoIndicador> findByMunicipioIdAndAvaliacaoId(Long municipioId, Long avaliacaoId, Pageable pageable);
+    Page<AvaliacaoIndicador> findByMunicipioIdAndAvaliacaoId(Integer municipioId, Integer avaliacaoId, Pageable pageable);
 
 }

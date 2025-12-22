@@ -28,7 +28,7 @@ public class CargaHorariaFormacaoTerritorioController {
      */
     @GetMapping
     public ResponseEntity<Page<CargaHorariaFormacaoTerritorioListDTO>> findAll(
-            @RequestParam(required = false) Long avaliacaoId,
+            @RequestParam(required = false) Integer avaliacaoId,
             Pageable pageable) {
         return ResponseEntity.ok(service.findAll(avaliacaoId, pageable));
     }

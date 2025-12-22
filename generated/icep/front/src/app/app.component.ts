@@ -17,8 +17,8 @@ export class AppComponent implements OnInit {
   menuCollapsed = false;
   expandedCategories: { [key: string]: boolean } = {};
   showSessionSelector = false;
-  selectedAvaliacaoNome: string | null = null;
-  selectedMunicipioNome: string | null = null;
+  selectedAvaliacaoIdNome: string | null = null;
+  selectedMunicipioIdNome: string | null = null;
 
   constructor(
     public authService: AuthService,
@@ -34,10 +34,10 @@ export class AppComponent implements OnInit {
       }
     });
     this.sessionService.avaliacaoId$.subscribe(() => {
-      this.selectedAvaliacaoNome = this.sessionService.getAvaliacaoNome();
+      this.selectedAvaliacaoIdNome = this.sessionService.getAvaliacaoIdNome();
     });
     this.sessionService.municipioId$.subscribe(() => {
-      this.selectedMunicipioNome = this.sessionService.getMunicipioNome();
+      this.selectedMunicipioIdNome = this.sessionService.getMunicipioIdNome();
     });
   }
 
@@ -51,8 +51,8 @@ export class AppComponent implements OnInit {
 
   onContextSelected(): void {
     this.showSessionSelector = false;
-    this.selectedAvaliacaoNome = this.sessionService.getAvaliacaoNome();
-    this.selectedMunicipioNome = this.sessionService.getMunicipioNome();
+    this.selectedAvaliacaoIdNome = this.sessionService.getAvaliacaoIdNome();
+    this.selectedMunicipioIdNome = this.sessionService.getMunicipioIdNome();
     const currentUrl = this.router.url;
     this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
       this.router.navigateByUrl(currentUrl);

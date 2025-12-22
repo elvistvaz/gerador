@@ -36,7 +36,7 @@ public class CargaHorariaFormacaoTerritorioService {
      * Lista todos os registros com paginação.
      */
     @Transactional(readOnly = true)
-    public Page<CargaHorariaFormacaoTerritorioListDTO> findAll(Long avaliacaoId, Pageable pageable) {
+    public Page<CargaHorariaFormacaoTerritorioListDTO> findAll(Integer avaliacaoId, Pageable pageable) {
         if (avaliacaoId != null) {
             return repository.findByAvaliacaoId(avaliacaoId, pageable)
                 .map(mapper::toListDTO);

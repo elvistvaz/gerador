@@ -28,8 +28,8 @@ public class AvaliacaoSDAController {
      */
     @GetMapping
     public ResponseEntity<Page<AvaliacaoSDAListDTO>> findAll(
-            @RequestParam(required = false) Long municipioId,
-            @RequestParam(required = false) Long avaliacaoId,
+            @RequestParam(required = false) Integer municipioId,
+            @RequestParam(required = false) Integer avaliacaoId,
             Pageable pageable) {
         return ResponseEntity.ok(service.findAll(municipioId, avaliacaoId, pageable));
     }
