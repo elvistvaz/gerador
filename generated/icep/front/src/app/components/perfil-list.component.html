@@ -42,7 +42,7 @@
               <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" *ngIf="expandedPerfil === item.id">
                 <polyline points="18 15 12 9 6 15"></polyline>
               </svg>
-              <span>{{ expandedPerfil === item.id ? 'Ocultar' : 'Ver' }} ({{ item.permissoes?.length || 0 }})</span>
+              <span>{{ expandedPerfil === item.id ? 'Ocultar' : 'Ver' }} ({{ item.permissoes.length || 0 }})</span>
             </button>
             <div class="permissions-list" *ngIf="expandedPerfil === item.id">
               <ul>

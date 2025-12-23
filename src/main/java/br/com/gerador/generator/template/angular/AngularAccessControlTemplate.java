@@ -807,7 +807,7 @@ public class AngularAccessControlTemplate {
         sb.append("              <svg class=\"icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" *ngIf=\"expandedPerfil === item.id\">\n");
         sb.append("                <polyline points=\"18 15 12 9 6 15\"></polyline>\n");
         sb.append("              </svg>\n");
-        sb.append("              <span>{{ expandedPerfil === item.id ? 'Ocultar' : 'Ver' }} ({{ item.permissoes?.length || 0 }})</span>\n");
+        sb.append("              <span>{{ expandedPerfil === item.id ? 'Ocultar' : 'Ver' }} ({{ item.permissoes.length || 0 }})</span>\n");
         sb.append("            </button>\n");
         sb.append("            <div class=\"permissions-list\" *ngIf=\"expandedPerfil === item.id\">\n");
         sb.append("              <ul>\n");
