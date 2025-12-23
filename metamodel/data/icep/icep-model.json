@@ -1289,22 +1289,6 @@
           }
         },
         {
-          "id": "avaliacao_sda_peso",
-          "name": "peso",
-          "columnName": "peso",
-          "label": "Peso",
-          "dataType": "DECIMAL",
-          "databaseType": "numeric",
-          "precision": 5,
-          "scale": 2,
-          "required": true,
-          "ui": {
-            "component": "DECIMAL",
-            "grid": { "visible": true, "order": 6, "width": 80, "sortable": true },
-            "form": { "visible": true, "order": 6 }
-          }
-        },
-        {
           "id": "avaliacao_sda_quantidade_alunos",
           "name": "quantidadeAlunos",
           "columnName": "quantidade_alunos",
@@ -1314,8 +1298,8 @@
           "required": true,
           "ui": {
             "component": "NUMBER",
-            "grid": { "visible": true, "order": 7, "width": 100, "sortable": true },
-            "form": { "visible": true, "order": 7 }
+            "grid": { "visible": true, "order": 6, "width": 100, "sortable": true },
+            "form": { "visible": true, "order": 6 }
           }
         }
       ],

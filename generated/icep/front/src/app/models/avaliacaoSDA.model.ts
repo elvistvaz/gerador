@@ -10,7 +10,6 @@ export interface AvaliacaoSDA {
   anoEscolarId: number;
   aprendizagemId: number;
   nivel: number;
-  peso: number;
   quantidadeAlunos: number;
 }
 
@@ -20,7 +19,6 @@ export interface AvaliacaoSDARequest {
   anoEscolarId: number;
   aprendizagemId: number;
   nivel: number;
-  peso: number;
   quantidadeAlunos: number;
 }
 
@@ -31,7 +29,6 @@ export interface AvaliacaoSDAResponse {
   anoEscolarId: number;
   aprendizagemId: number;
   nivel: number;
-  peso: number;
   quantidadeAlunos: number;
 }
 
@@ -42,6 +39,5 @@ export interface AvaliacaoSDAList {
   anoEscolarId: number;
   aprendizagemId: number;
   nivel: number;
-  peso: number;
   quantidadeAlunos: number;
 }

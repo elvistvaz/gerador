@@ -24,7 +24,6 @@ public class AvaliacaoSDAMapper {
             entity.getAnoEscolarId(),
             entity.getAprendizagemId(),
             entity.getNivel(),
-            entity.getPeso(),
             entity.getQuantidadeAlunos()
         );
     }
@@ -43,7 +42,6 @@ public class AvaliacaoSDAMapper {
             entity.getAnoEscolarId(),
             entity.getAprendizagemId(),
             entity.getNivel(),
-            entity.getPeso(),
             entity.getQuantidadeAlunos()
         );
     }
@@ -61,7 +59,6 @@ public class AvaliacaoSDAMapper {
         entity.setAnoEscolarId(dto.anoEscolarId());
         entity.setAprendizagemId(dto.aprendizagemId());
         entity.setNivel(dto.nivel());
-        entity.setPeso(dto.peso());
         entity.setQuantidadeAlunos(dto.quantidadeAlunos());
         return entity;
     }
@@ -78,7 +75,6 @@ public class AvaliacaoSDAMapper {
         entity.setAnoEscolarId(dto.anoEscolarId());
         entity.setAprendizagemId(dto.aprendizagemId());
         entity.setNivel(dto.nivel());
-        entity.setPeso(dto.peso());
         entity.setQuantidadeAlunos(dto.quantidadeAlunos());
     }
 }

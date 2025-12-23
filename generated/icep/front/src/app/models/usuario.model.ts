@@ -27,11 +27,3 @@ export interface UsuarioList {
   ativo: boolean;
   perfilNome: string;
 }
-
-export interface Perfil {
-  id: string;
-  nome: string;
-  descricao: string;
-  ativo: boolean;
-  permissoes: string[];
-}

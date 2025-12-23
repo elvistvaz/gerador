@@ -76,18 +76,6 @@
               </span>
             </span>
           </th>
-          <th class="sortable text-right" (click)="toggleSort('peso')">
-            <span class="th-content">
-              Peso
-              <span class="sort-icon" *ngIf="sortField === 'peso'">
-                <svg *ngIf="sortDirection === 'asc'" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14l5-5 5 5z"/></svg>
-                <svg *ngIf="sortDirection === 'desc'" viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5 5 5-5z"/></svg>
-              </span>
-              <span class="sort-icon inactive" *ngIf="sortField !== 'peso'">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 10l5-5 5 5M7 14l5 5 5-5" stroke="currentColor" fill="none" stroke-width="1.5"/></svg>
-              </span>
-            </span>
-          </th>
           <th class="sortable text-right" (click)="toggleSort('quantidadeAlunos')">
             <span class="th-content">
               Qtd. Alunos
@@ -113,7 +101,6 @@
             <td>{{ aprendizagemEsperadaMap.get(item.aprendizagemId) || item.aprendizagemId }}</td>
           </ng-container>
           <td class="text-right">{{ formatInt(item.nivel) }}</td>
-          <td class="text-right">{{ formatDecimal(item.peso) }}</td>
           <td class="text-right">{{ formatInt(item.quantidadeAlunos) }}</td>
           <td class="actions-column">
             <button class="btn btn-edit btn-sm" (click)="editar(item.id)" title="Editar">
@@ -133,7 +120,7 @@
           </td>
         </tr>
         <tr *ngIf="filteredItems.length === 0">
-          <td colspan="7" class="no-data">
+          <td colspan="6" class="no-data">
             Nenhum registro encontrado
           </td>
         </tr>

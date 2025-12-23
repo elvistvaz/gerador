@@ -1,7 +1,6 @@
 package br.com.icep.dto;
 
 import jakarta.validation.constraints.*;
-import java.math.BigDecimal;
 
 /**
  * DTO de request para AvaliacaoSDA.
@@ -17,8 +16,6 @@ public record AvaliacaoSDARequestDTO(
     Integer aprendizagemId,
     @NotNull
     Integer nivel,
-    @NotNull
-    BigDecimal peso,
     @NotNull
     Integer quantidadeAlunos
 ) {}

@@ -90,7 +90,12 @@
       "Bash(cmd /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\icep\\\\front && set PATH=c:\\\\nvm4w\\\\nodejs;%PATH% && npm start\")",
       "Bash(c:nvm4wnodejsnode.exe c:nvm4wnodejsnode_modulesnpmbinnpm-cli.js run build --prefix c:javaworkspaceGeradorgeneratedicepfront)",
       "Bash(npx ng build:*)",
-      "Bash(cmd /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\icep\\\\front && c:\\\\nvm4w\\\\nodejs\\\\npx.cmd ng build 2>&1\")"
+      "Bash(cmd /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\icep\\\\front && c:\\\\nvm4w\\\\nodejs\\\\npx.cmd ng build 2>&1\")",
+      "Bash(del \"c:\\\\java\\\\workspace\\\\Gerador\\\\remove_peso.ps1\")",
+      "Bash(\"C:\\\\Program Files\\\\Apache\\\\apache-maven-3.9.11\\\\bin\\\\mvn.cmd\" -f \"c:\\\\java\\\\workspace\\\\Gerador\\\\pom.xml\" exec:java -Dexec.mainClass=\"br.com.gerador.generator.FullStackGeneratorMain\" -Dexec.args=\"icep\")",
+      "Bash(\"C:\\\\Program Files\\\\Apache\\\\apache-maven-3.9.11\\\\bin\\\\mvn.cmd\" -f \"c:\\\\java\\\\workspace\\\\Gerador\\\\pom.xml\" compile exec:java -Dexec.mainClass=\"br.com.gerador.generator.FullStackGeneratorMain\" -Dexec.args=\"icep\")",
+      "Bash(call \"c:\\\\java\\\\workspace\\\\Gerador\\\\gerador_icep.bat\")",
+      "Bash(\"c:\\\\java\\\\workspace\\\\Gerador\\\\gerador_icep.bat\")"
     ]
   }
 }

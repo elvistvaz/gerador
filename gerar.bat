@@ -29,28 +29,14 @@ echo.
 echo Pasta do modelo: %FOLDER_NAME%
 echo.
 echo ------------------------------------------------------------
-echo   Compilando o projeto...
+echo   Compilando e executando o gerador...
 echo ------------------------------------------------------------
 
-%MAVEN_CMD% -f "%PROJECT_DIR%pom.xml" clean compile -q
+%MAVEN_CMD% -f "%PROJECT_DIR%pom.xml" clean compile exec:java -Dexec.mainClass="br.com.gerador.generator.FullStackGeneratorMain" -Dexec.args="%FOLDER_NAME%" -q
 
 if errorlevel 1 (
     echo.
-    echo [ERRO] Falha na compilacao do projeto!
-    pause
-    exit /b 1
-)
-
-echo.
-echo ------------------------------------------------------------
-echo   Executando o gerador...
-echo ------------------------------------------------------------
-
-%MAVEN_CMD% -f "%PROJECT_DIR%pom.xml" exec:java -Dexec.mainClass="br.com.gerador.generator.FullStackGeneratorMain" -Dexec.args="%FOLDER_NAME%" -q
-
-if errorlevel 1 (
-    echo.
-    echo [ERRO] Falha na execucao do gerador!
+    echo [ERRO] Falha na compilacao ou execucao do gerador!
     pause
     exit /b 1
 )

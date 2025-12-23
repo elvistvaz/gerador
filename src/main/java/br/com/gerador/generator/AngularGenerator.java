@@ -244,6 +244,9 @@ public class AngularGenerator {
         // Se houver entidade Usuario no metamodelo, usa os componentes gerados pelo metamodelo
         // Caso contrário, usa os componentes genéricos do AccessControl
         if (!hasUsuarioEntity) {
+            // Usuario Model
+            writeFile("src/app/models/usuario.model.ts", accessControlTemplate.generateUsuarioModel(), "models/usuario.model.ts");
+
             // Service
             writeFile("src/app/services/usuario.service.ts", accessControlTemplate.generateUsuarioService(), "services/usuario.service.ts");
 
