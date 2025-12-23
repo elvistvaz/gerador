@@ -50,8 +50,8 @@ export class ComentarioIndicadorListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.municipioNome = this.sessionService.getMunicipioNome();
-    this.avaliacaoNome = this.sessionService.getAvaliacaoNome();
+    this.municipioNome = this.sessionService.getMunicipioIdNome();
+    this.avaliacaoNome = this.sessionService.getAvaliacaoIdNome();
     this.route.queryParams.subscribe(params => {
       this.parentFilter = {};
       this.parentFilterKey = null;

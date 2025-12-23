@@ -275,8 +275,8 @@ public class AngularListComponentTemplate {
             String contextBase = filterField.endsWith("Id")
                 ? filterField.substring(0, filterField.length() - 2)
                 : filterField;
-            String contextBaseCapitalized = contextBase.substring(0, 1).toUpperCase() + contextBase.substring(1);
-            sb.append("    this.").append(contextBase).append("Nome = this.sessionService.get").append(contextBaseCapitalized).append("Nome();\n");
+            String filterFieldCapitalized = filterField.substring(0, 1).toUpperCase() + filterField.substring(1);
+            sb.append("    this.").append(contextBase).append("Nome = this.sessionService.get").append(filterFieldCapitalized).append("Nome();\n");
 
             // Segundo campo de filtro de sessão
             String filterField2 = getSessionFilterField2();
@@ -284,8 +284,8 @@ public class AngularListComponentTemplate {
                 String contextBase2 = filterField2.endsWith("Id")
                     ? filterField2.substring(0, filterField2.length() - 2)
                     : filterField2;
-                String contextBase2Capitalized = contextBase2.substring(0, 1).toUpperCase() + contextBase2.substring(1);
-                sb.append("    this.").append(contextBase2).append("Nome = this.sessionService.get").append(contextBase2Capitalized).append("Nome();\n");
+                String filterField2Capitalized = filterField2.substring(0, 1).toUpperCase() + filterField2.substring(1);
+                sb.append("    this.").append(contextBase2).append("Nome = this.sessionService.get").append(filterField2Capitalized).append("Nome();\n");
             }
         }
         // Ler query params para filtro de FK (navegação mestre-detalhe)

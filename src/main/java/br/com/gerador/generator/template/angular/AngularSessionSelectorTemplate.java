@@ -125,12 +125,11 @@ public class AngularSessionSelectorTemplate {
             sb.append("  }\n\n");
 
             // Método para obter texto selecionado
-            String idField = ctx.getField(); // idEmpresa
             sb.append("  getSelected").append(entity).append("Text(): string {\n");
             sb.append("    if (!this.selected").append(entity).append("Id) {\n");
             sb.append("      return 'Selecione...';\n");
             sb.append("    }\n");
-            sb.append("    const selected = this.").append(entityLower).append("Options.find(opt => opt.").append(idField).append(" === this.selected").append(entity).append("Id);\n");
+            sb.append("    const selected = this.").append(entityLower).append("Options.find(opt => opt.id === this.selected").append(entity).append("Id);\n");
             sb.append("    return selected ? String(selected.").append(displayField).append(") : 'Selecione...';\n");
             sb.append("  }\n\n");
         }
@@ -145,7 +144,7 @@ public class AngularSessionSelectorTemplate {
             String displayField = ctx.getDisplayField();
 
             sb.append("    const ").append(entityLower).append("Selected = this.").append(entityLower)
-              .append("Options.find(opt => opt.").append(fieldName).append(" === this.selected").append(entity).append("Id);\n");
+              .append("Options.find(opt => opt.id === this.selected").append(entity).append("Id);\n");
             sb.append("    this.sessionService.set").append(capitalField).append("(\n");
             sb.append("      this.selected").append(entity).append("Id,\n");
             sb.append("      ").append(entityLower).append("Selected ? String(").append(entityLower).append("Selected.").append(displayField).append(") : undefined\n");
@@ -210,8 +209,8 @@ public class AngularSessionSelectorTemplate {
                 sb.append("          <div\n");
                 sb.append("            *ngFor=\"let opt of ").append(entityLower).append("Options\"\n");
                 sb.append("            class=\"radio-option\"\n");
-                sb.append("            (click)=\"select").append(entity).append("(opt.").append(idField).append(")\"\n");
-                sb.append("            [class.selected]=\"selected").append(entity).append("Id === opt.").append(idField).append("\"\n");
+                sb.append("            (click)=\"select").append(entity).append("(opt.id)\"\n");
+                sb.append("            [class.selected]=\"selected").append(entity).append("Id === opt.id\"\n");
                 sb.append("          >\n");
                 sb.append("            <span class=\"radio-circle\"></span>\n");
                 sb.append("            <span class=\"radio-label\">{{ opt.").append(displayField).append(" }}</span>\n");
@@ -236,8 +235,8 @@ public class AngularSessionSelectorTemplate {
                 sb.append("              <div\n");
                 sb.append("                *ngFor=\"let opt of filtered").append(entity).append("Options()\"\n");
                 sb.append("                class=\"option\"\n");
-                sb.append("                (click)=\"select").append(entity).append("(opt.").append(idField).append(")\"\n");
-                sb.append("                [class.selected]=\"selected").append(entity).append("Id === opt.").append(idField).append("\"\n");
+                sb.append("                (click)=\"select").append(entity).append("(opt.id)\"\n");
+                sb.append("                [class.selected]=\"selected").append(entity).append("Id === opt.id\"\n");
                 sb.append("              >\n");
                 sb.append("                {{ opt.").append(displayField).append(" }}\n");
                 sb.append("              </div>\n");

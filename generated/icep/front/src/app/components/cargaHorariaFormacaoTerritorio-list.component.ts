@@ -53,7 +53,7 @@ export class CargaHorariaFormacaoTerritorioListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.avaliacaoNome = this.sessionService.getAvaliacaoNome();
+    this.avaliacaoNome = this.sessionService.getAvaliacaoIdNome();
     this.route.queryParams.subscribe(params => {
       this.parentFilter = {};
       this.parentFilterKey = null;
