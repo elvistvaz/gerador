@@ -9,13 +9,13 @@ target/
 *.iml
 .vscode/
 
+# ===== Código Gerado =====
+generated/
+
 # ===== Node.js / Angular (dentro de generated) =====
 node_modules/
 dist/
 .angular/
-
-# ===== Build do backend gerado =====
-generated/**/target/
 
 # ===== Arquivos Temporários =====
 *.log
