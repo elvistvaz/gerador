@@ -77,6 +77,9 @@ public class LaravelModelTemplate {
         // Casts
         generateCasts(sb, entity);
 
+        // Field options (constants and accessor for labels)
+        generateFieldOptions(sb, entity);
+
         // Relationships
         generateRelationships(sb, entity, metaModel);
 
@@ -294,6 +297,80 @@ public class LaravelModelTemplate {
             case DATETIME, TIME -> "datetime";
             default -> null;
         };
+    }
+
+    /**
+     * Gera constantes e métodos para campos com opções definidas (ui.options).
+     */
+    private void generateFieldOptions(StringBuilder sb, Entity entity) {
+        if (entity.getFields() == null) return;
+
+        for (Field field : entity.getFields()) {
+            if (field.getUi() != null && field.getUi().hasOptions()) {
+                String fieldName = field.getName();
+                String fieldNameSnake = toSnakeCase(fieldName);
+                String fieldNameUpper = fieldNameSnake.toUpperCase();
+
+                sb.append("\n    // Opções do campo ").append(fieldNameSnake).append("\n");
+
+                // Gerar constantes para cada opção
+                for (br.com.gerador.metamodel.model.FieldOption option : field.getUi().getOptions()) {
+                    String optionValue = option.getValue().toString();
+                    String optionLabel = option.getLabel();
+
+                    // Criar nome da constante: CAMPO_LABEL_NORMALIZADO
+                    String constantName = fieldNameUpper + "_" + normalizeConstantName(optionLabel);
+
+                    sb.append("    public const ").append(constantName).append(" = ").append(optionValue).append(";\n");
+                }
+
+                // Gerar método estático que retorna todas as opções
+                String methodName = "get" + capitalize(toCamelCase(fieldName)) + "Options";
+                sb.append("\n    /**\n");
+                sb.append("     * Retorna todas as opções de ").append(fieldNameSnake).append("\n");
+                sb.append("     */\n");
+                sb.append("    public static function ").append(methodName).append("()\n");
+                sb.append("    {\n");
+                sb.append("        return [\n");
+
+                for (br.com.gerador.metamodel.model.FieldOption option : field.getUi().getOptions()) {
+                    String optionValue = option.getValue().toString();
+                    String optionLabel = option.getLabel();
+                    String constantName = fieldNameUpper + "_" + normalizeConstantName(optionLabel);
+
+                    sb.append("            self::").append(constantName).append(" => '").append(optionLabel).append("',\n");
+                }
+
+                sb.append("        ];\n");
+                sb.append("    }\n");
+
+                // Gerar accessor para obter o label do valor atual
+                String accessorName = fieldNameSnake + "_label";
+                sb.append("\n    /**\n");
+                sb.append("     * Retorna o label do ").append(fieldNameSnake).append("\n");
+                sb.append("     */\n");
+                sb.append("    public function get").append(capitalize(toCamelCase(fieldName))).append("LabelAttribute()\n");
+                sb.append("    {\n");
+                sb.append("        $options = self::").append(methodName).append("();\n");
+                sb.append("        return $options[$this->").append(fieldNameSnake).append("] ?? '-';\n");
+                sb.append("    }\n");
+            }
+        }
+    }
+
+    /**
+     * Normaliza o nome de uma label para usar como nome de constante.
+     */
+    private String normalizeConstantName(String label) {
+        return label.toUpperCase()
+                .replaceAll("[ÀÁÂÃÄÅ]", "A")
+                .replaceAll("[ÈÉÊË]", "E")
+                .replaceAll("[ÌÍÎÏ]", "I")
+                .replaceAll("[ÒÓÔÕÖ]", "O")
+                .replaceAll("[ÙÚÛÜ]", "U")
+                .replaceAll("[Ç]", "C")
+                .replaceAll("[^A-Z0-9]+", "_")
+                .replaceAll("^_+|_+$", ""); // Remove underscores no início e fim
     }
 
     private String toSnakeCase(String str) {

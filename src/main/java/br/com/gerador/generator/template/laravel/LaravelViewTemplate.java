@@ -41,6 +41,25 @@ public class LaravelViewTemplate {
         html.append("        </a>\n");
         html.append("    </div>\n\n");
 
+        // Seção de filtros ativos (se a entidade usa filtros de sessão)
+        if (hasSessionFilters(entity)) {
+            html.append("    @if(session('avaliacao_id') || session('municipio_id'))\n");
+            html.append("    <div class=\"alert alert-info mb-3\">\n");
+            html.append("        <strong><i class=\"fas fa-filter\"></i> Filtros ativos:</strong>\n");
+            html.append("        @if(session('avaliacao_id'))\n");
+            html.append("            <span class=\"badge bg-primary ms-2\">\n");
+            html.append("                Avaliação: {{ \\App\\Models\\Avaliacao::find(session('avaliacao_id'))?->nome ?? 'N/A' }}\n");
+            html.append("            </span>\n");
+            html.append("        @endif\n");
+            html.append("        @if(session('municipio_id'))\n");
+            html.append("            <span class=\"badge bg-primary ms-2\">\n");
+            html.append("                Município: {{ \\App\\Models\\Municipio::find(session('municipio_id'))?->nome ?? 'N/A' }}\n");
+            html.append("            </span>\n");
+            html.append("        @endif\n");
+            html.append("    </div>\n");
+            html.append("    @endif\n\n");
+        }
+
         // Tabela
         html.append("    <div class=\"card\">\n");
         html.append("        <div class=\"card-body\">\n");
@@ -53,6 +72,11 @@ public class LaravelViewTemplate {
         for (Field attr : entity.getFields()) {
             if (colCount >= 5) break;
             if (!attr.getName().endsWith("_at") && !attr.getName().equals("deleted_at")) {
+                // Pular campos que são filtros de sessão (já exibidos no contexto superior)
+                if (isSessionFilterField(attr)) {
+                    continue;
+                }
+
                 // Se for chave primária, mostrar apenas "#"
                 String label = attr.isPrimaryKey() ? "#" : getFieldLabel(attr);
                 // Determinar alinhamento: enum centralizado, números à direita, FKs e texto à esquerda
@@ -73,6 +97,11 @@ public class LaravelViewTemplate {
         for (Field attr : entity.getFields()) {
             if (colCount >= 5) break;
             if (!attr.getName().endsWith("_at") && !attr.getName().equals("deleted_at")) {
+                // Pular campos que são filtros de sessão (já exibidos no contexto superior)
+                if (isSessionFilterField(attr)) {
+                    continue;
+                }
+
                 String originalAttrName = attr.getName();
                 String attrName = toSnakeCase(originalAttrName);
                 // Determinar alinhamento: enum centralizado, números à direita, FKs e texto à esquerda
@@ -85,6 +114,10 @@ public class LaravelViewTemplate {
                     String relationName = toCamelCase(relatedEntity); // Usar camelCase para consistência com o model
 
                     html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(relationName).append("?->").append(displayField).append(" ?? '-' }}</td>\n");
+                } else if (hasFieldOptions(attr)) {
+                    // Se o campo tem opções (ui.options), usar o accessor de label
+                    String labelAccessor = attrName + "_label";
+                    html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(labelAccessor).append(" }}</td>\n");
                 } else {
                     html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(attrName).append(" }}</td>\n");
                 }
@@ -197,6 +230,21 @@ public class LaravelViewTemplate {
 
             if (inputType.equals("textarea")) {
                 html.append("                            <textarea name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"").append(inputClass).append(" @error('").append(attrName).append("') is-invalid @enderror\" rows=\"3\">{{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') }}</textarea>\n");
+            } else if (hasFieldOptions(attr)) {
+                // Para campos com opções predefinidas (ui.options)
+                String modelClass = "\\App\\Models\\" + entityName;
+                String methodName = "get" + capitalize(originalAttrName) + "Options";
+
+                html.append("                            <select name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"").append(inputClass).append(" @error('").append(attrName).append("') is-invalid @enderror\"");
+                if (attr.isRequired()) {
+                    html.append(" required");
+                }
+                html.append(">\n");
+                html.append("                                <option value=\"\">Selecione...</option>\n");
+                html.append("                                @foreach(").append(modelClass).append("::").append(methodName).append("() as $key => $label)\n");
+                html.append("                                    <option value=\"{{ $key }}\" {{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') == $key ? 'selected' : '' }}>{{ $label }}</option>\n");
+                html.append("                                @endforeach\n");
+                html.append("                            </select>\n");
             } else if (inputType.equals("select") || isForeignKey(attr)) {
                 // Para relacionamentos (Foreign Keys)
                 String relatedEntity = getRelatedEntityName(attr);
@@ -438,6 +486,7 @@ public class LaravelViewTemplate {
     /**
      * Determina o alinhamento CSS para um campo na grid.
      * - ENUM: centralizado (text-center)
+     * - Campos com opções (ui.options): centralizado (text-center)
      * - Números (exceto FK): alinhado à direita (text-end)
      * - FKs e texto: alinhado à esquerda (sem classe, padrão)
      */
@@ -449,6 +498,11 @@ public class LaravelViewTemplate {
             return " class=\"text-center\"";
         }
 
+        // Campos com opções predefinidas devem ser centralizados
+        if (hasFieldOptions(field)) {
+            return " class=\"text-center\"";
+        }
+
         // Números (mas não FKs) devem ser alinhados à direita
         if (isNumericField(field)) {
             return " class=\"text-end\"";
@@ -456,6 +510,50 @@ public class LaravelViewTemplate {
 
         // Texto e FKs ficam à esquerda (padrão, sem classe)
         return "";
+    }
+
+    /**
+     * Verifica se um campo tem opções predefinidas (ui.options).
+     */
+    private boolean hasFieldOptions(Field field) {
+        if (field == null) return false;
+        return field.getUi() != null && field.getUi().hasOptions();
+    }
+
+    /**
+     * Verifica se a entidade tem campos de filtro de sessão.
+     * Retorna true se a entidade possui municipio_id ou avaliacao_id.
+     */
+    private boolean hasSessionFilters(Entity entity) {
+        if (entity == null || entity.getFields() == null) return false;
+
+        for (Field field : entity.getFields()) {
+            if (isSessionFilterField(field)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Verifica se um campo é usado como filtro de sessão.
+     * Campos de sessão (município_id, avaliacao_id) não devem aparecer na grid
+     * pois já são exibidos no contexto de sessão na parte superior.
+     */
+    private boolean isSessionFilterField(Field field) {
+        if (field == null) return false;
+        String fieldName = toSnakeCase(field.getName());
+        return fieldName.equals("municipio_id") || fieldName.equals("avaliacao_id");
+    }
+
+    /**
+     * Capitaliza a primeira letra de uma string.
+     */
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return Character.toUpperCase(str.charAt(0)) + str.substring(1);
     }
 
     /**
