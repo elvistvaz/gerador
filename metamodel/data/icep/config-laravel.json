@@ -1,0 +1,271 @@
+{
+  "project": {
+    "id": "icep",
+    "name": "ICEP",
+    "description": "Sistema de Gestão Educacional ICEP",
+    "version": "1.0.0"
+  },
+  "generationType": "laravel",
+  "output": {
+    "baseDir": "generated/icep-laravel",
+    "cleanBeforeGenerate": false
+  },
+  "backend": {
+    "language": "php",
+    "framework": "laravel",
+    "phpVersion": "8.2",
+    "laravelVersion": "12.0",
+    "namespace": "App",
+    "port": 8000,
+    "apiPrefix": "api/v1",
+    "features": {
+      "swagger": true,
+      "audit": false,
+      "security": true,
+      "sanctum": true,
+      "jwt": true,
+      "breeze": true,
+      "horizon": false,
+      "pulse": true,
+      "softDeletes": true,
+      "timestamps": true
+    },
+    "packages": {
+      "darkaonline/l5-swagger": "^9.0",
+      "owen-it/laravel-auditing": "^14.0",
+      "tymon/jwt-auth": "^2.2",
+      "laravel/sanctum": "^4.0",
+      "laravel/breeze": "^2.3",
+      "laravel/pulse": "^1.4",
+      "livewire/livewire": "^3.6"
+    }
+  },
+  "views": {
+    "engine": "blade",
+    "includeVue": false,
+    "includeReact": false,
+    "includeLivewire": true,
+    "generateCRUD": true,
+    "theme": {
+      "primaryColor": "#667eea",
+      "secondaryColor": "#764ba2",
+      "gradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+    }
+  },
+  "database": {
+    "type": "mysql",
+    "host": "localhost",
+    "port": 3306,
+    "name": "icep",
+    "username": "root",
+    "password": "",
+    "charset": "utf8mb4",
+    "collation": "utf8mb4_unicode_ci",
+    "prefix": "",
+    "strict": true,
+    "engine": "InnoDB",
+    "options": {
+      "useMigrations": true,
+      "useSeeds": true,
+      "useFactories": false
+    }
+  },
+  "security": {
+    "jwt": {
+      "secret": "${JWT_SECRET}",
+      "ttl": 1440,
+      "refreshTtl": 20160,
+      "algo": "HS256"
+    },
+    "sanctum": {
+      "expiration": 525600,
+      "stateful": ["localhost", "localhost:3000", "127.0.0.1"]
+    },
+    "cors": {
+      "allowedOrigins": ["http://localhost:3000", "http://localhost:8000"],
+      "allowedMethods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      "allowedHeaders": ["*"],
+      "exposedHeaders": [],
+      "maxAge": 0,
+      "supportsCredentials": true
+    },
+    "defaultAdmin": {
+      "name": "Administrador",
+      "email": "admin@icep.edu.br",
+      "password": "admin123"
+    }
+  },
+  "logging": {
+    "channel": "stack",
+    "level": "debug",
+    "channels": {
+      "single": {
+        "driver": "single",
+        "path": "storage/logs/laravel.log",
+        "level": "debug"
+      },
+      "daily": {
+        "driver": "daily",
+        "path": "storage/logs/laravel.log",
+        "level": "debug",
+        "days": 14
+      }
+    }
+  },
+  "features": {
+    "pagination": {
+      "defaultPageSize": 15,
+      "maxPageSize": 100
+    },
+    "upload": {
+      "enabled": true,
+      "disk": "public",
+      "maxFileSize": 10240,
+      "allowedMimeTypes": ["image/jpeg", "image/png", "image/gif", "application/pdf"]
+    },
+    "email": {
+      "enabled": false,
+      "driver": "smtp",
+      "host": "smtp.mailtrap.io",
+      "port": 2525,
+      "username": "",
+      "password": "",
+      "encryption": "tls",
+      "fromAddress": "noreply@icep.edu.br",
+      "fromName": "ICEP"
+    },
+    "cache": {
+      "driver": "file",
+      "stores": {
+        "file": {
+          "driver": "file",
+          "path": "storage/framework/cache/data"
+        },
+        "redis": {
+          "driver": "redis",
+          "connection": "cache"
+        }
+      }
+    },
+    "queue": {
+      "driver": "sync",
+      "connections": {
+        "sync": {
+          "driver": "sync"
+        },
+        "database": {
+          "driver": "database",
+          "table": "jobs",
+          "queue": "default",
+          "retry_after": 90
+        }
+      }
+    }
+  },
+  "codeGeneration": {
+    "models": {
+      "extends": "App\\Models\\BaseModel",
+      "useSoftDeletes": true,
+      "useTimestamps": true,
+      "useAuditing": false,
+      "useCasts": true,
+      "useHidden": true,
+      "useGuarded": false
+    },
+    "controllers": {
+      "extends": "App\\Http\\Controllers\\Controller",
+      "useResourceController": true,
+      "useApiResponses": true,
+      "useValidation": true,
+      "useTransactions": true,
+      "includeIndex": true,
+      "includeShow": true,
+      "includeStore": true,
+      "includeUpdate": true,
+      "includeDestroy": true
+    },
+    "migrations": {
+      "useForeignKeys": true,
+      "useIndexes": true,
+      "useTimestamps": true,
+      "useSoftDeletes": true
+    },
+    "routes": {
+      "prefix": "api/v1",
+      "middleware": ["api", "auth:sanctum"],
+      "useResourceRoutes": true
+    },
+    "requests": {
+      "generateFormRequests": true,
+      "useAuthorization": true,
+      "customErrorMessages": true
+    }
+  },
+  "ui": {
+    "menu": {
+      "groups": [
+        {
+          "name": "Avaliações",
+          "icon": "fa-clipboard-check",
+          "order": 1,
+          "items": [
+            {"entity": "Avaliacao", "label": "Avaliações", "icon": "fa-clipboard-list"},
+            {"entity": "AvaliacaoIndicador", "label": "Avaliação por Indicador", "icon": "fa-chart-line"},
+            {"entity": "AvaliacaoSDA", "label": "Avaliação SDA", "icon": "fa-school"},
+            {"entity": "ComentarioIndicador", "label": "Comentários", "icon": "fa-comments"}
+          ]
+        },
+        {
+          "name": "Territórios",
+          "icon": "fa-map-marked-alt",
+          "order": 2,
+          "items": [
+            {"entity": "Territorio", "label": "Territórios", "icon": "fa-map"},
+            {"entity": "Municipio", "label": "Municípios", "icon": "fa-city"},
+            {"entity": "AtendimentoMunicipio", "label": "Atendimentos", "icon": "fa-hands-helping"}
+          ]
+        },
+        {
+          "name": "Formações",
+          "icon": "fa-graduation-cap",
+          "order": 3,
+          "items": [
+            {"entity": "Formacao", "label": "Formações", "icon": "fa-chalkboard-teacher"},
+            {"entity": "FormacaoTerritorio", "label": "Formações por Território", "icon": "fa-map-pin"},
+            {"entity": "CargaHorariaFormacao", "label": "Carga Horária", "icon": "fa-clock"},
+            {"entity": "CargaHorariaFormacaoTerritorio", "label": "CH por Território", "icon": "fa-calendar-alt"}
+          ]
+        },
+        {
+          "name": "Cadastros",
+          "icon": "fa-database",
+          "order": 4,
+          "items": [
+            {"entity": "AmbitoGestao", "label": "Âmbitos de Gestão", "icon": "fa-sitemap"},
+            {"entity": "AnoEscolar", "label": "Anos Escolares", "icon": "fa-calendar"},
+            {"entity": "ComponenteCurricular", "label": "Componentes Curriculares", "icon": "fa-book"},
+            {"entity": "ConceitoAprendido", "label": "Conceitos Aprendidos", "icon": "fa-star"},
+            {"entity": "PublicoAlvo", "label": "Público Alvo", "icon": "fa-users"},
+            {"entity": "SegmentoAtendido", "label": "Segmentos Atendidos", "icon": "fa-layer-group"},
+            {"entity": "Indicador", "label": "Indicadores", "icon": "fa-chart-bar"},
+            {"entity": "AprendizagemEsperada", "label": "Aprendizagens Esperadas", "icon": "fa-lightbulb"}
+          ]
+        }
+      ]
+    },
+    "icons": {
+      "actions": {
+        "create": "fa-plus",
+        "edit": "fa-edit",
+        "delete": "fa-trash",
+        "view": "fa-eye",
+        "save": "fa-save",
+        "cancel": "fa-times",
+        "back": "fa-arrow-left",
+        "search": "fa-search",
+        "filter": "fa-filter",
+        "export": "fa-download"
+      }
+    }
+  }
+}

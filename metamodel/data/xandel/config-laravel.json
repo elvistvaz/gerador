@@ -1,0 +1,204 @@
+{
+  "project": {
+    "id": "xandel",
+    "name": "Xandel",
+    "description": "Sistema de Gestão Xandel",
+    "version": "1.0.0"
+  },
+  "generationType": "laravel",
+  "output": {
+    "baseDir": "generated/xandel-laravel",
+    "cleanBeforeGenerate": false
+  },
+  "backend": {
+    "language": "php",
+    "framework": "laravel",
+    "phpVersion": "8.2",
+    "laravelVersion": "12.0",
+    "namespace": "App",
+    "port": 8000,
+    "apiPrefix": "api/v1",
+    "features": {
+      "swagger": true,
+      "audit": false,
+      "security": true,
+      "sanctum": true,
+      "jwt": true,
+      "breeze": true,
+      "horizon": false,
+      "pulse": true,
+      "softDeletes": true,
+      "timestamps": true
+    },
+    "packages": {
+      "darkaonline/l5-swagger": "^9.0",
+      "owen-it/laravel-auditing": "^14.0",
+      "tymon/jwt-auth": "^2.2",
+      "laravel/sanctum": "^4.0",
+      "laravel/breeze": "^2.3",
+      "laravel/pulse": "^1.4",
+      "livewire/livewire": "^3.6"
+    }
+  },
+  "views": {
+    "engine": "blade",
+    "includeVue": false,
+    "includeReact": false,
+    "includeLivewire": true,
+    "generateCRUD": true,
+    "theme": {
+      "primaryColor": "#667eea",
+      "secondaryColor": "#764ba2",
+      "gradient": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+    }
+  },
+  "database": {
+    "type": "mysql",
+    "host": "localhost",
+    "port": 3306,
+    "name": "xandel",
+    "username": "root",
+    "password": "",
+    "charset": "utf8mb4",
+    "collation": "utf8mb4_unicode_ci",
+    "prefix": "",
+    "strict": true,
+    "engine": "InnoDB",
+    "options": {
+      "useMigrations": true,
+      "useSeeds": true,
+      "useFactories": false
+    }
+  },
+  "security": {
+    "jwt": {
+      "secret": "${JWT_SECRET}",
+      "ttl": 1440,
+      "refreshTtl": 20160,
+      "algo": "HS256"
+    },
+    "sanctum": {
+      "expiration": 525600,
+      "stateful": ["localhost", "localhost:3000", "127.0.0.1"]
+    },
+    "cors": {
+      "allowedOrigins": ["http://localhost:3000", "http://localhost:8000"],
+      "allowedMethods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      "allowedHeaders": ["*"],
+      "exposedHeaders": [],
+      "maxAge": 0,
+      "supportsCredentials": true
+    },
+    "defaultAdmin": {
+      "name": "Administrador",
+      "email": "admin@xandel.com.br",
+      "password": "admin123"
+    }
+  },
+  "logging": {
+    "channel": "stack",
+    "level": "debug",
+    "channels": {
+      "single": {
+        "driver": "single",
+        "path": "storage/logs/laravel.log",
+        "level": "debug"
+      },
+      "daily": {
+        "driver": "daily",
+        "path": "storage/logs/laravel.log",
+        "level": "debug",
+        "days": 14
+      }
+    }
+  },
+  "features": {
+    "pagination": {
+      "defaultPageSize": 15,
+      "maxPageSize": 100
+    },
+    "upload": {
+      "enabled": true,
+      "disk": "public",
+      "maxFileSize": 10240,
+      "allowedMimeTypes": ["image/jpeg", "image/png", "image/gif", "application/pdf"]
+    },
+    "email": {
+      "enabled": false,
+      "driver": "smtp",
+      "host": "smtp.mailtrap.io",
+      "port": 2525,
+      "username": "",
+      "password": "",
+      "encryption": "tls",
+      "fromAddress": "noreply@xandel.com.br",
+      "fromName": "Xandel"
+    },
+    "cache": {
+      "driver": "file",
+      "stores": {
+        "file": {
+          "driver": "file",
+          "path": "storage/framework/cache/data"
+        },
+        "redis": {
+          "driver": "redis",
+          "connection": "cache"
+        }
+      }
+    },
+    "queue": {
+      "driver": "sync",
+      "connections": {
+        "sync": {
+          "driver": "sync"
+        },
+        "database": {
+          "driver": "database",
+          "table": "jobs",
+          "queue": "default",
+          "retry_after": 90
+        }
+      }
+    }
+  },
+  "codeGeneration": {
+    "models": {
+      "extends": "App\\Models\\BaseModel",
+      "useSoftDeletes": true,
+      "useTimestamps": true,
+      "useAuditing": true,
+      "useCasts": true,
+      "useHidden": true,
+      "useGuarded": false
+    },
+    "controllers": {
+      "extends": "App\\Http\\Controllers\\Controller",
+      "useResourceController": true,
+      "useApiResponses": true,
+      "useValidation": true,
+      "useTransactions": true,
+      "includeIndex": true,
+      "includeShow": true,
+      "includeStore": true,
+      "includeUpdate": true,
+      "includeDestroy": true
+    },
+    "migrations": {
+      "useForeignKeys": true,
+      "useIndexes": true,
+      "useTimestamps": true,
+      "useSoftDeletes": true
+    },
+    "routes": {
+      "prefix": "api/v1",
+      "middleware": ["api", "auth:sanctum"],
+      "useResourceRoutes": true
+    },
+    "requests": {
+      "generateFormRequests": true,
+      "useAuthorization": true,
+      "customErrorMessages": true
+    }
+  }
+}

@@ -1,0 +1,412 @@
+package br.com.gerador.generator.template.laravel;
+
+import br.com.gerador.generator.config.ProjectConfig;
+import br.com.gerador.metamodel.model.Field;
+import br.com.gerador.metamodel.model.Entity;
+import br.com.gerador.metamodel.model.MetaModel;
+
+import java.util.stream.Collectors;
+
+/**
+ * Template para geração de views Blade do Laravel (CRUD).
+ */
+public class LaravelViewTemplate {
+
+    private ProjectConfig projectConfig;
+
+    public void setProjectConfig(ProjectConfig projectConfig) {
+        this.projectConfig = projectConfig;
+    }
+
+    /**
+     * Gera a view de listagem (index) para uma entidade.
+     */
+    public String generateIndexView(Entity entity, MetaModel metaModel) {
+        String entityName = entity.getName();
+        String entityNameLower = toLowerCamelCase(entityName);
+        String entityNamePlural = toPlural(entityNameLower); // Para nomes de variáveis Blade
+        String displayName = entity.getDisplayName() != null ? entity.getDisplayName() : entityName;
+
+        StringBuilder html = new StringBuilder();
+        html.append("@extends('layouts.app')\n\n");
+        html.append("@section('title', '").append(displayName).append("')\n\n");
+        html.append("@section('content')\n");
+        html.append("<div class=\"container\">\n");
+        html.append("    <div class=\"d-flex justify-content-between align-items-center mb-4\">\n");
+        html.append("        <h2>").append(displayName).append("</h2>\n");
+        html.append("        <a href=\"{{ route('").append(entityNameLower).append(".create') }}\" class=\"btn btn-primary\">\n");
+        html.append("            <i class=\"fas ").append(getActionIcon("create")).append("\"></i> Novo\n");
+        html.append("        </a>\n");
+        html.append("    </div>\n\n");
+
+        // Tabela
+        html.append("    <div class=\"card\">\n");
+        html.append("        <div class=\"card-body\">\n");
+        html.append("            <table class=\"table table-hover\">\n");
+        html.append("                <thead>\n");
+        html.append("                    <tr>\n");
+
+        // Cabeçalhos das colunas (primeiros 5 campos)
+        int colCount = 0;
+        for (Field attr : entity.getFields()) {
+            if (colCount >= 5) break;
+            if (!attr.getName().endsWith("_at") && !attr.getName().equals("deleted_at")) {
+                html.append("                        <th>").append(getFieldLabel(attr)).append("</th>\n");
+                colCount++;
+            }
+        }
+        html.append("                        <th class=\"text-end\">Ações</th>\n");
+        html.append("                    </tr>\n");
+        html.append("                </thead>\n");
+        html.append("                <tbody>\n");
+        html.append("                    @forelse($").append(entityNamePlural).append(" as $").append(entityNameLower).append(")\n");
+        html.append("                        <tr>\n");
+
+        // Células de dados
+        colCount = 0;
+        for (Field attr : entity.getFields()) {
+            if (colCount >= 5) break;
+            if (!attr.getName().endsWith("_at") && !attr.getName().equals("deleted_at")) {
+                String originalAttrName = attr.getName();
+                String attrName = toSnakeCase(originalAttrName);
+
+                // Se for FK, mostrar o rótulo da entidade relacionada ao invés do ID
+                if (isForeignKey(attr)) {
+                    String relatedEntity = extractRelatedEntityName(originalAttrName);
+                    String displayField = getDisplayFieldForEntity(relatedEntity);
+                    String relationName = relatedEntity.toLowerCase();
+
+                    html.append("                            <td>{{ $").append(entityNameLower).append("->").append(relationName).append("?->").append(displayField).append(" ?? '-' }}</td>\n");
+                } else {
+                    html.append("                            <td>{{ $").append(entityNameLower).append("->").append(attrName).append(" }}</td>\n");
+                }
+                colCount++;
+            }
+        }
+
+        // Botões de ação
+        html.append("                            <td class=\"text-end\">\n");
+        html.append("                                <div class=\"btn-group\" role=\"group\">\n");
+
+        // Para rota de edição - usar a chave primária
+        String primaryKeyAccess = getPrimaryKeyAccessExpression(entity, entityNameLower);
+        html.append("                                    <a href=\"{{ route('").append(entityNameLower).append(".edit', ").append(primaryKeyAccess).append(") }}\" class=\"btn btn-sm btn-outline-primary\" title=\"Editar\">\n");
+        html.append("                                        <i class=\"fas ").append(getActionIcon("edit")).append("\"></i> Editar\n");
+        html.append("                                    </a>\n");
+        html.append("                                    <form action=\"{{ route('").append(entityNameLower).append(".destroy', ").append(primaryKeyAccess).append(") }}\" method=\"POST\" class=\"d-inline\" onsubmit=\"return confirm('Deseja realmente excluir este registro?');\">\n");
+        html.append("                                        @csrf\n");
+        html.append("                                        @method('DELETE')\n");
+        html.append("                                        <button type=\"submit\" class=\"btn btn-sm btn-outline-danger\" title=\"Excluir\">\n");
+        html.append("                                            <i class=\"fas ").append(getActionIcon("delete")).append("\"></i> Excluir\n");
+        html.append("                                        </button>\n");
+        html.append("                                    </form>\n");
+        html.append("                                </div>\n");
+        html.append("                            </td>\n");
+        html.append("                        </tr>\n");
+        html.append("                    @empty\n");
+        html.append("                        <tr>\n");
+        html.append("                            <td colspan=\"").append(colCount + 1).append("\" class=\"text-center text-muted\">Nenhum registro encontrado.</td>\n");
+        html.append("                        </tr>\n");
+        html.append("                    @endforelse\n");
+        html.append("                </tbody>\n");
+        html.append("            </table>\n\n");
+
+        // Paginação
+        html.append("            <div class=\"d-flex flex-column align-items-center mt-4\">\n");
+        html.append("                {{ $").append(entityNamePlural).append("->links('pagination::bootstrap-5') }}\n");
+        html.append("            </div>\n");
+        html.append("        </div>\n");
+        html.append("    </div>\n");
+        html.append("</div>\n");
+        html.append("@endsection\n");
+
+        return html.toString();
+    }
+
+    /**
+     * Gera a view de formulário (create/edit) para uma entidade.
+     */
+    public String generateFormView(Entity entity, MetaModel metaModel) {
+        String entityName = entity.getName();
+        String entityNameLower = toLowerCamelCase(entityName);
+        String displayName = entity.getDisplayName() != null ? entity.getDisplayName() : entityName;
+
+        StringBuilder html = new StringBuilder();
+        html.append("@extends('layouts.app')\n\n");
+        html.append("@section('title', isset($").append(entityNameLower).append(") ? 'Editar ").append(displayName).append("' : 'Novo ").append(displayName).append("')\n\n");
+        html.append("@section('content')\n");
+        html.append("<div class=\"container\">\n");
+        html.append("    <div class=\"row justify-content-center\">\n");
+        html.append("        <div class=\"col-md-8\">\n");
+        html.append("            <div class=\"card\">\n");
+        html.append("                <div class=\"card-header\">\n");
+        html.append("                    <h4>{{ isset($").append(entityNameLower).append(") ? 'Editar ").append(displayName).append("' : 'Novo ").append(displayName).append("' }}</h4>\n");
+        html.append("                </div>\n");
+        html.append("                <div class=\"card-body\">\n");
+        html.append("                    <form action=\"{{ isset($").append(entityNameLower).append(") ? route('").append(entityNameLower).append(".update', $").append(entityNameLower).append(") : route('").append(entityNameLower).append(".store') }}\" method=\"POST\">\n");
+        html.append("                        @csrf\n");
+        html.append("                        @if(isset($").append(entityNameLower).append("))\n");
+        html.append("                            @method('PUT')\n");
+        html.append("                        @endif\n\n");
+
+        // Campos do formulário
+        for (Field attr : entity.getFields()) {
+            String originalAttrName = attr.getName(); // Nome original em camelCase do metamodel
+            String attrName = toSnakeCase(originalAttrName); // Nome em snake_case para Laravel
+
+            // Pular campos automáticos
+            if (attrName.endsWith("_at") || attrName.equals("deleted_at")) {
+                continue;
+            }
+
+            // Verificar se é chave primária
+            boolean isPrimary = entity.getPrimaryKeyFields().stream()
+                .anyMatch(f -> toSnakeCase(f.getName()).equals(attrName));
+
+            // Auto-increment: INTEGER primary keys são auto-increment, STRING não são
+            boolean isAutoIncrement = isPrimary && isNumericType(attr.getDatabaseType());
+
+            // Pular auto-increment no formulário de criação, mas mostrar no modo edição (readonly)
+            if (isPrimary && isAutoIncrement) {
+                // Mostrar apenas no modo edição (readonly)
+                html.append("                        @if(isset($").append(entityNameLower).append("))\n");
+                html.append("                        <div class=\"mb-3\">\n");
+                html.append("                            <label for=\"").append(attrName).append("\" class=\"form-label\">").append(getFieldLabel(attr)).append("</label>\n");
+                html.append("                            <input type=\"text\" class=\"form-control\" value=\"{{ $").append(entityNameLower).append("->").append(attrName).append(" }}\" readonly>\n");
+                html.append("                        </div>\n");
+                html.append("                        @endif\n\n");
+                continue;
+            }
+
+            html.append("                        <div class=\"mb-3\">\n");
+            html.append("                            <label for=\"").append(attrName).append("\" class=\"form-label\">").append(getFieldLabel(attr)).append("</label>\n");
+
+            // Determinar tipo de input
+            String inputType = getInputType(attr);
+            String inputClass = "form-control";
+
+            if (inputType.equals("textarea")) {
+                html.append("                            <textarea name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"").append(inputClass).append(" @error('").append(attrName).append("') is-invalid @enderror\" rows=\"3\">{{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') }}</textarea>\n");
+            } else if (inputType.equals("select") || isForeignKey(attr)) {
+                // Para relacionamentos (Foreign Keys)
+                String relatedEntity = extractRelatedEntityName(originalAttrName);
+                String relatedEntityPlural = toPlural(relatedEntity.toLowerCase());
+                String displayField = getDisplayFieldForEntity(relatedEntity);
+
+                html.append("                            <select name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"").append(inputClass).append(" @error('").append(attrName).append("') is-invalid @enderror\"");
+                if (attr.isRequired()) {
+                    html.append(" required");
+                }
+                html.append(">\n");
+                html.append("                                <option value=\"\">Selecione...</option>\n");
+                html.append("                                @foreach($").append(relatedEntityPlural).append(" as $item)\n");
+                // O value deve ser a chave primária da entidade relacionada (geralmente 'id')
+                html.append("                                    <option value=\"{{ $item->id }}\" {{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') == $item->id ? 'selected' : '' }}>{{ $item->").append(displayField).append(" }}</option>\n");
+                html.append("                                @endforeach\n");
+                html.append("                            </select>\n");
+            } else {
+                html.append("                            <input type=\"").append(inputType).append("\" name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"").append(inputClass).append(" @error('").append(attrName).append("') is-invalid @enderror\" value=\"{{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') }}\"");
+
+                if (attr.isRequired()) {
+                    html.append(" required");
+                }
+                html.append(">\n");
+            }
+
+            html.append("                            @error('").append(attrName).append("')\n");
+            html.append("                                <div class=\"invalid-feedback\">{{ $message }}</div>\n");
+            html.append("                            @enderror\n");
+            html.append("                        </div>\n\n");
+        }
+
+        // Botões
+        html.append("                        <div class=\"d-flex justify-content-between\">\n");
+        html.append("                            <a href=\"{{ route('").append(entityNameLower).append(".index') }}\" class=\"btn btn-secondary\">\n");
+        html.append("                                <i class=\"fas ").append(getActionIcon("cancel")).append("\"></i> Cancelar\n");
+        html.append("                            </a>\n");
+        html.append("                            <button type=\"submit\" class=\"btn btn-primary\">\n");
+        html.append("                                <i class=\"fas ").append(getActionIcon("save")).append("\"></i> {{ isset($").append(entityNameLower).append(") ? 'Atualizar' : 'Salvar' }}\n");
+        html.append("                            </button>\n");
+        html.append("                        </div>\n");
+        html.append("                    </form>\n");
+        html.append("                </div>\n");
+        html.append("            </div>\n");
+        html.append("        </div>\n");
+        html.append("    </div>\n");
+        html.append("</div>\n");
+        html.append("@endsection\n");
+
+        return html.toString();
+    }
+
+    private String getInputType(Field attr) {
+        String type = attr.getDatabaseType() != null ? attr.getDatabaseType().toLowerCase() : "";
+
+        if (type.contains("text") || type.contains("longtext")) {
+            return "textarea";
+        } else if (type.contains("int") || type.contains("decimal") || type.contains("float") || type.contains("double")) {
+            return "number";
+        } else if (type.contains("date") && !type.contains("time")) {
+            return "date";
+        } else if (type.contains("datetime") || type.contains("timestamp")) {
+            return "datetime-local";
+        } else if (type.contains("bool")) {
+            return "checkbox";
+        } else if (type.contains("email")) {
+            return "email";
+        }
+
+        return "text";
+    }
+
+    private String toLowerCamelCase(String name) {
+        if (name == null || name.isEmpty()) return name;
+        return Character.toLowerCase(name.charAt(0)) + name.substring(1);
+    }
+
+    private String toPlural(String name) {
+        if (name.endsWith("s")) return name + "es";
+        if (name.endsWith("y")) return name.substring(0, name.length() - 1) + "ies";
+        return name + "s";
+    }
+
+    private String toSnakeCase(String name) {
+        return name.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+    }
+
+    private String toHumanReadable(String name) {
+        // Converte snake_case para "Snake Case"
+        String[] parts = name.split("_");
+        StringBuilder result = new StringBuilder();
+        for (String part : parts) {
+            if (result.length() > 0) result.append(" ");
+            result.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1));
+        }
+        return result.toString();
+    }
+
+    /**
+     * Gera a expressão para acessar a chave primária da entidade nas rotas.
+     * Se for chave simples, retorna "$entidade->id_campo".
+     * Se for chave composta, retorna "[$entidade->id_campo1, $entidade->id_campo2]".
+     */
+    private String getPrimaryKeyAccessExpression(Entity entity, String entityVariableName) {
+        java.util.List<Field> primaryKeys = entity.getPrimaryKeyFields();
+
+        if (primaryKeys.isEmpty()) {
+            // Fallback: tentar encontrar campo "id"
+            return "$" + entityVariableName + "->id";
+        }
+
+        if (primaryKeys.size() == 1) {
+            // Chave primária simples - CORRIGIDO: usar snake_case
+            String pkName = toSnakeCase(primaryKeys.get(0).getName());
+            return "$" + entityVariableName + "->" + pkName;
+        } else {
+            // Chave primária composta - CORRIGIDO: usar snake_case
+            String keys = primaryKeys.stream()
+                .map(pk -> "$" + entityVariableName + "->" + toSnakeCase(pk.getName()))
+                .collect(Collectors.joining(", "));
+            return "[" + keys + "]";
+        }
+    }
+
+    /**
+     * Retorna o label do campo conforme definido no JSON ou fallback para nome humanizado.
+     */
+    private String getFieldLabel(Field field) {
+        // Usar o label do metamodel JSON se disponível
+        if (field.getLabel() != null && !field.getLabel().isEmpty()) {
+            return field.getLabel();
+        }
+        // Fallback para nome humanizado
+        return toHumanReadable(field.getName());
+    }
+
+    /**
+     * Verifica se o tipo do banco de dados é numérico (indicativo de auto-increment).
+     */
+    private boolean isNumericType(String databaseType) {
+        if (databaseType == null) return false;
+        String type = databaseType.toLowerCase();
+        return type.contains("int") || type.contains("serial") || type.contains("identity");
+    }
+
+    /**
+     * Verifica se um campo é uma Foreign Key (tem referência a outra entidade).
+     */
+    private boolean isForeignKey(Field field) {
+        // Verifica se tem referência no metadata ou usa heurística
+        if (field.isPrimaryKey()) return false;
+
+        String fieldName = field.getName();
+        if (fieldName.length() < 3) return false;
+
+        // Suporta dois padrões:
+        // 1. idEntidade (começa com "id" seguido de maiúscula) - ex: idCidade
+        // 2. entidadeId (termina com "Id") - ex: cidadeId, territorioId
+        return (fieldName.startsWith("id") && Character.isUpperCase(fieldName.charAt(2))) ||
+               (fieldName.endsWith("Id") && fieldName.length() > 2);
+    }
+
+    /**
+     * Extrai o nome da entidade relacionada a partir do nome do campo FK.
+     * Exemplo: "idBairro" -> "Bairro", "cidadeId" -> "Cidade"
+     */
+    private String extractRelatedEntityName(String fieldName) {
+        // Padrão 1: idEntidade -> Entidade
+        if (fieldName.startsWith("id") && fieldName.length() > 2 && Character.isUpperCase(fieldName.charAt(2))) {
+            return fieldName.substring(2); // Remove "id" do início
+        }
+        // Padrão 2: entidadeId -> Entidade
+        if (fieldName.endsWith("Id") && fieldName.length() > 2) {
+            String entityName = fieldName.substring(0, fieldName.length() - 2); // Remove "Id" do final
+            // Capitaliza primeira letra
+            return Character.toUpperCase(entityName.charAt(0)) + entityName.substring(1);
+        }
+        return fieldName;
+    }
+
+    /**
+     * Retorna o campo de exibição padrão para uma entidade.
+     * Exemplo: Para "Territorio" retorna "nome"
+     * TODO: Buscar do JSON metadata quando disponível
+     */
+    private String getDisplayFieldForEntity(String entityName) {
+        // Heurística: usa "nome" como campo padrão de exibição
+        // A maioria das entidades usa "nome" como campo principal
+        return "nome";
+    }
+
+    /**
+     * Retorna o ícone configurado para uma ação específica.
+     */
+    private String getActionIcon(String action) {
+        if (projectConfig == null) {
+            return getDefaultActionIcon(action);
+        }
+
+        String iconPath = "ui.icons.actions." + action;
+        String icon = projectConfig.getString(iconPath, null);
+        return icon != null ? icon : getDefaultActionIcon(action);
+    }
+
+    /**
+     * Retorna ícones padrão caso não estejam configurados.
+     */
+    private String getDefaultActionIcon(String action) {
+        return switch (action) {
+            case "create" -> "fa-plus";
+            case "edit" -> "fa-edit";
+            case "delete" -> "fa-trash";
+            case "view" -> "fa-eye";
+            case "save" -> "fa-save";
+            case "cancel" -> "fa-times";
+            case "back" -> "fa-arrow-left";
+            case "search" -> "fa-search";
+            case "filter" -> "fa-filter";
+            case "export" -> "fa-download";
+            default -> "fa-circle";
+        };
+    }
+}

@@ -1,50 +1,37 @@
 @echo off
-setlocal enabledelayedexpansion
+setlocal
 
-REM ============================================================
-REM  GERADOR FULL STACK (Spring Boot + Angular)
-REM
-REM  Uso:
-REM    gerar.bat         - Usa a pasta "icep" como padrao
-REM    gerar.bat xandel  - Usa a pasta "xandel"
-REM    gerar.bat icep    - Usa a pasta "icep"
-REM ============================================================
+REM =====================================================
+REM  Gerador Unificado - MetaModel Framework
+REM =====================================================
 
-set MAVEN_CMD="C:\Program Files\Apache\apache-maven-3.9.11\bin\mvn.cmd"
-set PROJECT_DIR=%~dp0
-
-REM Pasta padrao: icep
-set FOLDER_NAME=icep
-
-REM Verifica se foi passado argumento
-if not "%~1"=="" (
-    set FOLDER_NAME=%~1
-)
-
-echo.
-echo ============================================================
-echo   GERADOR FULL STACK - Spring Boot + Angular
-echo ============================================================
-echo.
-echo Pasta do modelo: %FOLDER_NAME%
-echo.
-echo ------------------------------------------------------------
-echo   Compilando e executando o gerador...
-echo ------------------------------------------------------------
-
-%MAVEN_CMD% -f "%PROJECT_DIR%pom.xml" clean compile exec:java -Dexec.mainClass="br.com.gerador.generator.FullStackGeneratorMain" -Dexec.args="%FOLDER_NAME%" -q
-
-if errorlevel 1 (
+if %%1 ==  (
+    echo Uso: gerar.bat [projeto]
     echo.
-    echo [ERRO] Falha na compilacao ou execucao do gerador!
-    pause
+    echo Exemplos:
+    echo   gerar.bat xandel    - Gera automaticamente baseado na configuracao
+    echo   gerar.bat icep      - Gera automaticamente baseado na configuracao
+    echo.
+    echo O tipo de geracao Spring Boot ou Laravel eh detectado
+    echo automaticamente pelo arquivo de configuracao na pasta.
+    echo.
     exit /b 1
 )
 
+set PROJECT=%%1
+
 echo.
-echo ============================================================
-echo   Geracao concluida com sucesso!
-echo ============================================================
+echo =====================================================
+echo  Iniciando Geracao para: %%PROJECT%%
+echo =====================================================
 echo.
 
-pause
+C:\Program Files\Apache\apache-maven-3.9.11\bin\mvn.cmd -f c:\java\workspace\Gerador\pom.xml compile exec:java -Dexec.mainClass=br.com.gerador.generator.UnifiedGeneratorMain -Dexec.args=%%PROJECT%% -q
+
+echo.
+echo =====================================================
+echo  Geracao Concluida\!
+echo =====================================================
+echo.
+
+endlocal

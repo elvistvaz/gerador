@@ -107,6 +107,25 @@ public class ProjectConfig {
         return getBoolean("backend.features.audit", true);
     }
 
+    /**
+     * Retorna o tipo de geração (spring-boot, laravel, etc).
+     */
+    public String getGenerationType() {
+        return getString("generationType", getBackendFramework());
+    }
+
+    /**
+     * Retorna um mapa com todas as features do backend.
+     */
+    public java.util.Map<String, Boolean> getBackendFeatures() {
+        java.util.Map<String, Boolean> features = new java.util.HashMap<>();
+        features.put("swagger", isSwaggerEnabled());
+        features.put("actuator", isActuatorEnabled());
+        features.put("security", isSecurityEnabled());
+        features.put("audit", isAuditEnabled());
+        return features;
+    }
+
     // ==================== FRONTEND ====================
 
     public String getFrontendFramework() {
@@ -288,7 +307,7 @@ public class ProjectConfig {
 
     // ==================== HELPER METHODS ====================
 
-    private String getString(String path, String defaultValue) {
+    public String getString(String path, String defaultValue) {
         try {
             String[] parts = path.split("\\.");
             JsonObject current = config;
@@ -409,10 +428,28 @@ public class ProjectConfig {
     }
 
     /**
+     * Carrega um arquivo de configuração específico.
+     */
+    public static ProjectConfig load(Path projectDir, String configFileName) throws IOException {
+        Path configPath = projectDir.resolve(configFileName);
+        if (!Files.exists(configPath)) {
+            throw new IOException("Arquivo " + configFileName + " não encontrado em: " + projectDir);
+        }
+        return new ProjectConfig(configPath);
+    }
+
+    /**
      * Verifica se o arquivo config.json existe.
      */
     public static boolean exists(Path projectDir) {
         return Files.exists(projectDir.resolve("config.json"));
+    }
+
+    /**
+     * Retorna o objeto JSON de configuração completo.
+     */
+    public JsonObject getConfig() {
+        return this.config;
     }
 
     @Override

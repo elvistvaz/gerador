@@ -52,7 +52,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
-                    <mainClass>br.com.gerador.generator.FullStackGeneratorMain</mainClass>
+                    <mainClass>br.com.gerador.generator.UnifiedGeneratorMain</mainClass>
                 </configuration>
             </plugin>
         </plugins>
