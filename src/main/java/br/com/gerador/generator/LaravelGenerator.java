@@ -219,6 +219,12 @@ public class LaravelGenerator {
         generateFile("resources/views/auth/register.blade.php", projectTemplate.generateRegisterView());
         generateFile("resources/views/dashboard.blade.php", projectTemplate.generateDashboardView());
 
+        // Tradução de paginação
+        generateFile("lang/pt_BR/pagination.php", projectTemplate.generatePaginationTranslation());
+
+        // Template customizado de paginação
+        generateFile("resources/views/vendor/pagination/bootstrap-5.blade.php", projectTemplate.generateBootstrap5PaginationView());
+
         // AuthController
         generateFile("app/Http/Controllers/AuthController.php", projectTemplate.generateAuthController());
 

@@ -51,11 +51,15 @@ public class LaravelViewTemplate {
         for (Field attr : entity.getFields()) {
             if (colCount >= 5) break;
             if (!attr.getName().endsWith("_at") && !attr.getName().equals("deleted_at")) {
-                html.append("                        <th>").append(getFieldLabel(attr)).append("</th>\n");
+                // Se for chave primária, mostrar apenas "#"
+                String label = attr.isPrimaryKey() ? "#" : getFieldLabel(attr);
+                // Alinhar números à direita
+                String alignment = isNumericField(attr) ? " class=\"text-end\"" : "";
+                html.append("                        <th").append(alignment).append(">").append(label).append("</th>\n");
                 colCount++;
             }
         }
-        html.append("                        <th class=\"text-end\">Ações</th>\n");
+        html.append("                        <th class=\"text-center\">Ações</th>\n");
         html.append("                    </tr>\n");
         html.append("                </thead>\n");
         html.append("                <tbody>\n");
@@ -69,6 +73,8 @@ public class LaravelViewTemplate {
             if (!attr.getName().endsWith("_at") && !attr.getName().equals("deleted_at")) {
                 String originalAttrName = attr.getName();
                 String attrName = toSnakeCase(originalAttrName);
+                // Alinhar números à direita
+                String alignment = isNumericField(attr) ? " class=\"text-end\"" : "";
 
                 // Se for FK, mostrar o rótulo da entidade relacionada ao invés do ID
                 if (isForeignKey(attr)) {
@@ -76,16 +82,16 @@ public class LaravelViewTemplate {
                     String displayField = getDisplayFieldForEntity(relatedEntity);
                     String relationName = relatedEntity.toLowerCase();
 
-                    html.append("                            <td>{{ $").append(entityNameLower).append("->").append(relationName).append("?->").append(displayField).append(" ?? '-' }}</td>\n");
+                    html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(relationName).append("?->").append(displayField).append(" ?? '-' }}</td>\n");
                 } else {
-                    html.append("                            <td>{{ $").append(entityNameLower).append("->").append(attrName).append(" }}</td>\n");
+                    html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(attrName).append(" }}</td>\n");
                 }
                 colCount++;
             }
         }
 
         // Botões de ação
-        html.append("                            <td class=\"text-end\">\n");
+        html.append("                            <td class=\"text-center\">\n");
         html.append("                                <div class=\"btn-group\" role=\"group\">\n");
 
         // Para rota de edição - usar a chave primária
@@ -130,17 +136,18 @@ public class LaravelViewTemplate {
         String entityName = entity.getName();
         String entityNameLower = toLowerCamelCase(entityName);
         String displayName = entity.getDisplayName() != null ? entity.getDisplayName() : entityName;
+        String displayNameSingular = toSingular(displayName);
 
         StringBuilder html = new StringBuilder();
         html.append("@extends('layouts.app')\n\n");
-        html.append("@section('title', isset($").append(entityNameLower).append(") ? 'Editar ").append(displayName).append("' : 'Novo ").append(displayName).append("')\n\n");
+        html.append("@section('title', isset($").append(entityNameLower).append(") ? 'Editar ").append(displayNameSingular).append("' : 'Novo ").append(displayNameSingular).append("')\n\n");
         html.append("@section('content')\n");
         html.append("<div class=\"container\">\n");
         html.append("    <div class=\"row justify-content-center\">\n");
         html.append("        <div class=\"col-md-8\">\n");
         html.append("            <div class=\"card\">\n");
         html.append("                <div class=\"card-header\">\n");
-        html.append("                    <h4>{{ isset($").append(entityNameLower).append(") ? 'Editar ").append(displayName).append("' : 'Novo ").append(displayName).append("' }}</h4>\n");
+        html.append("                    <h4>{{ isset($").append(entityNameLower).append(") ? 'Editar ").append(displayNameSingular).append("' : 'Novo ").append(displayNameSingular).append("' }}</h4>\n");
         html.append("                </div>\n");
         html.append("                <div class=\"card-body\">\n");
         html.append("                    <form action=\"{{ isset($").append(entityNameLower).append(") ? route('").append(entityNameLower).append(".update', $").append(entityNameLower).append(") : route('").append(entityNameLower).append(".store') }}\" method=\"POST\">\n");
@@ -270,6 +277,25 @@ public class LaravelViewTemplate {
         return name + "s";
     }
 
+    private String toSingular(String name) {
+        if (name == null || name.isEmpty()) return name;
+        // Regras básicas de singularização em português
+        if (name.endsWith("ões")) return name.substring(0, name.length() - 3) + "ão"; // Avaliações -> Avaliação
+        if (name.endsWith("ães")) return name.substring(0, name.length() - 3) + "ão"; // Capitães -> Capitão
+        if (name.endsWith("ies")) return name.substring(0, name.length() - 3) + "y";  // Categories -> Category
+        if (name.endsWith("ses")) return name.substring(0, name.length() - 2);        // Analyses -> Analysis
+        if (name.endsWith("zes")) return name.substring(0, name.length() - 2);        // Análises -> Análise
+        if (name.endsWith("res")) return name.substring(0, name.length() - 2);        // Valores -> Valore
+        if (name.endsWith("ais")) return name.substring(0, name.length() - 2) + "l";  // Municipais -> Municipal
+        if (name.endsWith("eis")) return name.substring(0, name.length() - 3) + "el"; // Papéis -> Papel
+        if (name.endsWith("óis")) return name.substring(0, name.length() - 3) + "ol"; // Faróis -> Farol
+        if (name.endsWith("is")) return name.substring(0, name.length() - 2) + "l";   // Territórios -> Território não, mas útil
+        if (name.endsWith("s") && !name.endsWith("us") && !name.endsWith("ss")) {
+            return name.substring(0, name.length() - 1); // Municípios -> Município
+        }
+        return name;
+    }
+
     private String toSnakeCase(String name) {
         return name.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
     }
@@ -330,6 +356,33 @@ public class LaravelViewTemplate {
         if (databaseType == null) return false;
         String type = databaseType.toLowerCase();
         return type.contains("int") || type.contains("serial") || type.contains("identity");
+    }
+
+    /**
+     * Verifica se um campo é numérico (para alinhar à direita nas tabelas).
+     */
+    private boolean isNumericField(Field field) {
+        if (field == null) return false;
+
+        // Verificar por DataType
+        if (field.getDataType() != null) {
+            String dataType = field.getDataType().toString().toLowerCase();
+            if (dataType.contains("int") || dataType.contains("long") || dataType.contains("short") ||
+                dataType.contains("byte") || dataType.contains("float") || dataType.contains("double") ||
+                dataType.contains("decimal") || dataType.contains("numeric") || dataType.contains("number")) {
+                return true;
+            }
+        }
+
+        // Fallback: verificar por databaseType
+        if (field.getDatabaseType() != null) {
+            String dbType = field.getDatabaseType().toLowerCase();
+            return dbType.contains("int") || dbType.contains("serial") || dbType.contains("numeric") ||
+                   dbType.contains("decimal") || dbType.contains("number") || dbType.contains("float") ||
+                   dbType.contains("double");
+        }
+
+        return false;
     }
 
     /**

@@ -94,7 +94,7 @@ APP_DEBUG=true
 APP_TIMEZONE=America/Sao_Paulo
 APP_URL=http://localhost:8000
 APP_LOCALE=pt_BR
-APP_FALLBACK_LOCALE=en
+APP_FALLBACK_LOCALE=pt_BR
 
 # SQLite para desenvolvimento (modo em memória)
 DB_CONNECTION=sqlite
@@ -1453,5 +1453,94 @@ Route::middleware(['auth'])->group(function () {
         }
 
         return menu.toString();
+    }
+
+    public String generatePaginationTranslation() {
+        return """
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pagination Language Lines
+    |--------------------------------------------------------------------------
+    |
+    | The following language lines are used by the paginator library to build
+    | the simple pagination links. You are free to change them to anything
+    | you want to customize your views to better match your application.
+    |
+    */
+
+    'previous' => '&laquo; Anterior',
+    'next' => 'Próximo &raquo;',
+
+];
+""";
+    }
+
+    public String generateBootstrap5PaginationView() {
+        return """
+@if ($paginator->hasPages())
+    <nav role="navigation" aria-label="{{ __('Pagination Navigation') }}" class="w-100">
+        <div class="d-flex flex-column align-items-center gap-2">
+            {{-- Informação de resultados --}}
+            <div class="text-muted small">
+                Mostrando
+                <span class="fw-semibold">{{ $paginator->firstItem() }}</span>
+                a
+                <span class="fw-semibold">{{ $paginator->lastItem() }}</span>
+                de
+                <span class="fw-semibold">{{ $paginator->total() }}</span>
+                resultados
+            </div>
+
+            {{-- Links de paginação --}}
+            <ul class="pagination mb-0">
+                {{-- Previous Page Link --}}
+                @if ($paginator->onFirstPage())
+                    <li class="page-item disabled" aria-disabled="true" aria-label="@lang('pagination.previous')">
+                        <span class="page-link" aria-hidden="true">&lsaquo;</span>
+                    </li>
+                @else
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $paginator->previousPageUrl() }}" rel="prev" aria-label="@lang('pagination.previous')">&lsaquo;</a>
+                    </li>
+                @endif
+
+                {{-- Pagination Elements --}}
+                @foreach ($elements as $element)
+                    {{-- "Three Dots" Separator --}}
+                    @if (is_string($element))
+                        <li class="page-item disabled" aria-disabled="true"><span class="page-link">{{ $element }}</span></li>
+                    @endif
+
+                    {{-- Array Of Links --}}
+                    @if (is_array($element))
+                        @foreach ($element as $page => $url)
+                            @if ($page == $paginator->currentPage())
+                                <li class="page-item active" aria-current="page"><span class="page-link">{{ $page }}</span></li>
+                            @else
+                                <li class="page-item"><a class="page-link" href="{{ $url }}">{{ $page }}</a></li>
+                            @endif
+                        @endforeach
+                    @endif
+                @endforeach
+
+                {{-- Next Page Link --}}
+                @if ($paginator->hasMorePages())
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $paginator->nextPageUrl() }}" rel="next" aria-label="@lang('pagination.next')">&rsaquo;</a>
+                    </li>
+                @else
+                    <li class="page-item disabled" aria-disabled="true" aria-label="@lang('pagination.next')">
+                        <span class="page-link" aria-hidden="true">&rsaquo;</span>
+                    </li>
+                @endif
+            </ul>
+        </div>
+    </nav>
+@endif
+""";
     }
 }

@@ -181,7 +181,8 @@
       "Bash(cmd /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\icep-laravel && C:\\\\php82\\\\php.exe artisan serve --port=8000 2>&1\")",
       "Bash(cmd /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\icep-laravel && C:\\\\php82\\\\php.exe artisan view:clear && C:\\\\php82\\\\php.exe artisan config:clear && C:\\\\php82\\\\php.exe artisan cache:clear && C:\\\\php82\\\\php.exe artisan route:clear\")",
       "Bash(cmd /c \"dir c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\icep-laravel\\\\resources\\\\views\\\\vendor\\\\pagination /b\")",
-      "Bash(cmd /c:*)"
+      "Bash(cmd /c:*)",
+      "Bash(ls:*)"
     ]
   }
 }
