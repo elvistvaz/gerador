@@ -2,6 +2,7 @@ package br.com.gerador.generator.template.laravel;
 
 import br.com.gerador.generator.config.ProjectConfig;
 import br.com.gerador.metamodel.model.MetaModel;
+import br.com.gerador.metamodel.model.SessionContext;
 
 /**
  * Template para geração de arquivos de configuração do projeto Laravel.
@@ -514,7 +515,23 @@ Este código foi gerado automaticamente pelo Gerador MetaModel.
 """.formatted(projectName, description);
     }
 
-    public String generateBootstrapApp() {
+    public String generateBootstrapApp(MetaModel metaModel) {
+        // Verificar se há sessionContext configurado
+        var metadata = metaModel.getMetadata();
+        boolean hasSessionContext = metadata.hasSessionContext();
+
+        String middlewareAliases;
+        if (hasSessionContext) {
+            middlewareAliases = """
+            'auth' => \\Illuminate\\Auth\\Middleware\\Authenticate::class,
+            'verified' => \\App\\Http\\Middleware\\EnsureEmailIsVerified::class,
+            'session.context' => \\App\\Http\\Middleware\\EnsureSessionContextSelected::class,""";
+        } else {
+            middlewareAliases = """
+            'auth' => \\Illuminate\\Auth\\Middleware\\Authenticate::class,
+            'verified' => \\App\\Http\\Middleware\\EnsureEmailIsVerified::class,""";
+        }
+
         return """
 <?php
 
@@ -537,8 +554,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Aliases de middleware
         $middleware->alias([
-            'auth' => \\Illuminate\\Auth\\Middleware\\Authenticate::class,
-            'verified' => \\App\\Http\\Middleware\\EnsureEmailIsVerified::class,
+%s
         ]);
 
         // Os middlewares web (session, CSRF, etc) são carregados automaticamente pelo Laravel 12
@@ -546,7 +562,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
-""";
+""".formatted(middlewareAliases);
     }
 
     public String generateWelcomeView(MetaModel metaModel) {
@@ -756,6 +772,10 @@ require __DIR__.'/../vendor/autoload.php';
     }
 
     public String generateLayoutBlade(MetaModel metaModel) {
+        // Verificar se há sessionContext configurado
+        var metadata = metaModel.getMetadata();
+        boolean hasSessionContext = metadata.hasSessionContext();
+
         // Gerar menu dinâmico a partir da configuração UI ou entidades
         StringBuilder menuItems = new StringBuilder();
 
@@ -783,6 +803,45 @@ require __DIR__.'/../vendor/autoload.php';
                          .append("                </a>\n")
                          .append("            </li>\n");
             }
+        }
+
+        // Gerar HTML da barra de contexto se necessário
+        String sessionContextBar = "";
+        if (hasSessionContext) {
+            java.util.List<SessionContext> sessionContextList = metadata.getSessionContext();
+
+            StringBuilder contextItems = new StringBuilder();
+            for (SessionContext ctx : sessionContextList) {
+                String entity = ctx.getEntity();
+                String field = ctx.getField();
+                String displayField = ctx.getDisplayField();
+                String entityLower = entity.toLowerCase();
+                String fieldSnake = toSnakeCase(field);
+                String icon = getIconForEntity(entity);
+
+                contextItems.append("        <div class=\"session-context-item\">\n")
+                           .append("            <i class=\"fas ").append(icon).append("\"></i>\n")
+                           .append("            <span class=\"session-context-label\">").append(entity).append(":</span>\n")
+                           .append("            <a href=\"{{ route('session.select') }}\" class=\"session-context-value\" title=\"Clique para alterar\">\n")
+                           .append("                {{ session('").append(fieldSnake).append("_nome') }}\n")
+                           .append("            </a>\n")
+                           .append("        </div>\n");
+            }
+
+            sessionContextBar = String.format("""
+    @if(session()->has('avaliacao_id') && session()->has('municipio_id'))
+    <div class="session-context-bar">
+        <div class="d-flex align-items-center gap-3">
+%s        </div>
+        <div>
+            <a href="{{ route('session.select') }}" class="btn btn-sm btn-light">
+                <i class="fas fa-sync-alt"></i> Alterar Contexto
+            </a>
+        </div>
+    </div>
+    @endif
+
+    """, contextItems.toString());
         }
 
         return """
@@ -990,6 +1049,82 @@ require __DIR__.'/../vendor/autoload.php';
         .menu-toggle.active i {
             transform: rotate(90deg);
         }
+
+        /* Session Context Bar */
+        .session-context-bar {
+            background: linear-gradient(90deg, #667eea 0%%, #764ba2 100%%);
+            padding: 0.8rem 2rem;
+            color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-left: 250px;
+        }
+
+        .session-context-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .session-context-item i {
+            font-size: 1.1rem;
+        }
+
+        .session-context-label {
+            font-weight: 500;
+        }
+
+        .session-context-value {
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 0.3rem 0.8rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .session-context-value:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+        }
+
+        .session-context-bar .btn-light {
+            background: white;
+            color: #667eea;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .session-context-bar .btn-light:hover {
+            background: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Ajustar main-content quando há barra de contexto */
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            flex: 1;
+            padding: 2rem;
+            min-height: 100vh;
+        }
     </style>
     @stack('styles')
 </head>
@@ -1025,6 +1160,8 @@ require __DIR__.'/../vendor/autoload.php';
     </div>
     @endauth
 
+    <!-- Session Context Bar -->
+%s
     <!-- Main Content -->
     <div class="main-content">
         @if(session('success'))
@@ -1055,7 +1192,7 @@ require __DIR__.'/../vendor/autoload.php';
     @stack('scripts')
 </body>
 </html>
-""".formatted(menuItems.toString());
+""".formatted(menuItems.toString(), sessionContextBar);
     }
 
     // Métodos auxiliares para formatação
@@ -1378,6 +1515,45 @@ Route::middleware(['auth'])->group(function () {
 """;
     }
 
+    public String generateWebRoutesWithAuthAndSession(MetaModel metaModel) {
+        var metadata = metaModel.getMetadata();
+        boolean hasSessionContext = metadata.hasSessionContext();
+
+        if (!hasSessionContext) {
+            return generateWebRoutesWithAuth();
+        }
+
+        return """
+<?php
+
+use Illuminate\\Support\\Facades\\Route;
+use App\\Http\\Controllers\\AuthController;
+use App\\Http\\Controllers\\SessionController;
+
+// Página inicial redireciona conforme autenticação
+Route::get('/', function () {
+    return auth()->check() ? redirect('/dashboard') : redirect('/login');
+});
+
+// Rotas de autenticação
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Rotas protegidas
+Route::middleware(['auth'])->group(function () {
+    // Seleção de contexto de sessão
+    Route::get('/session/select', [SessionController::class, 'select'])->name('session.select');
+    Route::post('/session/store', [SessionController::class, 'store'])->name('session.store');
+    Route::post('/session/update', [SessionController::class, 'update'])->name('session.update');
+
+    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+});
+""";
+    }
+
     /**
      * Verifica se existe configuração de menu na configuração do projeto.
      */
@@ -1542,5 +1718,312 @@ return [
     </nav>
 @endif
 """;
+    }
+
+    public String generateSessionController(MetaModel metaModel) {
+        // Lê a configuração de sessionContext do metadata
+        var metadata = metaModel.getMetadata();
+        java.util.List<SessionContext> sessionContextList = metadata.getSessionContext();
+
+        if (sessionContextList == null || sessionContextList.isEmpty()) {
+            return ""; // Não gera se não houver sessionContext
+        }
+
+        StringBuilder uses = new StringBuilder();
+        StringBuilder validationRules = new StringBuilder();
+        StringBuilder sessionAssignments = new StringBuilder();
+        StringBuilder sessionNames = new StringBuilder();
+        StringBuilder selectFetches = new StringBuilder();
+        StringBuilder selectCompact = new StringBuilder();
+        StringBuilder updateMethods = new StringBuilder();
+
+        for (SessionContext ctx : sessionContextList) {
+            String entity = ctx.getEntity();
+            String field = ctx.getField();
+            String displayField = ctx.getDisplayField();
+
+            String entityLower = Character.toLowerCase(entity.charAt(0)) + entity.substring(1);
+            String entityPlural = entityLower + "s";
+
+            // Converter field para snake_case
+            String fieldSnake = toSnakeCase(field);
+
+            uses.append("use App\\Models\\").append(entity).append(";\n");
+
+            validationRules.append("            '").append(field).append("' => 'required|exists:")
+                          .append(entityLower).append(",id',\n");
+
+            sessionAssignments.append("            '").append(fieldSnake).append("' => $request->").append(field).append(",\n");
+
+            selectFetches.append("        $").append(entityPlural).append(" = ").append(entity)
+                        .append("::orderBy('").append(displayField).append("')->get();\n");
+
+            selectCompact.append(", '").append(entityPlural).append("'");
+
+            sessionNames.append("\n        // Busca nome de ").append(entity).append("\n")
+                       .append("        $").append(entityLower).append(" = ").append(entity)
+                       .append("::find($request->").append(field).append(");\n")
+                       .append("        session([\n")
+                       .append("            '").append(fieldSnake).append("_nome' => $").append(entityLower)
+                       .append("->").append(displayField).append(",\n")
+                       .append("        ]);\n");
+
+            updateMethods.append("\n        if ($request->has('").append(field).append("')) {\n")
+                       .append("            $").append(entityLower).append(" = ").append(entity)
+                       .append("::findOrFail($request->").append(field).append(");\n")
+                       .append("            session([\n")
+                       .append("                '").append(fieldSnake).append("' => $").append(entityLower).append("->id,\n")
+                       .append("                '").append(fieldSnake).append("_nome' => $").append(entityLower)
+                       .append("->").append(displayField).append(",\n")
+                       .append("            ]);\n")
+                       .append("        }\n");
+        }
+
+        return """
+<?php
+
+namespace App\\Http\\Controllers;
+
+%s
+use Illuminate\\Http\\Request;
+
+class SessionController extends Controller
+{
+    /**
+     * Exibe a tela de seleção de contexto.
+     */
+    public function select()
+    {
+%s
+        return view('session.select', compact(%s));
+    }
+
+    /**
+     * Armazena o contexto selecionado na sessão.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+%s        ]);
+
+        session([
+%s        ]);
+%s
+        return redirect()->route('dashboard')->with('success', 'Contexto de sessão definido com sucesso!');
+    }
+
+    /**
+     * Atualiza apenas um item do contexto.
+     */
+    public function update(Request $request)
+    {
+%s
+        return back()->with('success', 'Contexto atualizado com sucesso!');
+    }
+}
+""".formatted(
+    uses.toString(),
+    selectFetches.toString(),
+    selectCompact.toString().substring(2), // Remove primeira vírgula
+    validationRules.toString(),
+    sessionAssignments.toString(),
+    sessionNames.toString(),
+    updateMethods.toString()
+);
+    }
+
+    public String generateSessionMiddleware(MetaModel metaModel) {
+        var metadata = metaModel.getMetadata();
+        java.util.List<SessionContext> sessionContextList = metadata.getSessionContext();
+
+        if (sessionContextList == null || sessionContextList.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder requiredContexts = new StringBuilder();
+        for (SessionContext ctx : sessionContextList) {
+            String field = ctx.getField();
+            // Converter para snake_case
+            String fieldSnake = toSnakeCase(field);
+            requiredContexts.append("'").append(fieldSnake).append("', ");
+        }
+
+        // Remove última vírgula
+        if (requiredContexts.length() > 0) {
+            requiredContexts.setLength(requiredContexts.length() - 2);
+        }
+
+        return """
+<?php
+
+namespace App\\Http\\Middleware;
+
+use Closure;
+use Illuminate\\Http\\Request;
+use Symfony\\Component\\HttpFoundation\\Response;
+
+class EnsureSessionContextSelected
+{
+    /**
+     * Handle an incoming request.
+     */
+    public function handle(Request $request, Closure $next): Response
+    {
+        // Define os itens de contexto requeridos
+        $requiredContexts = [%s];
+
+        // Rotas que não precisam de contexto
+        $excludedRoutes = ['login', 'logout', 'register', 'session.select', 'session.store'];
+
+        // Verifica se a rota atual está excluída
+        if ($request->routeIs($excludedRoutes)) {
+            return $next($request);
+        }
+
+        // Verifica se todos os contextos necessários estão na sessão
+        foreach ($requiredContexts as $context) {
+            if (!session()->has($context)) {
+                return redirect()->route('session.select');
+            }
+        }
+
+        return $next($request);
+    }
+}
+""".formatted(requiredContexts.toString());
+    }
+
+    public String generateSessionSelectView(MetaModel metaModel) {
+        var metadata = metaModel.getMetadata();
+        java.util.List<SessionContext> sessionContextList = metadata.getSessionContext();
+
+        if (sessionContextList == null || sessionContextList.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder selectionSections = new StringBuilder();
+
+        for (SessionContext ctx : sessionContextList) {
+            String entity = ctx.getEntity();
+            String field = ctx.getField();
+            String displayField = ctx.getDisplayField();
+            String label = ctx.getLabel();
+            String inputType = ctx.getInputType() != null ? ctx.getInputType() : "radio";
+
+            String entityLower = Character.toLowerCase(entity.charAt(0)) + entity.substring(1);
+            String entityPlural = entityLower + "s";
+            String icon = getIconForEntity(entity);
+            String fieldSnake = toSnakeCase(field);
+
+            selectionSections.append("""
+                        {{-- Seleção de %s --}}
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">
+                                <i class="fas %s text-primary"></i> %s *
+                            </label>
+                            <div class="row">
+                                @foreach($%s as $%s)
+                                    <div class="col-md-6 mb-2">
+                                        <div class="form-check">
+                                            <input
+                                                class="form-check-input"
+                                                type="%s"
+                                                name="%s"
+                                                id="%s_{{ $%s->id }}"
+                                                value="{{ $%s->id }}"
+                                                {{ old('%s', session('%s')) == $%s->id ? 'checked' : '' }}
+                                                required
+                                            >
+                                            <label class="form-check-label" for="%s_{{ $%s->id }}">
+                                                {{ $%s->%s }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            @error('%s')
+                                <div class="text-danger small mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+""".formatted(
+                entity, icon, label,
+                entityPlural, entityLower,
+                inputType, field,
+                entityLower, entityLower,
+                entityLower,
+                field, fieldSnake, entityLower,
+                entityLower, entityLower,
+                entityLower, displayField,
+                field
+            ));
+        }
+
+        return """
+@extends('layouts.app')
+
+@section('title', 'Selecionar Contexto')
+
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="fas fa-filter"></i> Selecione o Contexto de Trabalho</h4>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted mb-4">
+                        Para continuar, selecione o contexto que deseja trabalhar.
+                        Esses valores serão usados para filtrar os dados do sistema.
+                    </p>
+
+                    <form action="{{ route('session.store') }}" method="POST">
+                        @csrf
+
+%s
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i> Confirmar Seleção
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+""".formatted(selectionSections.toString());
+    }
+
+    private String getIconForEntity(String entity) {
+        return switch (entity.toLowerCase()) {
+            case "avaliacao" -> "fa-clipboard-check";
+            case "municipio" -> "fa-city";
+            case "territorio" -> "fa-map";
+            case "escola" -> "fa-school";
+            case "turma" -> "fa-users";
+            default -> "fa-circle";
+        };
+    }
+
+    private String toSnakeCase(String camelCase) {
+        if (camelCase == null || camelCase.isEmpty()) return camelCase;
+
+        StringBuilder result = new StringBuilder();
+        result.append(Character.toLowerCase(camelCase.charAt(0)));
+
+        for (int i = 1; i < camelCase.length(); i++) {
+            char c = camelCase.charAt(i);
+            if (Character.isUpperCase(c)) {
+                result.append('_');
+                result.append(Character.toLowerCase(c));
+            } else {
+                result.append(c);
+            }
+        }
+
+        return result.toString();
     }
 }

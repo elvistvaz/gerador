@@ -181,7 +181,7 @@ public class LaravelGenerator {
         generateFile("artisan", projectTemplate.generateArtisan());
 
         // bootstrap/app.php (Laravel 12 requirement)
-        generateFile("bootstrap/app.php", projectTemplate.generateBootstrapApp());
+        generateFile("bootstrap/app.php", projectTemplate.generateBootstrapApp(metaModel));
 
         // public/index.php (Laravel entry point)
         generateFile("public/index.php", projectTemplate.generatePublicIndexPhp());
@@ -227,6 +227,20 @@ public class LaravelGenerator {
 
         // AuthController
         generateFile("app/Http/Controllers/AuthController.php", projectTemplate.generateAuthController());
+
+        // Session Context (se configurado)
+        String sessionController = projectTemplate.generateSessionController(metaModel);
+        if (!sessionController.isEmpty()) {
+            generateFile("app/Http/Controllers/SessionController.php", sessionController);
+
+            String sessionMiddleware = projectTemplate.generateSessionMiddleware(metaModel);
+            generateFile("app/Http/Middleware/EnsureSessionContextSelected.php", sessionMiddleware);
+
+            String sessionView = projectTemplate.generateSessionSelectView(metaModel);
+            generateFile("resources/views/session/select.blade.php", sessionView);
+
+            System.out.println("  ✓ Sistema de contexto de sessão gerado");
+        }
 
         // User Model
         generateFile("app/Models/User.php", projectTemplate.generateUserModel());
@@ -473,6 +487,10 @@ class InitialDataSeeder extends Seeder
     private void generateWebRoutes(MetaModel metaModel) {
         System.out.println("\nGerando rotas Web...");
 
+        // Verificar se há sessionContext configurado
+        var metadata = metaModel.getMetadata();
+        boolean hasSessionContext = metadata.hasSessionContext();
+
         // Usar Set para evitar entidades duplicadas
         Set<String> uniqueEntities = new LinkedHashSet<>();
         for (Entity entity : metaModel.getEntities()) {
@@ -482,7 +500,14 @@ class InitialDataSeeder extends Seeder
         StringBuilder routes = new StringBuilder();
         routes.append("<?php\n\n");
         routes.append("use Illuminate\\Support\\Facades\\Route;\n");
-        routes.append("use App\\Http\\Controllers\\AuthController;\n\n");
+        routes.append("use App\\Http\\Controllers\\AuthController;\n");
+
+        // Adicionar import do SessionController se necessário
+        if (hasSessionContext) {
+            routes.append("use App\\Http\\Controllers\\SessionController;\n");
+        }
+
+        routes.append("\n");
 
         // Imports dos controllers (sem duplicados)
         for (String entityName : uniqueEntities) {
@@ -503,16 +528,36 @@ class InitialDataSeeder extends Seeder
 
         routes.append("// Rotas protegidas\n");
         routes.append("Route::middleware(['auth'])->group(function () {\n");
-        routes.append("    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');\n\n");
 
-        routes.append("    // Rotas de CRUD\n");
-        for (String entityName : uniqueEntities) {
-            String entityNameLower = toLowerCamelCase(entityName);
-            // Usar camelCase diretamente para URLs semânticas (sem pluralização)
-            routes.append("    Route::resource('").append(entityNameLower).append("', ").append(entityName).append("Controller::class);\n");
+        // Adicionar rotas de sessão se configurado
+        if (hasSessionContext) {
+            routes.append("    // Seleção de contexto de sessão\n");
+            routes.append("    Route::get('/session/select', [SessionController::class, 'select'])->name('session.select');\n");
+            routes.append("    Route::post('/session/store', [SessionController::class, 'store'])->name('session.store');\n");
+            routes.append("    Route::post('/session/update', [SessionController::class, 'update'])->name('session.update');\n\n");
+
+            routes.append("    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');\n");
+            routes.append("});\n\n");
+
+            // Rotas que requerem contexto de sessão
+            routes.append("// Rotas que requerem contexto de sessão selecionado\n");
+            routes.append("Route::middleware(['auth', 'session.context'])->group(function () {\n");
+            routes.append("    // Rotas de CRUD\n");
+            for (String entityName : uniqueEntities) {
+                String entityNameLower = toLowerCamelCase(entityName);
+                routes.append("    Route::resource('").append(entityNameLower).append("', ").append(entityName).append("Controller::class);\n");
+            }
+            routes.append("});\n");
+        } else {
+            routes.append("    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');\n\n");
+
+            routes.append("    // Rotas de CRUD\n");
+            for (String entityName : uniqueEntities) {
+                String entityNameLower = toLowerCamelCase(entityName);
+                routes.append("    Route::resource('").append(entityNameLower).append("', ").append(entityName).append("Controller::class);\n");
+            }
+            routes.append("});\n");
         }
-
-        routes.append("});\n");
 
         generateFile("routes/web.php", routes.toString());
 

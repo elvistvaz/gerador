@@ -14,7 +14,7 @@
       {
         "entity": "Avaliacao",
         "field": "avaliacaoId",
-        "displayField": "avaliacao",
+        "displayField": "nome",
         "label": "Selecione a Avaliação",
         "required": true,
         "inputType": "radio"
@@ -145,7 +145,7 @@
       "description": "Períodos de avaliação",
       "schema": "dbo",
       "type": "LOOKUP",
-      "defaultSort": { "field": "avaliacao", "direction": "desc" },
+      "defaultSort": { "field": "nome", "direction": "desc" },
       "fields": [
         {
           "id": "avaliacao_id",
@@ -164,9 +164,9 @@
           }
         },
         {
-          "id": "avaliacao_avaliacao",
-          "name": "avaliacao",
-          "columnName": "avaliacao",
+          "id": "avaliacao_nome",
+          "name": "nome",
+          "columnName": "nome",
           "label": "Avaliação",
           "dataType": "STRING",
           "databaseType": "char",

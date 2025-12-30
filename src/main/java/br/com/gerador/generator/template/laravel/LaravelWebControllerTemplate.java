@@ -3,6 +3,7 @@ package br.com.gerador.generator.template.laravel;
 import br.com.gerador.generator.config.ProjectConfig;
 import br.com.gerador.metamodel.model.Entity;
 import br.com.gerador.metamodel.model.MetaModel;
+import br.com.gerador.metamodel.model.SessionFilter;
 
 /**
  * Template para geração de Web Controllers do Laravel (retornam views).
@@ -23,6 +24,9 @@ public class LaravelWebControllerTemplate {
         String entityNameLower = toLowerCamelCase(entityName);
         String entityNamePlural = toPlural(entityNameLower); // Para nomes de variáveis
         String namespace = getNamespace();
+
+        // Verificar se tem filtro de sessão
+        boolean hasSessionFilter = entity.hasSessionFilter();
 
         StringBuilder code = new StringBuilder();
 
@@ -49,7 +53,35 @@ public class LaravelWebControllerTemplate {
         code.append("     */\n");
         code.append("    public function index()\n");
         code.append("    {\n");
-        code.append("        $").append(entityNamePlural).append(" = ").append(entityName).append("::paginate(15);\n");
+
+        // Aplicar filtro de sessão se configurado
+        if (hasSessionFilter) {
+            code.append("        $query = ").append(entityName).append("::query();\n\n");
+            code.append("        // Aplicar filtro de sessão\n");
+
+            SessionFilter sessionFilter = entity.getSessionFilter();
+
+            String field = sessionFilter.getField();
+            if (field != null && !field.isEmpty()) {
+                String sessionKey = toSnakeCase(field);
+                code.append("        if (session()->has('").append(sessionKey).append("')) {\n");
+                code.append("            $query->where('").append(sessionKey).append("', session('").append(sessionKey).append("'));\n");
+                code.append("        }\n");
+            }
+
+            String field2 = sessionFilter.getField2();
+            if (field2 != null && !field2.isEmpty()) {
+                String sessionKey2 = toSnakeCase(field2);
+                code.append("        if (session()->has('").append(sessionKey2).append("')) {\n");
+                code.append("            $query->where('").append(sessionKey2).append("', session('").append(sessionKey2).append("'));\n");
+                code.append("        }\n");
+            }
+
+            code.append("\n        $").append(entityNamePlural).append(" = $query->paginate(15);\n");
+        } else {
+            code.append("        $").append(entityNamePlural).append(" = ").append(entityName).append("::paginate(15);\n");
+        }
+
         code.append("        return view('").append(entityNameLower).append(".index', compact('").append(entityNamePlural).append("'));\n");
         code.append("    }\n\n");
 
@@ -64,8 +96,48 @@ public class LaravelWebControllerTemplate {
         String fkLoads = generateForeignKeyLoads(entity, metaModel);
         if (!fkLoads.isEmpty()) {
             code.append(fkLoads);
+        }
+
+        // Pré-preencher com valores da sessão se houver filtro de sessão
+        if (hasSessionFilter) {
+            code.append("\n        // Pré-preencher com valores da sessão\n");
+            code.append("        $").append(entityNameLower).append(" = new ").append(entityName).append("();\n");
+
+            SessionFilter sessionFilter = entity.getSessionFilter();
+
+            String field = sessionFilter.getField();
+            if (field != null && !field.isEmpty()) {
+                String sessionKey = toSnakeCase(field);
+                code.append("        if (session()->has('").append(sessionKey).append("')) {\n");
+                code.append("            $").append(entityNameLower).append("->").append(sessionKey);
+                code.append(" = session('").append(sessionKey).append("');\n");
+                code.append("        }\n");
+            }
+
+            String field2 = sessionFilter.getField2();
+            if (field2 != null && !field2.isEmpty()) {
+                String sessionKey2 = toSnakeCase(field2);
+                code.append("        if (session()->has('").append(sessionKey2).append("')) {\n");
+                code.append("            $").append(entityNameLower).append("->").append(sessionKey2);
+                code.append(" = session('").append(sessionKey2).append("');\n");
+                code.append("        }\n");
+            }
+
+            code.append("\n");
+        }
+
+        // Return view
+        if (!fkLoads.isEmpty() || hasSessionFilter) {
             code.append("        return view('").append(entityNameLower).append(".form', compact(");
-            code.append(generateCompactList(entity));
+            if (hasSessionFilter) {
+                code.append("'").append(entityNameLower).append("'");
+                if (!fkLoads.isEmpty()) {
+                    code.append(", ");
+                }
+            }
+            if (!fkLoads.isEmpty()) {
+                code.append(generateCompactList(entity));
+            }
             code.append("));\n");
         } else {
             code.append("        return view('").append(entityNameLower).append(".form');\n");
@@ -146,6 +218,26 @@ public class LaravelWebControllerTemplate {
         return name + "s";
     }
 
+    private String toSnakeCase(String camelCase) {
+        if (camelCase == null || camelCase.isEmpty()) return camelCase;
+
+        // Converte camelCase para snake_case
+        StringBuilder result = new StringBuilder();
+        result.append(Character.toLowerCase(camelCase.charAt(0)));
+
+        for (int i = 1; i < camelCase.length(); i++) {
+            char c = camelCase.charAt(i);
+            if (Character.isUpperCase(c)) {
+                result.append('_');
+                result.append(Character.toLowerCase(c));
+            } else {
+                result.append(c);
+            }
+        }
+
+        return result.toString();
+    }
+
     /**
      * Gera o código para carregar entidades relacionadas (FKs).
      */
@@ -155,7 +247,13 @@ public class LaravelWebControllerTemplate {
 
         for (br.com.gerador.metamodel.model.Field field : entity.getFields()) {
             if (isForeignKey(field)) {
-                String relatedEntityName = extractRelatedEntityName(field.getName());
+                // Usar a entidade da referência se disponível, senão extrair do nome do campo
+                String relatedEntityName;
+                if (field.getReference() != null && field.getReference().getEntity() != null) {
+                    relatedEntityName = field.getReference().getEntity();
+                } else {
+                    relatedEntityName = extractRelatedEntityName(field.getName());
+                }
 
                 // Evitar duplicatas
                 if (!loadedEntities.contains(relatedEntityName)) {
@@ -181,7 +279,13 @@ public class LaravelWebControllerTemplate {
 
         for (br.com.gerador.metamodel.model.Field field : entity.getFields()) {
             if (isForeignKey(field)) {
-                String relatedEntityName = extractRelatedEntityName(field.getName());
+                // Usar a entidade da referência se disponível, senão extrair do nome do campo
+                String relatedEntityName;
+                if (field.getReference() != null && field.getReference().getEntity() != null) {
+                    relatedEntityName = field.getReference().getEntity();
+                } else {
+                    relatedEntityName = extractRelatedEntityName(field.getName());
+                }
                 if (!entities.contains(relatedEntityName)) {
                     entities.add(relatedEntityName);
                     String relatedEntityPlural = toPlural(relatedEntityName.toLowerCase());

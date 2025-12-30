@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public class LaravelViewTemplate {
 
     private ProjectConfig projectConfig;
+    private MetaModel metaModel;
 
     public void setProjectConfig(ProjectConfig projectConfig) {
         this.projectConfig = projectConfig;
@@ -22,6 +23,7 @@ public class LaravelViewTemplate {
      * Gera a view de listagem (index) para uma entidade.
      */
     public String generateIndexView(Entity entity, MetaModel metaModel) {
+        this.metaModel = metaModel; // Armazenar para uso em métodos auxiliares
         String entityName = entity.getName();
         String entityNameLower = toLowerCamelCase(entityName);
         String entityNamePlural = toPlural(entityNameLower); // Para nomes de variáveis Blade
@@ -53,8 +55,8 @@ public class LaravelViewTemplate {
             if (!attr.getName().endsWith("_at") && !attr.getName().equals("deleted_at")) {
                 // Se for chave primária, mostrar apenas "#"
                 String label = attr.isPrimaryKey() ? "#" : getFieldLabel(attr);
-                // Alinhar números à direita
-                String alignment = isNumericField(attr) ? " class=\"text-end\"" : "";
+                // Determinar alinhamento: enum centralizado, números à direita, FKs e texto à esquerda
+                String alignment = getFieldAlignment(attr);
                 html.append("                        <th").append(alignment).append(">").append(label).append("</th>\n");
                 colCount++;
             }
@@ -73,14 +75,14 @@ public class LaravelViewTemplate {
             if (!attr.getName().endsWith("_at") && !attr.getName().equals("deleted_at")) {
                 String originalAttrName = attr.getName();
                 String attrName = toSnakeCase(originalAttrName);
-                // Alinhar números à direita
-                String alignment = isNumericField(attr) ? " class=\"text-end\"" : "";
+                // Determinar alinhamento: enum centralizado, números à direita, FKs e texto à esquerda
+                String alignment = getFieldAlignment(attr);
 
                 // Se for FK, mostrar o rótulo da entidade relacionada ao invés do ID
                 if (isForeignKey(attr)) {
-                    String relatedEntity = extractRelatedEntityName(originalAttrName);
+                    String relatedEntity = getRelatedEntityName(attr);
                     String displayField = getDisplayFieldForEntity(relatedEntity);
-                    String relationName = relatedEntity.toLowerCase();
+                    String relationName = toCamelCase(relatedEntity); // Usar camelCase para consistência com o model
 
                     html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(relationName).append("?->").append(displayField).append(" ?? '-' }}</td>\n");
                 } else {
@@ -133,6 +135,7 @@ public class LaravelViewTemplate {
      * Gera a view de formulário (create/edit) para uma entidade.
      */
     public String generateFormView(Entity entity, MetaModel metaModel) {
+        this.metaModel = metaModel; // Armazenar para uso em métodos auxiliares
         String entityName = entity.getName();
         String entityNameLower = toLowerCamelCase(entityName);
         String displayName = entity.getDisplayName() != null ? entity.getDisplayName() : entityName;
@@ -196,7 +199,7 @@ public class LaravelViewTemplate {
                 html.append("                            <textarea name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"").append(inputClass).append(" @error('").append(attrName).append("') is-invalid @enderror\" rows=\"3\">{{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') }}</textarea>\n");
             } else if (inputType.equals("select") || isForeignKey(attr)) {
                 // Para relacionamentos (Foreign Keys)
-                String relatedEntity = extractRelatedEntityName(originalAttrName);
+                String relatedEntity = getRelatedEntityName(attr);
                 String relatedEntityPlural = toPlural(relatedEntity.toLowerCase());
                 String displayField = getDisplayFieldForEntity(relatedEntity);
 
@@ -300,6 +303,17 @@ public class LaravelViewTemplate {
         return name.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
     }
 
+    /**
+     * Converte uma string para camelCase (primeira letra minúscula).
+     * Ex: "AprendizagemEsperada" -> "aprendizagemEsperada"
+     */
+    private String toCamelCase(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return Character.toLowerCase(str.charAt(0)) + str.substring(1);
+    }
+
     private String toHumanReadable(String name) {
         // Converte snake_case para "Snake Case"
         String[] parts = name.split("_");
@@ -360,9 +374,15 @@ public class LaravelViewTemplate {
 
     /**
      * Verifica se um campo é numérico (para alinhar à direita nas tabelas).
+     * IMPORTANTE: FKs não devem ser consideradas numéricas porque exibem texto na grid.
      */
     private boolean isNumericField(Field field) {
         if (field == null) return false;
+
+        // FKs não devem ser alinhadas à direita, mesmo que sejam números
+        if (isForeignKey(field)) {
+            return false;
+        }
 
         // Verificar por DataType
         if (field.getDataType() != null) {
@@ -386,6 +406,59 @@ public class LaravelViewTemplate {
     }
 
     /**
+     * Verifica se um campo é do tipo ENUM.
+     */
+    private boolean isEnumField(Field field) {
+        if (field == null) return false;
+
+        // Verificar se tem enumRef (principal indicador de ENUM no metamodel)
+        if (field.getEnumRef() != null && !field.getEnumRef().isEmpty()) {
+            return true;
+        }
+
+        // Verificar se o databaseType é enum
+        if (field.getDatabaseType() != null) {
+            String dbType = field.getDatabaseType().toLowerCase();
+            if (dbType.contains("enum")) {
+                return true;
+            }
+        }
+
+        // Verificar se o DataType é ENUM
+        if (field.getDataType() != null) {
+            String dataType = field.getDataType().toString().toUpperCase();
+            if (dataType.equals("ENUM")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determina o alinhamento CSS para um campo na grid.
+     * - ENUM: centralizado (text-center)
+     * - Números (exceto FK): alinhado à direita (text-end)
+     * - FKs e texto: alinhado à esquerda (sem classe, padrão)
+     */
+    private String getFieldAlignment(Field field) {
+        if (field == null) return "";
+
+        // ENUM deve ser centralizado
+        if (isEnumField(field)) {
+            return " class=\"text-center\"";
+        }
+
+        // Números (mas não FKs) devem ser alinhados à direita
+        if (isNumericField(field)) {
+            return " class=\"text-end\"";
+        }
+
+        // Texto e FKs ficam à esquerda (padrão, sem classe)
+        return "";
+    }
+
+    /**
      * Verifica se um campo é uma Foreign Key (tem referência a outra entidade).
      */
     private boolean isForeignKey(Field field) {
@@ -400,6 +473,17 @@ public class LaravelViewTemplate {
         // 2. entidadeId (termina com "Id") - ex: cidadeId, territorioId
         return (fieldName.startsWith("id") && Character.isUpperCase(fieldName.charAt(2))) ||
                (fieldName.endsWith("Id") && fieldName.length() > 2);
+    }
+
+    /**
+     * Obtém o nome da entidade relacionada de um campo FK.
+     * Usa field.reference.entity se disponível, senão extrai do nome do campo.
+     */
+    private String getRelatedEntityName(Field field) {
+        if (field.getReference() != null && field.getReference().getEntity() != null) {
+            return field.getReference().getEntity();
+        }
+        return extractRelatedEntityName(field.getName());
     }
 
     /**
@@ -422,12 +506,43 @@ public class LaravelViewTemplate {
 
     /**
      * Retorna o campo de exibição padrão para uma entidade.
-     * Exemplo: Para "Territorio" retorna "nome"
-     * TODO: Buscar do JSON metadata quando disponível
+     * Busca no metamodel ou usa heurística se não encontrar.
      */
     private String getDisplayFieldForEntity(String entityName) {
-        // Heurística: usa "nome" como campo padrão de exibição
-        // A maioria das entidades usa "nome" como campo principal
+        if (metaModel != null && metaModel.getEntities() != null) {
+            // Buscar a entidade no metamodel
+            for (Entity entity : metaModel.getEntities()) {
+                if (entity.getName().equals(entityName)) {
+                    // Se tiver campos, buscar o primeiro campo de texto não-FK
+                    if (entity.getFields() != null && !entity.getFields().isEmpty()) {
+                        for (Field field : entity.getFields()) {
+                            // Pular chave primária e FKs
+                            if (field.isPrimaryKey() || isForeignKey(field)) {
+                                continue;
+                            }
+                            // Preferir campos chamados "nome", "descricao", "titulo", etc
+                            String fieldName = toSnakeCase(field.getName());
+                            if (fieldName.equals("nome") || fieldName.equals("name")) {
+                                return fieldName;
+                            }
+                        }
+                        // Se não encontrou "nome", retornar o primeiro campo de texto
+                        for (Field field : entity.getFields()) {
+                            if (field.isPrimaryKey() || isForeignKey(field)) {
+                                continue;
+                            }
+                            String dataType = field.getDataType() != null ? field.getDataType().toString() : "";
+                            if (dataType.equals("STRING") || dataType.equals("TEXT")) {
+                                return toSnakeCase(field.getName());
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Fallback: usa "nome" como padrão
         return "nome";
     }
 
