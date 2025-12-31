@@ -77,7 +77,11 @@ public class LaravelMigrationTemplate {
             sb.append("            // Chave primária composta\n");
             sb.append("            $table->primary([");
             for (int i = 0; i < pkFields.size(); i++) {
-                sb.append("'").append(toSnakeCase(pkFields.get(i).getName())).append("'");
+                Field compositePkField = pkFields.get(i);
+                String pkFieldName = compositePkField.getColumnName() != null && !compositePkField.getColumnName().isEmpty()
+                    ? compositePkField.getColumnName()
+                    : toSnakeCase(compositePkField.getName());
+                sb.append("'").append(pkFieldName).append("'");
                 if (i < pkFields.size() - 1) {
                     sb.append(", ");
                 }
@@ -112,7 +116,10 @@ public class LaravelMigrationTemplate {
     }
 
     private void generateField(StringBuilder sb, Field field, boolean isPrimaryKey) {
-        String fieldName = toSnakeCase(field.getName());
+        // Usa columnName se disponível, caso contrário converte name para snake_case
+        String fieldName = field.getColumnName() != null && !field.getColumnName().isEmpty()
+            ? field.getColumnName()
+            : toSnakeCase(field.getName());
         String fieldDefinition = getFieldDefinition(field);
 
         sb.append("            $table->").append(fieldDefinition);
@@ -155,7 +162,10 @@ public class LaravelMigrationTemplate {
     }
 
     private String getFieldDefinition(Field field) {
-        String fieldName = toSnakeCase(field.getName());
+        // Usa columnName se disponível, caso contrário converte name para snake_case
+        String fieldName = field.getColumnName() != null && !field.getColumnName().isEmpty()
+            ? field.getColumnName()
+            : toSnakeCase(field.getName());
         DataType dataType = field.getDataType();
         String databaseType = field.getDatabaseType();
 
@@ -215,7 +225,10 @@ public class LaravelMigrationTemplate {
     }
 
     private void generateForeignKey(StringBuilder sb, Field field) {
-        String foreignKey = toSnakeCase(field.getName());
+        // Usa columnName se disponível para foreign key
+        String foreignKey = field.getColumnName() != null && !field.getColumnName().isEmpty()
+            ? field.getColumnName()
+            : toSnakeCase(field.getName());
         String referencedTable = toSnakeCase(field.getReference().getEntity());
         String referencedKey = field.getReference().getField() != null
             ? toSnakeCase(field.getReference().getField())

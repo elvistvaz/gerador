@@ -303,12 +303,13 @@ public class UnifiedGeneratorMain {
             executeArtisanKeyGenerate(outputPath);
             createConsoleRoutesFile(outputPath);
             createSqliteDatabase(outputPath);
+            executeComposerInstall(outputPath);
 
             System.out.println("\nPróximos passos:");
             System.out.println("1. Acesse o diretório: " + outputPath.toAbsolutePath());
-            System.out.println("2. Execute: composer install");
-            System.out.println("3. Configure o .env com suas credenciais de banco (se necessário)");
-            System.out.println("4. Execute: php artisan migrate");
+            System.out.println("2. Configure o .env com suas credenciais de banco (se necessário)");
+            System.out.println("3. Execute: php artisan migrate");
+            System.out.println("4. Execute: php artisan db:seed --class=InitialDataSeeder");
             System.out.println("5. Execute: php artisan serve");
         }
     }
@@ -394,6 +395,71 @@ public class UnifiedGeneratorMain {
 
         } catch (Exception e) {
             System.out.println("⚠ Aviso: Não foi possível criar database.sqlite");
+            System.out.println("  Erro: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Executa composer install com flags otimizadas para usar cache.
+     *
+     * Flags utilizadas:
+     * - --prefer-dist: Baixa pacotes como arquivos ZIP (mais rápido e usa cache)
+     * - --no-dev: Não instala dependências de desenvolvimento (reduz pacotes)
+     * - --optimize-autoloader: Gera autoloader otimizado (usa classmap em vez de PSR-4 quando possível)
+     * - --no-interaction: Não pede confirmações (modo não-interativo)
+     *
+     * O Composer automaticamente usa seu cache global em:
+     * Windows: C:\Users\<usuario>\AppData\Local\Composer\
+     * Linux/Mac: ~/.composer/cache/
+     */
+    private static void executeComposerInstall(Path laravelPath) {
+        try {
+            System.out.println("\n" + "═".repeat(70));
+            System.out.println("INSTALANDO DEPENDÊNCIAS DO COMPOSER");
+            System.out.println("═".repeat(70));
+            System.out.println("\nEsta etapa pode demorar na primeira execução.");
+            System.out.println("Nas próximas execuções será muito mais rápido devido ao cache local.\n");
+
+            ProcessBuilder pb = new ProcessBuilder();
+            pb.directory(laravelPath.toFile());
+
+            // Composer install com flags otimizadas para cache
+            pb.command(
+                "C:\\php82\\php.exe",
+                "C:\\php82\\composer.phar",
+                "install",
+                "--prefer-dist",           // Usa cache de distribuição (mais rápido)
+                "--no-dev",                // Sem dependências de desenvolvimento
+                "--optimize-autoloader",   // Autoloader otimizado
+                "--no-interaction"         // Não-interativo
+            );
+
+            pb.redirectErrorStream(true);
+            pb.inheritIO(); // Mostra output em tempo real
+
+            long startTime = System.currentTimeMillis();
+            Process process = pb.start();
+
+            // Aguarda a conclusão
+            int exitCode = process.waitFor();
+            long endTime = System.currentTimeMillis();
+            long duration = (endTime - startTime) / 1000; // em segundos
+
+            System.out.println("\n" + "═".repeat(70));
+            if (exitCode == 0) {
+                System.out.println("✓ Dependências instaladas com sucesso!");
+                System.out.println("  Tempo decorrido: " + duration + " segundos");
+                System.out.println("\nDica: Na próxima execução será mais rápido (cache do Composer)");
+            } else {
+                System.out.println("⚠ Aviso: composer install falhou (código: " + exitCode + ")");
+                System.out.println("  Execute manualmente: composer install");
+            }
+            System.out.println("═".repeat(70));
+
+        } catch (Exception e) {
+            System.out.println("\n⚠ Aviso: Não foi possível executar composer install automaticamente.");
+            System.out.println("  Execute manualmente no diretório do projeto:");
+            System.out.println("  composer install --prefer-dist --no-dev --optimize-autoloader");
             System.out.println("  Erro: " + e.getMessage());
         }
     }

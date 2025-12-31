@@ -197,7 +197,8 @@
       "Bash(python analyze_csv_nullability.py:*)",
       "Bash(timeout /t 120 /nobreak)",
       "Bash(Select-Object -First 100 \")",
-      "Bash(Select-Object -Last 20\"\")"
+      "Bash(Select-Object -Last 20\"\")",
+      "Bash(tr:*)"
     ]
   }
 }

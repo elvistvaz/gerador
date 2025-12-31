@@ -1,4 +1,4 @@
 id_Empresa;NomeEmpresa;FantasiaEmpresa;CNPJ;TaxaRetencao;Inativa;DataAbertura;DataCadastro;CapitalSocial;Quotas;Administrador;Procurador;Endereco;id_Bairro;id_Cidade;CEP;id_Banco;Agencia;ContaCorrente;DVContaCorrente;PIXAtivo;PIX;IM;IE;JUCEB;CNAE;CREMEBPJ;NumeroRegistroCartorio;DataRegistroCartorio;DataValidade;PeriodoVigencia
-1;Sociedade Medica Alpha Ltda;Alpha Med;12345678000100;10.00;0;;;;;;;;;;;;;;;;;;;;;;;;;
-2;Clinica Beta Servicos Medicos;Beta Clinica;98765432000199;8.50;0;;;;;;;;;;;;;;;;;;;;;;;;;
-3;Centro Medico Gamma S/S;Gamma Saude;11222333000144;12.00;0;;;;;;;;;;;;;;;;;;;;;;;;;
+1;Sociedade Medica Alpha Ltda;Alpha Med;12345678000100;10.00;0;2020-01-15 10:00:00;2020-01-10 14:30:00;100000.00;100;Dr. João Silva;Dr. Maria Santos;Rua das Flores, 123;1;1;40000000;001;1234;12345678;9;1;chave.pix@alpha.com.br;1234567890;9876543210;ABC123;1234567;CRMPJ12345;001234;2020-01-20 09:00:00;2025-12-31 23:59:59;2020-2025
+2;Clinica Beta Servicos Medicos;Beta Clinica;98765432000199;8.50;0;2019-06-20 11:00:00;2019-06-15 16:00:00;150000.00;150;Dr. Pedro Costa;Dra. Ana Oliveira;Av. Principal, 456;2;1;41000000;001;5678;87654321;5;1;chave.pix@beta.com.br;0987654321;1234567890;XYZ789;7654321;CRMPJ54321;005678;2019-06-25 10:00:00;2024-12-31 23:59:59;2019-2024
+3;Centro Medico Gamma S/S;Gamma Saude;11222333000144;12.00;0;2021-03-10 08:30:00;2021-03-05 13:00:00;200000.00;200;Dr. Carlos Lima;Dr. Fernanda Rocha;Praça Central, 789;3;1;42000000;001;9012;11223344;2;0;;5555666677;8888999900;DEF456;9876543;CRMPJ99999;009012;2021-03-15 11:30:00;2026-12-31 23:59:59;2021-2026

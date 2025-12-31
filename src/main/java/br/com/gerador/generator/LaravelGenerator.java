@@ -3,6 +3,7 @@ package br.com.gerador.generator;
 import br.com.gerador.generator.config.ProjectConfig;
 import br.com.gerador.generator.template.laravel.*;
 import br.com.gerador.metamodel.model.Entity;
+import br.com.gerador.metamodel.model.Field;
 import br.com.gerador.metamodel.model.MetaModel;
 
 import java.io.IOException;
@@ -289,6 +290,9 @@ public class LaravelGenerator {
 
                 System.out.println("  Processando: " + fileName);
 
+                // Encontra a entidade correspondente no MetaModel
+                Entity entity = findEntityByTableName(metaModel, tableName);
+
                 List<java.util.Map<String, String>> data = readCSV(csvFile);
 
                 if (!data.isEmpty()) {
@@ -296,7 +300,8 @@ public class LaravelGenerator {
                         allInserts.append("        DB::table('").append(tableName).append("')->insert([\n");
 
                         for (java.util.Map.Entry<String, String> entry : row.entrySet()) {
-                            String column = toSnakeCase(entry.getKey());  // Converte para snake_case
+                            // Mapeia o header do CSV para o columnName do JSON
+                            String column = mapCsvHeaderToColumnName(entry.getKey(), entity);
                             String value = entry.getValue();
 
                             if (value == null || value.trim().isEmpty()) {
@@ -601,6 +606,58 @@ class InitialDataSeeder extends Seeder
         String cleaned = str.replaceAll("_([A-Z])", "$1");
         // Converte para snake_case
         return cleaned.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+    }
+
+    /**
+     * Encontra uma entidade pelo nome da tabela.
+     */
+    private Entity findEntityByTableName(MetaModel metaModel, String tableName) {
+        if (metaModel == null || metaModel.getEntities() == null) {
+            return null;
+        }
+
+        // Normaliza o nome da tabela removendo underscores para comparação
+        String normalizedTableName = tableName.replace("_", "").toLowerCase();
+
+        for (Entity entity : metaModel.getEntities()) {
+            String entityTableName = entity.getTableName();
+            if (entityTableName != null) {
+                String normalizedEntityTable = entityTableName.replace("_", "").toLowerCase();
+                if (normalizedEntityTable.equals(normalizedTableName)) {
+                    return entity;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Mapeia o header do CSV para o columnName do JSON.
+     * Procura o campo na entidade que tenha o columnName correspondente ao header do CSV.
+     */
+    private String mapCsvHeaderToColumnName(String csvHeader, Entity entity) {
+        if (entity == null || entity.getFields() == null) {
+            // Fallback: retorna o header do CSV sem alteração
+            return csvHeader;
+        }
+
+        // Normaliza o header do CSV removendo underscores para comparação
+        String normalizedCsvHeader = csvHeader.replace("_", "").toLowerCase();
+
+        for (Field field : entity.getFields()) {
+            String columnName = field.getColumnName();
+            if (columnName != null) {
+                String normalizedColumnName = columnName.replace("_", "").toLowerCase();
+                if (normalizedColumnName.equals(normalizedCsvHeader)) {
+                    // Retorna o columnName EXATAMENTE como está no JSON
+                    return columnName;
+                }
+            }
+        }
+
+        // Fallback: retorna o header do CSV sem alteração
+        return csvHeader;
     }
 
     /**
