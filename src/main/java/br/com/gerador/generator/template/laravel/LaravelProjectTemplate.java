@@ -779,7 +779,10 @@ require __DIR__.'/../vendor/autoload.php';
         // Gerar menu dinâmico a partir da configuração UI ou entidades
         StringBuilder menuItems = new StringBuilder();
 
-        if (projectConfig != null && hasMenuConfiguration()) {
+        if (metaModel != null && metaModel.getModules() != null && !metaModel.getModules().isEmpty()) {
+            // Gerar menu hierárquico a partir dos módulos do MetaModel
+            menuItems.append(generateMenuFromModules(metaModel));
+        } else if (projectConfig != null && hasMenuConfiguration()) {
             // Gerar menu a partir da configuração JSON
             menuItems.append(generateMenuFromConfig());
         } else if (metaModel != null && metaModel.getEntities() != null) {
@@ -1133,7 +1136,7 @@ require __DIR__.'/../vendor/autoload.php';
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
-            <h3><i class="fas fa-graduation-cap"></i> {{ config('app.name') }}</h3>
+            <h3><i class="fas fa-user-md"></i> {{ config('app.name') }}</h3>
         </div>
 
         <ul class="sidebar-menu">
@@ -1631,6 +1634,112 @@ Route::middleware(['auth'])->group(function () {
         return menu.toString();
     }
 
+    /**
+     * Gera HTML do menu a partir dos módulos do MetaModel.
+     */
+    private String generateMenuFromModules(MetaModel metaModel) {
+        StringBuilder menu = new StringBuilder();
+
+        try {
+            java.util.List<br.com.gerador.metamodel.model.Module> modules = metaModel.getModules();
+
+            // Ordenar módulos por order
+            modules.sort((m1, m2) -> Integer.compare(m1.getOrder(), m2.getOrder()));
+
+            for (br.com.gerador.metamodel.model.Module module : modules) {
+                String moduleName = module.getName();
+                String moduleIcon = convertMaterialIconToFontAwesome(module.getIcon());
+
+                // Gerar ID único para o submenu
+                String submenuId = module.getId();
+
+                menu.append("\n            <li class=\"menu-item\">\n");
+                menu.append("                <a href=\"#\" class=\"menu-toggle\" onclick=\"toggleSubmenu(event, '").append(submenuId).append("')\">\n");
+                menu.append("                    <i class=\"fas ").append(moduleIcon).append("\"></i> ").append(moduleName).append("\n");
+                menu.append("                    <i class=\"fas fa-chevron-right float-end\"></i>\n");
+                menu.append("                </a>\n");
+                menu.append("                <ul class=\"submenu\" id=\"").append(submenuId).append("\">\n");
+
+                // Ordenar itens por order
+                java.util.List<br.com.gerador.metamodel.model.MenuItem> items = module.getItems();
+                if (items != null) {
+                    items.sort((i1, i2) -> Integer.compare(i1.getOrder(), i2.getOrder()));
+
+                    for (br.com.gerador.metamodel.model.MenuItem item : items) {
+                        String itemName = item.getName();
+                        String entityRef = item.getEntityRef();
+                        String itemIcon = convertMaterialIconToFontAwesome(item.getIcon());
+
+                        if (entityRef != null && !entityRef.isEmpty()) {
+                            String entityUrl = toLowerCamelCase(entityRef);
+
+                            menu.append("                    <li>\n");
+                            menu.append("                        <a href=\"{{ url('/").append(entityUrl).append("') }}\">\n");
+                            menu.append("                            <i class=\"fas ").append(itemIcon).append("\"></i> ").append(itemName).append("\n");
+                            menu.append("                        </a>\n");
+                            menu.append("                    </li>\n");
+                        }
+                    }
+                }
+
+                menu.append("                </ul>\n");
+                menu.append("            </li>");
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao gerar menu a partir dos módulos: " + e.getMessage());
+            e.printStackTrace();
+            return "";
+        }
+
+        return menu.toString();
+    }
+
+    /**
+     * Converte ícones do Material Icons para Font Awesome equivalentes.
+     */
+    private String convertMaterialIconToFontAwesome(String materialIcon) {
+        if (materialIcon == null || materialIcon.isEmpty()) {
+            return "fa-circle";
+        }
+
+        // Mapeamento de Material Icons para Font Awesome
+        return switch (materialIcon.toLowerCase()) {
+            case "business_center" -> "fa-briefcase";
+            case "person" -> "fa-user";
+            case "apartment" -> "fa-building";
+            case "corporate_fare" -> "fa-building";
+            case "account_balance" -> "fa-university";
+            case "payments" -> "fa-credit-card";
+            case "receipt" -> "fa-receipt";
+            case "description" -> "fa-file-alt";
+            case "account_balance_wallet" -> "fa-wallet";
+            case "paid" -> "fa-money-bill-wave";
+            case "trending_up" -> "fa-chart-line";
+            case "payment" -> "fa-money-check";
+            case "settings" -> "fa-cog";
+            case "location_city" -> "fa-city";
+            case "people" -> "fa-users";
+            case "school" -> "fa-school";
+            case "medical_services" -> "fa-briefcase-medical";
+            case "business" -> "fa-building";
+            case "manage_accounts" -> "fa-user-cog";
+            case "calendar_today" -> "fa-calendar-check";
+            case "database" -> "fa-database";
+            case "storage" -> "fa-database";
+            case "map" -> "fa-map-marked-alt";
+            case "contact_page" -> "fa-address-book";
+            case "badge" -> "fa-id-card";
+            case "favorite" -> "fa-ring";
+            case "local_hospital" -> "fa-stethoscope";
+            case "biotech" -> "fa-microscope";
+            case "science" -> "fa-flask";
+            case "medical_information" -> "fa-heartbeat";
+            case "health_and_safety" -> "fa-shield-alt";
+            case "medication" -> "fa-pills";
+            default -> "fa-circle";
+        };
+    }
+
     public String generatePaginationTranslation() {
         return """
 <?php
@@ -1745,18 +1854,22 @@ return [
             String entityLower = Character.toLowerCase(entity.charAt(0)) + entity.substring(1);
             String entityPlural = entityLower + "s";
 
-            // Converter field para snake_case
+            // Converter field e displayField para snake_case
             String fieldSnake = toSnakeCase(field);
+            String displayFieldSnake = toSnakeCase(displayField);
+
+            // Nome da tabela em snake_case
+            String tableName = toSnakeCase(entity);
 
             uses.append("use App\\Models\\").append(entity).append(";\n");
 
             validationRules.append("            '").append(field).append("' => 'required|exists:")
-                          .append(entityLower).append(",id',\n");
+                          .append(tableName).append(",").append(fieldSnake).append("',\n");
 
             sessionAssignments.append("            '").append(fieldSnake).append("' => $request->").append(field).append(",\n");
 
             selectFetches.append("        $").append(entityPlural).append(" = ").append(entity)
-                        .append("::orderBy('").append(displayField).append("')->get();\n");
+                        .append("::orderBy('").append(displayFieldSnake).append("')->get();\n");
 
             selectCompact.append(", '").append(entityPlural).append("'");
 
@@ -1765,16 +1878,16 @@ return [
                        .append("::find($request->").append(field).append(");\n")
                        .append("        session([\n")
                        .append("            '").append(fieldSnake).append("_nome' => $").append(entityLower)
-                       .append("->").append(displayField).append(",\n")
+                       .append("->").append(displayFieldSnake).append(",\n")
                        .append("        ]);\n");
 
             updateMethods.append("\n        if ($request->has('").append(field).append("')) {\n")
                        .append("            $").append(entityLower).append(" = ").append(entity)
                        .append("::findOrFail($request->").append(field).append(");\n")
                        .append("            session([\n")
-                       .append("                '").append(fieldSnake).append("' => $").append(entityLower).append("->id,\n")
+                       .append("                '").append(fieldSnake).append("' => $").append(entityLower).append("->").append(fieldSnake).append(",\n")
                        .append("                '").append(fieldSnake).append("_nome' => $").append(entityLower)
-                       .append("->").append(displayField).append(",\n")
+                       .append("->").append(displayFieldSnake).append(",\n")
                        .append("            ]);\n")
                        .append("        }\n");
         }
@@ -1914,6 +2027,7 @@ class EnsureSessionContextSelected
             String entityPlural = entityLower + "s";
             String icon = getIconForEntity(entity);
             String fieldSnake = toSnakeCase(field);
+            String displayFieldSnake = toSnakeCase(displayField);
 
             selectionSections.append("""
                         {{-- Seleção de %s --}}
@@ -1929,12 +2043,12 @@ class EnsureSessionContextSelected
                                                 class="form-check-input"
                                                 type="%s"
                                                 name="%s"
-                                                id="%s_{{ $%s->id }}"
-                                                value="{{ $%s->id }}"
-                                                {{ old('%s', session('%s')) == $%s->id ? 'checked' : '' }}
+                                                id="%s_{{ $%s->%s }}"
+                                                value="{{ $%s->%s }}"
+                                                {{ old('%s', session('%s')) == $%s->%s ? 'checked' : '' }}
                                                 required
                                             >
-                                            <label class="form-check-label" for="%s_{{ $%s->id }}">
+                                            <label class="form-check-label" for="%s_{{ $%s->%s }}">
                                                 {{ $%s->%s }}
                                             </label>
                                         </div>
@@ -1950,11 +2064,11 @@ class EnsureSessionContextSelected
                 entity, icon, label,
                 entityPlural, entityLower,
                 inputType, field,
-                entityLower, entityLower,
-                entityLower,
-                field, fieldSnake, entityLower,
-                entityLower, entityLower,
-                entityLower, displayField,
+                entityLower, entityLower, fieldSnake,
+                entityLower, fieldSnake,
+                field, fieldSnake, entityLower, fieldSnake,
+                entityLower, entityLower, fieldSnake,
+                entityLower, displayFieldSnake,
                 field
             ));
         }
@@ -2004,6 +2118,7 @@ class EnsureSessionContextSelected
             case "territorio" -> "fa-map";
             case "escola" -> "fa-school";
             case "turma" -> "fa-users";
+            case "empresa" -> "fa-building";
             default -> "fa-circle";
         };
     }

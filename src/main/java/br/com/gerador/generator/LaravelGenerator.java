@@ -293,17 +293,6 @@ public class LaravelGenerator {
 
                 if (!data.isEmpty()) {
                     for (java.util.Map<String, String> row : data) {
-                        // Contar quantos campos estão vazios
-                        long emptyCount = row.values().stream()
-                            .filter(v -> v == null || v.trim().isEmpty())
-                            .count();
-
-                        // Se mais de 50% dos campos estão vazios, pular este registro
-                        if (emptyCount > row.size() / 2) {
-                            System.out.println("    AVISO: Registro com muitos campos vazios ignorado");
-                            continue;
-                        }
-
                         allInserts.append("        DB::table('").append(tableName).append("')->insert([\n");
 
                         for (java.util.Map.Entry<String, String> entry : row.entrySet()) {

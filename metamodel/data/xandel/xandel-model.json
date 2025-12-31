@@ -1241,6 +1241,251 @@
           "dataType": "BOOLEAN",
           "databaseType": "bit",
           "ui": { "component": "CHECKBOX", "grid": { "visible": true, "order": 6, "width": 80 }, "form": { "visible": true, "order": 6 } }
+        },
+        {
+          "id": "empresa_data_abertura",
+          "name": "dataAbertura",
+          "columnName": "DataAbertura",
+          "label": "Data Abertura",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "ui": { "component": "DATE", "grid": { "visible": false }, "form": { "visible": true, "order": 7 } }
+        },
+        {
+          "id": "empresa_data_cadastro",
+          "name": "dataCadastro",
+          "columnName": "DataCadastro",
+          "label": "Data Cadastro",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "ui": { "component": "DATE", "grid": { "visible": false }, "form": { "visible": true, "order": 8 } }
+        },
+        {
+          "id": "empresa_capital_social",
+          "name": "capitalSocial",
+          "columnName": "CapitalSocial",
+          "label": "Capital Social",
+          "dataType": "MONEY",
+          "databaseType": "money",
+          "ui": { "component": "DECIMAL", "grid": { "visible": false }, "form": { "visible": true, "order": 9 } }
+        },
+        {
+          "id": "empresa_quotas",
+          "name": "quotas",
+          "columnName": "Quotas",
+          "label": "Quotas",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "ui": { "component": "NUMBER", "grid": { "visible": false }, "form": { "visible": true, "order": 10 } }
+        },
+        {
+          "id": "empresa_administrador",
+          "name": "administrador",
+          "columnName": "Administrador",
+          "label": "Administrador",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 60,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 11 } }
+        },
+        {
+          "id": "empresa_procurador",
+          "name": "procurador",
+          "columnName": "Procurador",
+          "label": "Procurador",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 100,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 12 } }
+        },
+        {
+          "id": "empresa_endereco",
+          "name": "endereco",
+          "columnName": "Endereco",
+          "label": "Endereço",
+          "dataType": "STRING",
+          "databaseType": "nvarchar",
+          "length": 60,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 13 } }
+        },
+        {
+          "id": "empresa_id_bairro",
+          "name": "idBairro",
+          "columnName": "id_Bairro",
+          "label": "Bairro",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "reference": { "entity": "Bairro", "field": "idBairro" },
+          "ui": { "component": "AUTOCOMPLETE", "grid": { "visible": false }, "form": { "visible": true, "order": 14 } }
+        },
+        {
+          "id": "empresa_id_cidade",
+          "name": "idCidade",
+          "columnName": "id_Cidade",
+          "label": "Cidade",
+          "dataType": "INTEGER",
+          "databaseType": "smallint",
+          "reference": { "entity": "Cidade", "field": "idCidade" },
+          "ui": { "component": "AUTOCOMPLETE", "grid": { "visible": true, "order": 7 }, "form": { "visible": true, "order": 15 } }
+        },
+        {
+          "id": "empresa_cep",
+          "name": "cep",
+          "columnName": "CEP",
+          "label": "CEP",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 8,
+          "ui": { "component": "CEP", "mask": "#####-###", "grid": { "visible": false }, "form": { "visible": true, "order": 16 } }
+        },
+        {
+          "id": "empresa_id_banco",
+          "name": "idBanco",
+          "columnName": "id_Banco",
+          "label": "Banco",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 3,
+          "reference": { "entity": "Banco", "field": "idBanco" },
+          "ui": { "component": "SELECT", "grid": { "visible": false }, "form": { "visible": true, "order": 17 } }
+        },
+        {
+          "id": "empresa_agencia",
+          "name": "agencia",
+          "columnName": "Agencia",
+          "label": "Agência",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 5,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 18 } }
+        },
+        {
+          "id": "empresa_conta_corrente",
+          "name": "contaCorrente",
+          "columnName": "ContaCorrente",
+          "label": "Conta Corrente",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 12,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 19 } }
+        },
+        {
+          "id": "empresa_dv_conta",
+          "name": "dvContaCorrente",
+          "columnName": "DVContaCorrente",
+          "label": "DV",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 1,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 20 } }
+        },
+        {
+          "id": "empresa_pix_ativo",
+          "name": "pixAtivo",
+          "columnName": "PIXAtivo",
+          "label": "PIX Ativo",
+          "dataType": "BOOLEAN",
+          "databaseType": "bit",
+          "required": true,
+          "ui": { "component": "CHECKBOX", "grid": { "visible": false }, "form": { "visible": true, "order": 21 } }
+        },
+        {
+          "id": "empresa_pix",
+          "name": "pix",
+          "columnName": "PIX",
+          "label": "Chave PIX",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 100,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 22 } }
+        },
+        {
+          "id": "empresa_im",
+          "name": "im",
+          "columnName": "IM",
+          "label": "Inscrição Municipal",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 14,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 23 } }
+        },
+        {
+          "id": "empresa_ie",
+          "name": "ie",
+          "columnName": "IE",
+          "label": "Inscrição Estadual",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 14,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 24 } }
+        },
+        {
+          "id": "empresa_juceb",
+          "name": "juceb",
+          "columnName": "JUCEB",
+          "label": "JUCEB",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 12,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 25 } }
+        },
+        {
+          "id": "empresa_cnae",
+          "name": "cnae",
+          "columnName": "CNAE",
+          "label": "CNAE",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 7,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 26 } }
+        },
+        {
+          "id": "empresa_cremebpj",
+          "name": "cremebpj",
+          "columnName": "CREMEBPJ",
+          "label": "CREMEB PJ",
+          "dataType": "STRING",
+          "databaseType": "char",
+          "length": 11,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 27 } }
+        },
+        {
+          "id": "empresa_numero_registro_cartorio",
+          "name": "numeroRegistroCartorio",
+          "columnName": "NumeroRegistroCartorio",
+          "label": "Nº Registro Cartório",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 6,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 28 } }
+        },
+        {
+          "id": "empresa_data_registro_cartorio",
+          "name": "dataRegistroCartorio",
+          "columnName": "DataRegistroCartorio",
+          "label": "Data Registro Cartório",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "ui": { "component": "DATE", "grid": { "visible": false }, "form": { "visible": true, "order": 29 } }
+        },
+        {
+          "id": "empresa_data_validade",
+          "name": "dataValidade",
+          "columnName": "DataValidade",
+          "label": "Data Validade",
+          "dataType": "DATETIME",
+          "databaseType": "datetime",
+          "ui": { "component": "DATE", "grid": { "visible": false }, "form": { "visible": true, "order": 30 } }
+        },
+        {
+          "id": "empresa_periodo_vigencia",
+          "name": "periodoVigencia",
+          "columnName": "PeriodoVigencia",
+          "label": "Período Vigência",
+          "dataType": "STRING",
+          "databaseType": "varchar",
+          "length": 15,
+          "ui": { "component": "TEXT", "grid": { "visible": false }, "form": { "visible": true, "order": 31 } }
         }
       ],
       "childEntities": [
@@ -2430,6 +2675,36 @@
             "displayField": "nomeDespesaReceita"
           },
           "ui": { "component": "SELECT", "grid": { "visible": true, "order": 10 }, "form": { "visible": true, "order": 12 } }
+        },
+        {
+          "id": "cpr_id_nota_fiscal",
+          "name": "idNotaFiscal",
+          "columnName": "id_NotaFiscal",
+          "label": "Nota Fiscal",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "NF",
+            "targetField": "idNotaFiscal",
+            "displayField": "idNotaFiscal"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": false }, "form": { "visible": true, "order": 13 } }
+        },
+        {
+          "id": "cpr_id_lancamento",
+          "name": "idLancamento",
+          "columnName": "id_Lancamento",
+          "label": "Lançamento",
+          "dataType": "INTEGER",
+          "databaseType": "int",
+          "relationship": {
+            "type": "MANY_TO_ONE",
+            "targetEntity": "Lancamento",
+            "targetField": "idLancamento",
+            "displayField": "idLancamento"
+          },
+          "ui": { "component": "SELECT", "grid": { "visible": false }, "form": { "visible": true, "order": 14 } }
         }
       ]
     },
