@@ -1,0 +1,786 @@
+====================================================================================================
+RELATÓRIO DE COMPATIBILIDADE - JSON vs CSV (COMPLETO)
+====================================================================================================
+
+Total de entidades no JSON (xandel-model.json): 39
+Total de entidades no JSON (xandel-entities.json): 24
+Total de entidades: 63
+Total de CSVs disponíveis: 39
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Banco (ID: banco, Tabela: Banco)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: banco.csv
+   Colunas no CSV (2): id_banco, nome_banco
+
+   Campos no JSON (2): id_Banco, NomeBanco
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (1):
+      - nomebanco
+
+   ⚠️  CAMPOS NO CSV MAS NÃO NO JSON (1):
+      - nome_banco
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Bairro (ID: bairro, Tabela: Bairro)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: bairro.csv
+   Colunas no CSV (2): id_bairro, nome_bairro
+
+   Campos no JSON (2): id_Bairro, NomeBairro
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (1):
+      - nomebairro
+
+   ⚠️  CAMPOS NO CSV MAS NÃO NO JSON (1):
+      - nome_bairro
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Cidade (ID: cidade, Tabela: Cidade)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: cidade.csv
+   Colunas no CSV (5): id_cidade, nome_cidade, uf, ddd, iss
+
+   Campos no JSON (5): id_Cidade, NomeCidade, UF, DDD, ISS
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (1):
+      - nomecidade
+
+   ⚠️  CAMPOS NO CSV MAS NÃO NO JSON (1):
+      - nome_cidade
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Conselho (ID: conselho, Tabela: Conselho)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: conselho.csv
+   Colunas no CSV (3): id_conselho, nome_conselho, sigla
+
+   Campos no JSON (3): id_Conselho, NomeConselho, Sigla
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (1):
+      - nomeconselho
+
+   ⚠️  CAMPOS NO CSV MAS NÃO NO JSON (1):
+      - nome_conselho
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Especialidade (ID: especialidade, Tabela: Especialidade)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: especialidade.csv
+   Colunas no CSV (2): id_especialidade, nome_especialidade
+
+   Campos no JSON (2): id_Especialidade, NomeEspecialidade
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (1):
+      - nomeespecialidade
+
+   ⚠️  CAMPOS NO CSV MAS NÃO NO JSON (1):
+      - nome_especialidade
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: EstadoCivil (ID: estado_civil, Tabela: EstadoCivil)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'EstadoCivil'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Operadora (ID: operadora, Tabela: Operadora)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: operadora.csv
+   Colunas no CSV (2): id_operadora, nome_operadora
+
+   Campos no JSON (2): id_Operadora, NomeOperadora
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (1):
+      - nomeoperadora [OBRIGATÓRIO]
+
+   ⚠️  CAMPOS NO CSV MAS NÃO NO JSON (1):
+      - nome_operadora
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: TipoServico (ID: tipo_servico, Tabela: TipoServico)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'TipoServico'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: TipoContato (ID: tipo_contato, Tabela: TipoContato)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'TipoContato'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: CBO (ID: cbo, Tabela: CBO)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: cbo.csv
+   Colunas no CSV (2): id_CBO, NomeCBO
+
+   Campos no JSON (2): id_CBO, NomeCBO
+
+   ✅ TODOS OS CAMPOS CORRESPONDEM (2 campos)
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Usuario (ID: usuario, Tabela: Usuario)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: usuario.csv
+   Colunas no CSV (6): id_usuario, usuario_nome, usuario_login, usuario_senha, usuario_nivel_acesso, usuario_inativo
+
+   Campos no JSON (7): id_Usuario, UsuarioNome, UsuarioLogin, UsuarioSenha, UsuarioNivelAcesso, UsuarioInativo, UsuarioDataInicio
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (6):
+      - usuariodatainicio
+      - usuarioinativo
+      - usuariologin [OBRIGATÓRIO]
+      - usuarionivelacesso
+      - usuarionome [OBRIGATÓRIO]
+      - usuariosenha [OBRIGATÓRIO]
+
+   ⚠️  CAMPOS NO CSV MAS NÃO NO JSON (5):
+      - usuario_inativo
+      - usuario_login
+      - usuario_nivel_acesso
+      - usuario_nome
+      - usuario_senha
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: ParametroEmail (ID: parametro_email, Tabela: ParametroEmail)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'ParametroEmail'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: ImpostoDeRenda (ID: imposto_de_renda, Tabela: ImpostoDeRenda)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'ImpostoDeRenda'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: ParametroNF (ID: parametro_nf, Tabela: ParametroNF)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'ParametroNF'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Indicacao (ID: indicacao, Tabela: Indicacao)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: indicacao.csv
+   Colunas no CSV (8): id_Indicacao, de, ate, IndicacaoMinima, IndicacaoMaxima, Indice, TetoIndice, GrupoIndicados
+
+   Campos no JSON (8): id_Indicacao, de, ate, IndicacaoMinima, IndicacaoMaxima, Indice, TetoIndice, GrupoIndicados
+
+   ✅ TODOS OS CAMPOS CORRESPONDEM (8 campos)
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Empresa (ID: empresa, Tabela: Empresa)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: empresa.csv
+   Colunas no CSV (6): id_Empresa, NomeEmpresa, FantasiaEmpresa, CNPJ, TaxaRetencao, Inativa
+
+   Campos no JSON (6): id_Empresa, NomeEmpresa, FantasiaEmpresa, CNPJ, TaxaRetencao, Inativa
+
+   ✅ TODOS OS CAMPOS CORRESPONDEM (6 campos)
+
+   📋 RELACIONAMENTOS (hasMany):
+      - Empresa -> EmpresaSocio (FK: idEmpresa)
+      - Empresa -> EmpresaCliente (FK: idEmpresa)
+      - Empresa -> EmpresaDespesaFixa (FK: idEmpresa)
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: PlanoRetencao (ID: plano_retencao, Tabela: PlanoRetencao)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'PlanoRetencao'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: DespesaReceita (ID: despesa_receita, Tabela: DespesaReceita)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'DespesaReceita'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Cartorio (ID: cartorio, Tabela: Cartorio)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: cartorio.csv
+   Colunas no CSV (4): id_Cartorio, NomeCartorio, Endereco, Telefone
+
+   Campos no JSON (6): id_Cartorio, NomeCartorio, Endereco, id_Bairro, id_Cidade, Telefone
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (2):
+      - id_bairro
+      - id_cidade
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Pessoa (ID: pessoa, Tabela: Pessoa)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: pessoa.csv
+   Colunas no CSV (38): id_Pessoa, Nome, CPF, RG, OrgaoEmissor, Nascimento, Pai, Mae, Nacionalidade, NumeroDependente, Endereco, CEP, Telefone, Celular, Email, NumeroConselho, DataFiliacao, InscricaoISS, InscricaoINSS, ClasseInss, Agencia, Conta, DvConta, ContaPoupanca, DataAdesao, Percentual, Taxaespecial, Consulta, Procedimento, NumeroParcelasCota, ValorDeCadaCota, DataIndicacao, DataDesligamento, ValorPagoNoDesligamento, DataInativo, ObservacaoPessoa, Atualizacao, DataAlteracao
+
+   Campos no JSON (22): id_Pessoa, Nome, CPF, id_Conselho, NumeroConselho, Nascimento, RG, Email, Telefone, Celular, Endereco, id_Bairro, id_Cidade, CEP, id_EstadoCivil, DataAdesao, DataInativo, id_Banco, Agencia, Conta, id_PlanoRetencao, id_Operadora
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (7):
+      - id_bairro
+      - id_banco
+      - id_cidade
+      - id_conselho
+      - id_estadocivil
+      - id_operadora
+      - id_planoretencao
+
+   ⚠️  CAMPOS NO CSV MAS NÃO NO JSON (23):
+      - Atualizacao
+      - ClasseInss
+      - Consulta
+      - ContaPoupanca
+      - DataAlteracao
+      - DataDesligamento
+      - DataFiliacao
+      - DataIndicacao
+      - DvConta
+      - InscricaoINSS
+      - InscricaoISS
+      - Mae
+      - Nacionalidade
+      - NumeroDependente
+      - NumeroParcelasCota
+      - ObservacaoPessoa
+      - OrgaoEmissor
+      - Pai
+      - Percentual
+      - Procedimento
+      - Taxaespecial
+      - ValorDeCadaCota
+      - ValorPagoNoDesligamento
+
+   📋 RELACIONAMENTOS (hasMany):
+      - Pessoa -> MedicoEspecialidade (FK: idPessoa)
+      - Pessoa -> PessoaCartorio (FK: idPessoa)
+      - Pessoa -> PessoaContaCorrente (FK: idPessoa)
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Cliente (ID: cliente, Tabela: Cliente)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: cliente.csv
+   Colunas no CSV (17): id_Cliente, NomeCliente, FantasiaCliente, CNPJ, IE, IM, DataContrato, TaxaADM, Endereco, CEP, Contato, Fone1, Fone2, email, ObservacaoCliente, ObsDaNota, PessoaJuridica
+
+   Campos no JSON (15): id_Cliente, NomeCliente, FantasiaCliente, CNPJ, DataContrato, TaxaADM, Endereco, CEP, id_Bairro, id_Cidade, Contato, Fone1, Fone2, email, PessoaJuridica
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (2):
+      - id_bairro
+      - id_cidade
+
+   ⚠️  CAMPOS NO CSV MAS NÃO NO JSON (4):
+      - IE
+      - IM
+      - ObsDaNota
+      - ObservacaoCliente
+
+   📋 RELACIONAMENTOS (hasMany):
+      - Cliente -> ClienteContato (FK: idCliente)
+      - Cliente -> ClienteFilial (FK: idCliente)
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Lancamento (ID: lancamento, Tabela: Lancamento)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: lancamento.csv
+   Colunas no CSV (12): id_lancamento, Data, NF, ValorBruto, Despesas, Retencao, ValorLiquido, ValorTaxa, ValorRepasse, Taxa, MesAno, Baixa
+
+   Campos no JSON (16): id_lancamento, Data, id_Empresa, id_Cliente, id_Pessoa, NF, ValorBruto, Despesas, Retencao, ValorLiquido, ValorTaxa, ValorRepasse, Baixa, MesAno, Taxa, id_TipoServico
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (4):
+      - id_cliente [OBRIGATÓRIO]
+      - id_empresa [OBRIGATÓRIO]
+      - id_pessoa [OBRIGATÓRIO]
+      - id_tiposervico
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: NF (ID: nf, Tabela: NF)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: nf.csv
+   Colunas no CSV (16): id_Empresa, NF, Emissao, Vencimento, Total, IRRF, PIS, Cofins, CSLL, ISS, Baixa, ValorQuitado, Cancelada, Observacao, ObservacaoBaixa, OutrasDespesas
+
+   Campos no JSON (15): id_Empresa, NF, id_cliente, Emissao, Vencimento, Total, IRRF, PIS, Cofins, CSLL, ISS, Baixa, ValorQuitado, Cancelada, Observacao
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (1):
+      - id_cliente [OBRIGATÓRIO]
+
+   ⚠️  CAMPOS NO CSV MAS NÃO NO JSON (2):
+      - ObservacaoBaixa
+      - OutrasDespesas
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: ContasPagarReceber (ID: contas_pagar_receber, Tabela: ContasPagarReceber)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'ContasPagarReceber'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: PagamentoNaoSocio (ID: pagamento_nao_socio, Tabela: PagamentoNaoSocio)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'PagamentoNaoSocio'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: RepasseAnual (ID: repasse_anual, Tabela: RepasseAnual)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'RepasseAnual'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: AnuidadeCremeb (ID: anuidade_cremeb, Tabela: AnuidadeCremeb)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'AnuidadeCremeb'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: MedicoEspecialidade (ID: medico_especialidade, Tabela: MedicoEspecialidade)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'MedicoEspecialidade'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: EmpresaDespesaFixa (ID: empresa_despesa_fixa, Tabela: EmpresaDespesaFixa)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'EmpresaDespesaFixa'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: EmpresaCliente (ID: empresa_cliente, Tabela: EmpresaCliente)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'EmpresaCliente'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Retencao (ID: retencao, Tabela: Retencao)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: retencao.csv
+   Colunas no CSV (3): id_PlanoRetencao, Ate, Reter
+
+   Campos no JSON (3): id_PlanoRetencao, Ate, Reter
+
+   ✅ TODOS OS CAMPOS CORRESPONDEM (3 campos)
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: PessoaCartorio (ID: pessoa_cartorio, Tabela: PessoaCartorio)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'PessoaCartorio'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: PessoaContaRecebimento (ID: pessoa_conta_recebimento, Tabela: PessoaContaRecebimento)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'PessoaContaRecebimento'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: PessoaContaCorrente (ID: pessoa_conta_corrente, Tabela: PessoaContaCorrente)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'PessoaContaCorrente'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: ClienteContato (ID: cliente_contato, Tabela: ClienteContato)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'ClienteContato'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: AnuidadeCremebItem (ID: anuidade_cremeb_item, Tabela: AnuidadeCremebItem)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'AnuidadeCremebItem'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Adiantamento (ID: adiantamento, Tabela: Adiantamento)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: adiantamento.csv
+   Colunas no CSV (9): id_Adiantamento, Data, NF, ValorBruto, Retencao, ValorLiquido, ValorTaxa, ValorRepasse, Pago
+
+   Campos no JSON (13): id_Adiantamento, Data, id_Empresa, id_Pessoa, id_cliente, NF, ValorBruto, Retencao, ValorLiquido, ValorTaxa, ValorRepasse, id_lancamento, Pago
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (4):
+      - id_cliente [OBRIGATÓRIO]
+      - id_empresa [OBRIGATÓRIO]
+      - id_lancamento [OBRIGATÓRIO]
+      - id_pessoa [OBRIGATÓRIO]
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: EmpresaSocio (ID: empresa_socio, Tabela: EmpresaSocio)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'EmpresaSocio'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: ClienteFilial (ID: cliente_filial, Tabela: ClienteFilial)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'ClienteFilial'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Cartorio (ID: cartorio, Tabela: Cartorio)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: cartorio.csv
+   Colunas no CSV (4): id_Cartorio, NomeCartorio, Endereco, Telefone
+
+   Campos no JSON (6): id_Cartorio, NomeCartorio, Endereco, id_Bairro, id_Cidade, Telefone
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (2):
+      - id_bairro [FK -> Bairro]
+      - id_cidade [FK -> Cidade]
+
+   🔗 FOREIGN KEYS (2):
+      ❌ id_Bairro -> Bairro.idBairro
+      ❌ id_Cidade -> Cidade.idCidade
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: PlanoRetencao (ID: plano_retencao, Tabela: PlanoRetencao)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'PlanoRetencao'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Retencao (ID: retencao, Tabela: Retencao)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: retencao.csv
+   Colunas no CSV (3): id_PlanoRetencao, Ate, Reter
+
+   Campos no JSON (3): id_PlanoRetencao, Ate, Reter
+
+   ✅ TODOS OS CAMPOS CORRESPONDEM (3 campos)
+
+   🔗 FOREIGN KEYS (1):
+      ✅ id_PlanoRetencao -> PlanoRetencao.idPlanoRetencao [ON DELETE CASCADE]
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: DespesaReceita (ID: despesa_receita, Tabela: DespesaReceita)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'DespesaReceita'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Pessoa (ID: pessoa, Tabela: Pessoa)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: pessoa.csv
+   Colunas no CSV (38): id_Pessoa, Nome, CPF, RG, OrgaoEmissor, Nascimento, Pai, Mae, Nacionalidade, NumeroDependente, Endereco, CEP, Telefone, Celular, Email, NumeroConselho, DataFiliacao, InscricaoISS, InscricaoINSS, ClasseInss, Agencia, Conta, DvConta, ContaPoupanca, DataAdesao, Percentual, Taxaespecial, Consulta, Procedimento, NumeroParcelasCota, ValorDeCadaCota, DataIndicacao, DataDesligamento, ValorPagoNoDesligamento, DataInativo, ObservacaoPessoa, Atualizacao, DataAlteracao
+
+   Campos no JSON (47): id_Pessoa, Nome, CPF, RG, OrgaoEmissor, Nascimento, id_EstadoCivil, Pai, Mae, id_Naturalidade, Nacionalidade, NumeroDependente, Endereco, id_Bairro, id_Cidade, CEP, Telefone, Celular, Email, id_Conselho, NumeroConselho, DataFiliacao, InscricaoISS, InscricaoINSS, ClasseInss, id_Operadora, id_Banco, Agencia, Conta, DvConta, ContaPoupanca, DataAdesao, id_PlanoRetencao, Percentual, Taxaespecial, Consulta, Procedimento, NumeroParcelasCota, ValorDeCadaCota, id_Indicacao, DataIndicacao, DataDesligamento, ValorPagoNoDesligamento, DataInativo, ObservacaoPessoa, Atualizacao, DataAlteracao
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (9):
+      - id_bairro [FK -> Bairro]
+      - id_banco [FK -> Banco]
+      - id_cidade [FK -> Cidade]
+      - id_conselho [FK -> Conselho]
+      - id_estadocivil [FK -> EstadoCivil]
+      - id_indicacao [FK -> Indicacao]
+      - id_naturalidade [FK -> Cidade]
+      - id_operadora [FK -> Operadora]
+      - id_planoretencao [FK -> PlanoRetencao]
+
+   📋 RELACIONAMENTOS (hasMany):
+      - Pessoa -> PessoaContaCorrente (FK: idPessoa)
+      - Pessoa -> PessoaEspecialidade (FK: idPessoa)
+
+   🔗 FOREIGN KEYS (9):
+      ❌ id_EstadoCivil -> EstadoCivil.idEstadoCivil
+      ❌ id_Naturalidade -> Cidade.idCidade
+      ❌ id_Bairro -> Bairro.idBairro
+      ❌ id_Cidade -> Cidade.idCidade
+      ❌ id_Conselho -> Conselho.idConselho
+      ❌ id_Operadora -> Operadora.idOperadora
+      ❌ id_Banco -> Banco.idBanco
+      ❌ id_PlanoRetencao -> PlanoRetencao.idPlanoRetencao
+      ❌ id_Indicacao -> Indicacao.idIndicacao
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: PessoaContaCorrente (ID: pessoa_conta_corrente, Tabela: PessoaContaCorrente)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'PessoaContaCorrente'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: MedicoEspecialidade (ID: medico_especialidade, Tabela: MedicoEspecialidade)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'MedicoEspecialidade'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Cliente (ID: cliente, Tabela: Cliente)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: cliente.csv
+   Colunas no CSV (17): id_Cliente, NomeCliente, FantasiaCliente, CNPJ, IE, IM, DataContrato, TaxaADM, Endereco, CEP, Contato, Fone1, Fone2, email, ObservacaoCliente, ObsDaNota, PessoaJuridica
+
+   Campos no JSON (19): id_Cliente, NomeCliente, FantasiaCliente, CNPJ, IE, IM, DataContrato, TaxaADM, Endereco, id_Bairro, id_Cidade, CEP, Contato, Fone1, Fone2, email, ObservacaoCliente, ObsDaNota, PessoaJuridica
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (2):
+      - id_bairro [FK -> Bairro]
+      - id_cidade [FK -> Cidade]
+
+   🔗 FOREIGN KEYS (2):
+      ❌ id_Bairro -> Bairro.idBairro
+      ❌ id_Cidade -> Cidade.idCidade
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: ClienteFilial (ID: cliente_filial, Tabela: ClienteFilial)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'ClienteFilial'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: ClienteContato (ID: cliente_contato, Tabela: ClienteContato)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'ClienteContato'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Empresa (ID: empresa, Tabela: Empresa)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: empresa.csv
+   Colunas no CSV (6): id_Empresa, NomeEmpresa, FantasiaEmpresa, CNPJ, TaxaRetencao, Inativa
+
+   Campos no JSON (31): id_Empresa, NomeEmpresa, FantasiaEmpresa, CNPJ, TaxaRetencao, Inativa, DataAbertura, DataCadastro, CapitalSocial, Quotas, Administrador, Procurador, Endereco, id_Bairro, id_Cidade, CEP, id_Banco, Agencia, ContaCorrente, DVContaCorrente, PIXAtivo, PIX, IM, IE, JUCEB, CNAE, CREMEBPJ, NumeroRegistroCartorio, DataRegistroCartorio, DataValidade, PeriodoVigencia
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (25):
+      - administrador
+      - agencia
+      - capitalsocial
+      - cep
+      - cnae
+      - contacorrente
+      - cremebpj
+      - dataabertura
+      - datacadastro
+      - dataregistrocartorio
+      - datavalidade
+      - dvcontacorrente
+      - endereco
+      - id_bairro [FK -> Bairro]
+      - id_banco [FK -> Banco]
+      - id_cidade [FK -> Cidade]
+      - ie
+      - im
+      - juceb
+      - numeroregistrocartorio
+      - periodovigencia
+      - pix
+      - pixativo [OBRIGATÓRIO]
+      - procurador
+      - quotas
+
+   🔗 FOREIGN KEYS (3):
+      ❌ id_Bairro -> Bairro.idBairro
+      ❌ id_Cidade -> Cidade.idCidade
+      ❌ id_Banco -> Banco.idBanco
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: EmpresaSocio (ID: empresa_socio, Tabela: EmpresaSocio)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'EmpresaSocio'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: EmpresaCliente (ID: empresa_cliente, Tabela: EmpresaCliente)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'EmpresaCliente'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Lancamento (ID: lancamento, Tabela: Lancamento)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: lancamento.csv
+   Colunas no CSV (12): id_lancamento, Data, NF, ValorBruto, Despesas, Retencao, ValorLiquido, ValorTaxa, ValorRepasse, Taxa, MesAno, Baixa
+
+   Campos no JSON (17): id_lancamento, Data, id_Empresa, id_Cliente, id_Pessoa, NF, ValorBruto, Despesas, Retencao, ValorLiquido, ValorTaxa, ValorRepasse, Taxa, MesAno, Baixa, id_TipoServico, id_ClienteFilial
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (5):
+      - id_cliente [OBRIGATÓRIO] [FK -> Cliente]
+      - id_clientefilial [FK -> ClienteFilial]
+      - id_empresa [OBRIGATÓRIO] [FK -> Empresa]
+      - id_pessoa [OBRIGATÓRIO] [FK -> Pessoa]
+      - id_tiposervico [FK -> TipoServico]
+
+   🔗 FOREIGN KEYS (5):
+      ❌ id_Empresa -> Empresa.idEmpresa
+      ❌ id_Cliente -> Cliente.idCliente
+      ❌ id_Pessoa -> Pessoa.idPessoa
+      ❌ id_TipoServico -> TipoServico.idTipoServico
+      ❌ id_ClienteFilial -> ClienteFilial.idClienteFilial
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: NF (ID: nf, Tabela: NF)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: nf.csv
+   Colunas no CSV (16): id_Empresa, NF, Emissao, Vencimento, Total, IRRF, PIS, Cofins, CSLL, ISS, Baixa, ValorQuitado, Cancelada, Observacao, ObservacaoBaixa, OutrasDespesas
+
+   Campos no JSON (17): id_Empresa, NF, id_cliente, Emissao, Vencimento, Total, IRRF, PIS, Cofins, CSLL, ISS, Baixa, ValorQuitado, Cancelada, Observacao, ObservacaoBaixa, OutrasDespesas
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (1):
+      - id_cliente [OBRIGATÓRIO] [FK -> Cliente]
+
+   🔗 FOREIGN KEYS (2):
+      ✅ id_Empresa -> Empresa.idEmpresa
+      ❌ id_cliente -> Cliente.idCliente
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: AnuidadeCremeb (ID: anuidade_cremeb, Tabela: AnuidadeCremeb)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'AnuidadeCremeb'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: AnuidadeCremebItem (ID: anuidade_cremeb_item, Tabela: AnuidadeCremebItem)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'AnuidadeCremebItem'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: PagamentoNaoSocio (ID: pagamento_nao_socio, Tabela: PagamentoNaoSocio)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'PagamentoNaoSocio'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: ContasPagarReceber (ID: contas_pagar_receber, Tabela: ContasPagarReceber)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'ContasPagarReceber'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: EmpresaDespesaFixa (ID: empresa_despesa_fixa, Tabela: EmpresaDespesaFixa)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'EmpresaDespesaFixa'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: RepasseAnual (ID: repasse_anual, Tabela: RepasseAnual)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'RepasseAnual'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: PessoaCartorio (ID: pessoa_cartorio, Tabela: PessoaCartorio)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'PessoaCartorio'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: PessoaContaRecebimento (ID: pessoa_conta_recebimento, Tabela: PessoaContaRecebimento)
+----------------------------------------------------------------------------------------------------
+❌ CSV NÃO ENCONTRADO para tabela 'PessoaContaRecebimento'
+
+----------------------------------------------------------------------------------------------------
+ENTIDADE: Adiantamento (ID: adiantamento, Tabela: Adiantamento)
+----------------------------------------------------------------------------------------------------
+✅ CSV ENCONTRADO: adiantamento.csv
+   Colunas no CSV (9): id_Adiantamento, Data, NF, ValorBruto, Retencao, ValorLiquido, ValorTaxa, ValorRepasse, Pago
+
+   Campos no JSON (13): id_Adiantamento, Data, id_Empresa, id_Pessoa, id_cliente, NF, ValorBruto, Retencao, ValorLiquido, ValorTaxa, ValorRepasse, id_lancamento, Pago
+
+   ⚠️  CAMPOS NO JSON MAS NÃO NO CSV (4):
+      - id_cliente [OBRIGATÓRIO] [FK -> Cliente]
+      - id_empresa [OBRIGATÓRIO] [FK -> Empresa]
+      - id_lancamento [OBRIGATÓRIO] [FK -> Lancamento]
+      - id_pessoa [OBRIGATÓRIO] [FK -> Pessoa]
+
+   🔗 FOREIGN KEYS (4):
+      ❌ id_Empresa -> Empresa.idEmpresa
+      ❌ id_Pessoa -> Pessoa.idPessoa
+      ❌ id_cliente -> Cliente.idCliente
+      ❌ id_lancamento -> Lancamento.idLancamento
+
+
+====================================================================================================
+RESUMO GERAL
+====================================================================================================
+
+📊 Entidades com CSV correspondente: 25/63
+✅ Entidades com match perfeito (todos os campos): 5/63
+❌ Entidades SEM CSV: 38/63
+⚠️  Entidades com incompatibilidades de campos: 20/63
+
+ENTIDADES SEM CSV:
+  - EstadoCivil (tabela: EstadoCivil)
+  - TipoServico (tabela: TipoServico)
+  - TipoContato (tabela: TipoContato)
+  - ParametroEmail (tabela: ParametroEmail)
+  - ImpostoDeRenda (tabela: ImpostoDeRenda)
+  - ParametroNF (tabela: ParametroNF)
+  - PlanoRetencao (tabela: PlanoRetencao)
+  - DespesaReceita (tabela: DespesaReceita)
+  - ContasPagarReceber (tabela: ContasPagarReceber)
+  - PagamentoNaoSocio (tabela: PagamentoNaoSocio)
+  - RepasseAnual (tabela: RepasseAnual)
+  - AnuidadeCremeb (tabela: AnuidadeCremeb)
+  - MedicoEspecialidade (tabela: MedicoEspecialidade)
+  - EmpresaDespesaFixa (tabela: EmpresaDespesaFixa)
+  - EmpresaCliente (tabela: EmpresaCliente)
+  - PessoaCartorio (tabela: PessoaCartorio)
+  - PessoaContaRecebimento (tabela: PessoaContaRecebimento)
+  - PessoaContaCorrente (tabela: PessoaContaCorrente)
+  - ClienteContato (tabela: ClienteContato)
+  - AnuidadeCremebItem (tabela: AnuidadeCremebItem)
+  - EmpresaSocio (tabela: EmpresaSocio)
+  - ClienteFilial (tabela: ClienteFilial)
+  - PlanoRetencao (tabela: PlanoRetencao)
+  - DespesaReceita (tabela: DespesaReceita)
+  - PessoaContaCorrente (tabela: PessoaContaCorrente)
+  - MedicoEspecialidade (tabela: MedicoEspecialidade)
+  - ClienteFilial (tabela: ClienteFilial)
+  - ClienteContato (tabela: ClienteContato)
+  - EmpresaSocio (tabela: EmpresaSocio)
+  - EmpresaCliente (tabela: EmpresaCliente)
+  - AnuidadeCremeb (tabela: AnuidadeCremeb)
+  - AnuidadeCremebItem (tabela: AnuidadeCremebItem)
+  - PagamentoNaoSocio (tabela: PagamentoNaoSocio)
+  - ContasPagarReceber (tabela: ContasPagarReceber)
+  - EmpresaDespesaFixa (tabela: EmpresaDespesaFixa)
+  - RepasseAnual (tabela: RepasseAnual)
+  - PessoaCartorio (tabela: PessoaCartorio)
+  - PessoaContaRecebimento (tabela: PessoaContaRecebimento)
+
+RESUMO DE INCOMPATIBILIDADES POR ENTIDADE:
+  - Banco (2 discrepâncias)
+      • 1 campos no JSON mas não no CSV
+      • 1 campos no CSV mas não no JSON
+  - Bairro (2 discrepâncias)
+      • 1 campos no JSON mas não no CSV
+      • 1 campos no CSV mas não no JSON
+  - Cidade (2 discrepâncias)
+      • 1 campos no JSON mas não no CSV
+      • 1 campos no CSV mas não no JSON
+  - Conselho (2 discrepâncias)
+      • 1 campos no JSON mas não no CSV
+      • 1 campos no CSV mas não no JSON
+  - Especialidade (2 discrepâncias)
+      • 1 campos no JSON mas não no CSV
+      • 1 campos no CSV mas não no JSON
+  - Operadora (2 discrepâncias)
+      • 1 campos no JSON mas não no CSV
+      • 1 campos no CSV mas não no JSON
+  - Usuario (11 discrepâncias)
+      • 6 campos no JSON mas não no CSV
+      • 5 campos no CSV mas não no JSON
+  - Cartorio (2 discrepâncias)
+      • 2 campos no JSON mas não no CSV
+  - Pessoa (30 discrepâncias)
+      • 7 campos no JSON mas não no CSV
+      • 23 campos no CSV mas não no JSON
+  - Cliente (6 discrepâncias)
+      • 2 campos no JSON mas não no CSV
+      • 4 campos no CSV mas não no JSON
+  - Lancamento (4 discrepâncias)
+      • 4 campos no JSON mas não no CSV
+  - NF (3 discrepâncias)
+      • 1 campos no JSON mas não no CSV
+      • 2 campos no CSV mas não no JSON
+  - Adiantamento (4 discrepâncias)
+      • 4 campos no JSON mas não no CSV
+  - Cartorio (2 discrepâncias)
+      • 2 campos no JSON mas não no CSV
+  - Pessoa (9 discrepâncias)
+      • 9 campos no JSON mas não no CSV
+  - Cliente (2 discrepâncias)
+      • 2 campos no JSON mas não no CSV
+  - Empresa (25 discrepâncias)
+      • 25 campos no JSON mas não no CSV
+  - Lancamento (5 discrepâncias)
+      • 5 campos no JSON mas não no CSV
+  - NF (1 discrepâncias)
+      • 1 campos no JSON mas não no CSV
+  - Adiantamento (4 discrepâncias)
+      • 4 campos no JSON mas não no CSV
+
+📁 CSVs SEM entidade correspondente no JSON (22):
+  - anuidade_cremeb.csv
+  - anuidade_cremeb_item.csv
+  - cliente_contato.csv
+  - cliente_filial.csv
+  - contas_pagar_receber.csv
+  - despesa_receita.csv
+  - empresa_cliente.csv
+  - empresa_despesa_fixa.csv
+  - empresa_socio.csv
+  - estado_civil.csv
+  - imposto_de_renda.csv
+  - medico_especialidade.csv
+  - pagamento_nao_socio.csv
+  - parametro_email.csv
+  - parametro_nf.csv
+  - pessoa_cartorio.csv
+  - pessoa_conta_corrente.csv
+  - pessoa_conta_recebimento.csv
+  - plano_retencao.csv
+  - repasse_anual.csv
+  - tipo_contato.csv
+  - tipo_servico.csv
+
+====================================================================================================
+
+✅ ENTIDADES COM MATCH PERFEITO (100% compatibilidade):
+  - CBO
+  - Indicacao
+  - Empresa
+  - Retencao
+  - Retencao
+

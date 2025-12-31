@@ -1,3 +1,3 @@
-id_AnuidadeCremebItem;DataLancamento;ValorIndividual;DataPagamento
-1;2024-12-21 07:52:56;;Valor 1
-2;2025-01-21 07:52:56;;Valor 2
+id_AnuidadeCremebItem;id_AnuidadeCremeb;id_Pessoa;DataLancamento;ValorIndividual;DataPagamento;id_Lancamento
+1;;;2024-12-21 07:52:56;;Valor 1;
+2;;;2025-01-21 07:52:56;;Valor 2;

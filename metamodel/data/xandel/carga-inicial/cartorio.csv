@@ -1,6 +1,6 @@
-id_Cartorio;NomeCartorio;Endereco;Telefone
-1;Descrição 1;Rua B, 236;778338978
-2;Descrição 2;Rua A, 5;620258145
-3;Item 3;Avenida D, 763;934095675
-4;Item 4;Avenida D, 229;674530151
-5;Valor 5;Rua B, 640;857032803
+id_Cartorio;NomeCartorio;Endereco;id_Bairro;id_Cidade;Telefone
+1;Descrição 1;Rua B, 236;;;778338978
+2;Descrição 2;Rua A, 5;;;620258145
+3;Item 3;Avenida D, 763;;;934095675
+4;Item 4;Avenida D, 229;;;674530151
+5;Valor 5;Rua B, 640;;;857032803

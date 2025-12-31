@@ -1,4 +1,4 @@
-id_tipo_contato;nome_tipo_contato
+id_TipoContato;NomeTipoContato
 1;Telefone Fixo
 2;Celular
 3;Email

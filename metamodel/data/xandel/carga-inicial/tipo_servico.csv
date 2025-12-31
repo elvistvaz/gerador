@@ -1,4 +1,4 @@
-id_tipo_servico;nome_tipo_servico
+id_TipoServico;NomeTipoServico
 1;Consulta
 2;Exame
 3;Procedimento

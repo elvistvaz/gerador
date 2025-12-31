@@ -183,7 +183,13 @@
       "Bash(cmd /c \"dir c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\icep-laravel\\\\resources\\\\views\\\\vendor\\\\pagination /b\")",
       "Bash(cmd /c:*)",
       "Bash(ls:*)",
-      "Bash(Select-Object -First 10\"\")"
+      "Bash(Select-Object -First 10\"\")",
+      "Bash(Select-String -Pattern \"Total de arquivos|concluída|ERRO|ERROR|Exception\" -CaseSensitive:$false)",
+      "Bash(del \"c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\xandel-laravel\\\\seed_basic.php\")",
+      "Bash(node --version:*)",
+      "Bash(node analyze_xandel.js:*)",
+      "Bash(node analyze_xandel_full.js:*)",
+      "Bash(node:*)"
     ]
   }
 }

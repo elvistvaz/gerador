@@ -1,0 +1,247 @@
+{
+  "totalCsvs": 39,
+  "processedCsvs": 39,
+  "skippedCsvs": 0,
+  "errors": [],
+  "changes": {
+    "adiantamento.csv": {
+      "status": "perfect",
+      "columnsCount": 13
+    },
+    "anuidade_cremeb.csv": {
+      "status": "corrected",
+      "entity": "AnuidadeCremeb",
+      "tableName": "AnuidadeCremeb",
+      "added": [
+        "id_Empresa"
+      ],
+      "renamed": [],
+      "removed": [],
+      "totalColumns": 6,
+      "dataLines": 5
+    },
+    "anuidade_cremeb_item.csv": {
+      "status": "corrected",
+      "entity": "AnuidadeCremebItem",
+      "tableName": "AnuidadeCremebItem",
+      "added": [
+        "id_AnuidadeCremeb",
+        "id_Pessoa",
+        "id_Lancamento"
+      ],
+      "renamed": [],
+      "removed": [],
+      "totalColumns": 7,
+      "dataLines": 2
+    },
+    "bairro.csv": {
+      "status": "perfect",
+      "columnsCount": 2
+    },
+    "banco.csv": {
+      "status": "perfect",
+      "columnsCount": 2
+    },
+    "cartorio.csv": {
+      "status": "perfect",
+      "columnsCount": 6
+    },
+    "cbo.csv": {
+      "status": "perfect",
+      "columnsCount": 2
+    },
+    "cidade.csv": {
+      "status": "perfect",
+      "columnsCount": 5
+    },
+    "cliente.csv": {
+      "status": "perfect",
+      "columnsCount": 19
+    },
+    "cliente_contato.csv": {
+      "status": "corrected",
+      "entity": "ClienteContato",
+      "tableName": "ClienteContato",
+      "added": [
+        "id_Cliente",
+        "id_TipoContato"
+      ],
+      "renamed": [],
+      "removed": [],
+      "totalColumns": 4,
+      "dataLines": 2
+    },
+    "cliente_filial.csv": {
+      "status": "corrected",
+      "entity": "ClienteFilial",
+      "tableName": "ClienteFilial",
+      "added": [
+        "id_Cliente"
+      ],
+      "renamed": [],
+      "removed": [],
+      "totalColumns": 3,
+      "dataLines": 2
+    },
+    "conselho.csv": {
+      "status": "perfect",
+      "columnsCount": 3
+    },
+    "contas_pagar_receber.csv": {
+      "status": "corrected",
+      "entity": "ContasPagarReceber",
+      "tableName": "ContasPagarReceber",
+      "added": [
+        "id_Empresa",
+        "id_Pessoa",
+        "id_DespesaReceita",
+        "id_NotaFiscal",
+        "id_Lancamento"
+      ],
+      "renamed": [],
+      "removed": [],
+      "totalColumns": 14,
+      "dataLines": 5
+    },
+    "despesa_receita.csv": {
+      "status": "perfect",
+      "columnsCount": 10
+    },
+    "empresa.csv": {
+      "status": "perfect",
+      "columnsCount": 31
+    },
+    "empresa_cliente.csv": {
+      "status": "perfect",
+      "columnsCount": 9
+    },
+    "empresa_despesa_fixa.csv": {
+      "status": "perfect",
+      "columnsCount": 6
+    },
+    "empresa_socio.csv": {
+      "status": "perfect",
+      "columnsCount": 10
+    },
+    "especialidade.csv": {
+      "status": "perfect",
+      "columnsCount": 2
+    },
+    "estado_civil.csv": {
+      "status": "corrected",
+      "entity": "EstadoCivil",
+      "tableName": "EstadoCivil",
+      "added": [],
+      "renamed": [
+        "id_estado_civil → id_EstadoCivil",
+        "nome_estado_civil → NomeEstadoCivil"
+      ],
+      "removed": [],
+      "totalColumns": 2,
+      "dataLines": 6
+    },
+    "imposto_de_renda.csv": {
+      "status": "perfect",
+      "columnsCount": 6
+    },
+    "indicacao.csv": {
+      "status": "perfect",
+      "columnsCount": 8
+    },
+    "lancamento.csv": {
+      "status": "perfect",
+      "columnsCount": 17
+    },
+    "medico_especialidade.csv": {
+      "status": "perfect",
+      "columnsCount": 2
+    },
+    "nf.csv": {
+      "status": "perfect",
+      "columnsCount": 17
+    },
+    "operadora.csv": {
+      "status": "perfect",
+      "columnsCount": 2
+    },
+    "pagamento_nao_socio.csv": {
+      "status": "perfect",
+      "columnsCount": 10
+    },
+    "parametro_email.csv": {
+      "status": "perfect",
+      "columnsCount": 5
+    },
+    "parametro_nf.csv": {
+      "status": "perfect",
+      "columnsCount": 6
+    },
+    "pessoa.csv": {
+      "status": "perfect",
+      "columnsCount": 47
+    },
+    "pessoa_cartorio.csv": {
+      "status": "perfect",
+      "columnsCount": 2
+    },
+    "pessoa_conta_corrente.csv": {
+      "status": "corrected",
+      "entity": "PessoaContaCorrente",
+      "tableName": "PessoaContaCorrente",
+      "added": [
+        "id_Pessoa",
+        "id_Banco"
+      ],
+      "renamed": [],
+      "removed": [],
+      "totalColumns": 11,
+      "dataLines": 2
+    },
+    "pessoa_conta_recebimento.csv": {
+      "status": "perfect",
+      "columnsCount": 3
+    },
+    "plano_retencao.csv": {
+      "status": "perfect",
+      "columnsCount": 4
+    },
+    "repasse_anual.csv": {
+      "status": "perfect",
+      "columnsCount": 27
+    },
+    "retencao.csv": {
+      "status": "perfect",
+      "columnsCount": 3
+    },
+    "tipo_contato.csv": {
+      "status": "corrected",
+      "entity": "TipoContato",
+      "tableName": "TipoContato",
+      "added": [],
+      "renamed": [
+        "id_tipo_contato → id_TipoContato",
+        "nome_tipo_contato → NomeTipoContato"
+      ],
+      "removed": [],
+      "totalColumns": 2,
+      "dataLines": 6
+    },
+    "tipo_servico.csv": {
+      "status": "corrected",
+      "entity": "TipoServico",
+      "tableName": "TipoServico",
+      "added": [],
+      "renamed": [
+        "id_tipo_servico → id_TipoServico",
+        "nome_tipo_servico → NomeTipoServico"
+      ],
+      "removed": [],
+      "totalColumns": 2,
+      "dataLines": 8
+    },
+    "usuario.csv": {
+      "status": "perfect",
+      "columnsCount": 7
+    }
+  }
+}

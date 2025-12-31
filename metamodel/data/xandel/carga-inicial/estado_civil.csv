@@ -1,4 +1,4 @@
-id_estado_civil;nome_estado_civil
+id_EstadoCivil;NomeEstadoCivil
 1;Solteiro(a)
 2;Casado(a)
 3;Divorciado(a)

@@ -196,8 +196,11 @@ public class LaravelModelTemplate {
 
     private void generateBelongsTo(StringBuilder sb, Field field) {
         String relatedEntity = field.getReference().getEntity();
-        String methodName = toCamelCase(relatedEntity);
         String foreignKey = toSnakeCase(field.getName());
+
+        // Gera nome de método único para evitar duplicação quando há múltiplas FKs para a mesma entidade
+        // Exemplo: id_cidade -> cidade(), id_naturalidade -> naturalidade()
+        String methodName = generateUniqueBelongsToName(field.getName(), relatedEntity);
 
         sb.append("\n    public function ").append(methodName).append("()\n");
         sb.append("    {\n");
@@ -255,6 +258,35 @@ public class LaravelModelTemplate {
             return fkName.substring(2);
         }
         return fkName;
+    }
+
+    /**
+     * Gera um nome único para o relacionamento belongsTo.
+     * Se a FK for padrão (id_entity ou idEntity), usa o nome da entidade.
+     * Se for diferente (ex: id_naturalidade), usa o nome do próprio campo sem o prefixo 'id'.
+     *
+     * Exemplos:
+     *   id_cidade + Cidade -> cidade()
+     *   id_naturalidade + Cidade -> naturalidade()
+     *   id_estado_civil + EstadoCivil -> estadoCivil()
+     */
+    private String generateUniqueBelongsToName(String foreignKeyName, String relatedEntity) {
+        // Remove underscores e converte para camelCase
+        String fkCamel = toCamelCase(foreignKeyName);
+
+        // Remove o prefixo 'id' se existir
+        if (fkCamel.startsWith("id") && fkCamel.length() > 2 && Character.isUpperCase(fkCamel.charAt(2))) {
+            fkCamel = Character.toLowerCase(fkCamel.charAt(2)) + fkCamel.substring(3);
+        }
+
+        // Se após remover 'id' o nome resultante é igual ao nome da entidade em camelCase, usa o nome da entidade
+        String entityCamel = toCamelCase(relatedEntity);
+        if (fkCamel.equalsIgnoreCase(entityCamel)) {
+            return entityCamel;
+        }
+
+        // Caso contrário, usa o nome derivado do campo FK (sem o 'id')
+        return fkCamel;
     }
 
     private String capitalize(String str) {

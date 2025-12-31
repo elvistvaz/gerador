@@ -1,6 +1,6 @@
-id_Cliente;NomeCliente;FantasiaCliente;CNPJ;IE;IM;DataContrato;TaxaADM;Endereco;CEP;Contato;Fone1;Fone2;email;ObservacaoCliente;ObsDaNota;PessoaJuridica
-1;Descrição 1;Valor 1;57974966975974;Valor 1;Valor 1;2025-07-12 07:52:56;126,33;Rua A, 288;Valor 1;Valor 1;Valor 1;Valor 1;user1@example.com;;;1
-2;Valor 2;Valor 2;37557949137351;Valor 2;Valor 2;2025-07-12 07:52:56;778,40;Rua B, 982;Valor 2;Valor 2;Valor 2;Valor 2;user2@example.com;;;2
-3;Descrição 3;Valor 3;31669611510948;Valor 3;Valor 3;2025-08-27 07:52:56;264,64;Rua B, 894;Valor 3;Valor 3;Valor 3;Valor 3;user3@example.com;;;3
-4;Registro 4;Valor 4;66697371481209;Valor 4;Valor 4;2025-07-12 07:52:56;790,31;Avenida D, 415;Valor 4;Valor 4;Valor 4;Valor 4;user4@example.com;;;4
-5;Item 5;Valor 5;70599101774053;Valor 5;Valor 5;2025-03-26 07:52:56;25,57;Rua A, 233;Valor 5;Valor 5;Valor 5;Valor 5;user5@example.com;;;5
+id_Cliente;NomeCliente;FantasiaCliente;CNPJ;IE;IM;DataContrato;TaxaADM;Endereco;id_Bairro;id_Cidade;CEP;Contato;Fone1;Fone2;email;ObservacaoCliente;ObsDaNota;PessoaJuridica
+1;Descrição 1;Valor 1;57974966975974;Valor 1;Valor 1;2025-07-12 07:52:56;126,33;Rua A, 288;;;Valor 1;Valor 1;Valor 1;Valor 1;user1@example.com;;;1
+2;Valor 2;Valor 2;37557949137351;Valor 2;Valor 2;2025-07-12 07:52:56;778,40;Rua B, 982;;;Valor 2;Valor 2;Valor 2;Valor 2;user2@example.com;;;2
+3;Descrição 3;Valor 3;31669611510948;Valor 3;Valor 3;2025-08-27 07:52:56;264,64;Rua B, 894;;;Valor 3;Valor 3;Valor 3;Valor 3;user3@example.com;;;3
+4;Registro 4;Valor 4;66697371481209;Valor 4;Valor 4;2025-07-12 07:52:56;790,31;Avenida D, 415;;;Valor 4;Valor 4;Valor 4;Valor 4;user4@example.com;;;4
+5;Item 5;Valor 5;70599101774053;Valor 5;Valor 5;2025-03-26 07:52:56;25,57;Rua A, 233;;;Valor 5;Valor 5;Valor 5;Valor 5;user5@example.com;;;5

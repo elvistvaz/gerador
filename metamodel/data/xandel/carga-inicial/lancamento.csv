@@ -1,6 +1,6 @@
-id_lancamento;Data;NF;ValorBruto;Despesas;Retencao;ValorLiquido;ValorTaxa;ValorRepasse;Taxa;MesAno;Baixa
-1;2025-02-24 07:52:56;1;;;;;;;517,93;Valor 1;2025-04-08 07:52:56
-2;2025-05-28 07:52:56;2;;;;;;;673,38;Valor 2;2025-05-26 07:52:56
-3;2025-10-30 07:52:56;3;;;;;;;243,73;Valor 3;2025-04-30 07:52:56
-4;2025-06-09 07:52:56;4;;;;;;;673,75;Valor 4;2025-09-19 07:52:56
-5;2025-10-02 07:52:56;5;;;;;;;422,58;Valor 5;2025-05-20 07:52:56
+id_lancamento;Data;id_Empresa;id_Cliente;id_Pessoa;NF;ValorBruto;Despesas;Retencao;ValorLiquido;ValorTaxa;ValorRepasse;Taxa;MesAno;Baixa;id_TipoServico;id_ClienteFilial
+1;2025-02-24 07:52:56;;;;1;;;;;;;517,93;Valor 1;2025-04-08 07:52:56;;
+2;2025-05-28 07:52:56;;;;2;;;;;;;673,38;Valor 2;2025-05-26 07:52:56;;
+3;2025-10-30 07:52:56;;;;3;;;;;;;243,73;Valor 3;2025-04-30 07:52:56;;
+4;2025-06-09 07:52:56;;;;4;;;;;;;673,75;Valor 4;2025-09-19 07:52:56;;
+5;2025-10-02 07:52:56;;;;5;;;;;;;422,58;Valor 5;2025-05-20 07:52:56;;
