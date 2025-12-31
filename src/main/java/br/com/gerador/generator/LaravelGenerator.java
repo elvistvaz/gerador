@@ -293,10 +293,21 @@ public class LaravelGenerator {
 
                 if (!data.isEmpty()) {
                     for (java.util.Map<String, String> row : data) {
+                        // Contar quantos campos estão vazios
+                        long emptyCount = row.values().stream()
+                            .filter(v -> v == null || v.trim().isEmpty())
+                            .count();
+
+                        // Se mais de 50% dos campos estão vazios, pular este registro
+                        if (emptyCount > row.size() / 2) {
+                            System.out.println("    AVISO: Registro com muitos campos vazios ignorado");
+                            continue;
+                        }
+
                         allInserts.append("        DB::table('").append(tableName).append("')->insert([\n");
 
                         for (java.util.Map.Entry<String, String> entry : row.entrySet()) {
-                            String column = entry.getKey();
+                            String column = toSnakeCase(entry.getKey());  // Converte para snake_case
                             String value = entry.getValue();
 
                             if (value == null || value.trim().isEmpty()) {
@@ -588,6 +599,19 @@ class InitialDataSeeder extends Seeder
         if (name.endsWith("s")) return name + "es";
         if (name.endsWith("y")) return name.substring(0, name.length() - 1) + "ies";
         return name + "s";
+    }
+
+    /**
+     * Converte uma string para snake_case.
+     */
+    private String toSnakeCase(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        // Remove underscore antes de números/maiúsculas (ex: id_Empresa -> idEmpresa)
+        String cleaned = str.replaceAll("_([A-Z])", "$1");
+        // Converte para snake_case
+        return cleaned.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
     }
 
     /**

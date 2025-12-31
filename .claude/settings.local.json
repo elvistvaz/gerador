@@ -189,7 +189,13 @@
       "Bash(node --version:*)",
       "Bash(node analyze_xandel.js:*)",
       "Bash(node analyze_xandel_full.js:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(del \"c:\\\\java\\\\workspace\\\\Gerador\\\\gerador_xandel.bat\")",
+      "Bash(call \"c:\\\\java\\\\workspace\\\\Gerador\\\\gerar_xandel.bat\")",
+      "Bash(\"c:\\\\java\\\\workspace\\\\Gerador\\\\gerar_xandel.bat\")",
+      "Bash(\" %f\")",
+      "Bash(python analyze_csv_nullability.py:*)",
+      "Bash(timeout /t 120 /nobreak)"
     ]
   }
 }

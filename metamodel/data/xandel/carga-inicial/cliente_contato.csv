@@ -1,3 +1,6 @@
 id_ClienteContato;id_Cliente;id_TipoContato;Descricao
-1;;;Descrição do registro 1
-2;;;Descrição do registro 2
+1;1;1;Telefone comercial - 555-1111
+2;1;3;Email principal - contato@alphamed.com
+3;2;2;Celular contato - 555-3333
+4;2;4;WhatsApp atendimento
+5;3;1;Recepção - 555-5555

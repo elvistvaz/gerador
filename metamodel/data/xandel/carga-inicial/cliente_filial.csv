@@ -1,3 +1,6 @@
 id_ClienteFilial;id_Cliente;NomeFilial
-1;;Descrição 1
-2;;Descrição 2
+1;1;Filial Centro - Alpha Clinica
+2;2;Filial Sul - Beta Clinica
+3;1;Filial Norte - Alpha Clinica
+4;3;Filial Leste - Gamma Saude
+5;2;Filial Oeste - Beta Clinica

@@ -1,6 +1,6 @@
-id_Cliente;NomeCliente;FantasiaCliente;CNPJ;IE;IM;DataContrato;TaxaADM;Endereco;id_Bairro;id_Cidade;CEP;Contato;Fone1;Fone2;email;ObservacaoCliente;ObsDaNota;PessoaJuridica
-1;Descrição 1;Valor 1;57974966975974;Valor 1;Valor 1;2025-07-12 07:52:56;126,33;Rua A, 288;;;Valor 1;Valor 1;Valor 1;Valor 1;user1@example.com;;;1
-2;Valor 2;Valor 2;37557949137351;Valor 2;Valor 2;2025-07-12 07:52:56;778,40;Rua B, 982;;;Valor 2;Valor 2;Valor 2;Valor 2;user2@example.com;;;2
-3;Descrição 3;Valor 3;31669611510948;Valor 3;Valor 3;2025-08-27 07:52:56;264,64;Rua B, 894;;;Valor 3;Valor 3;Valor 3;Valor 3;user3@example.com;;;3
-4;Registro 4;Valor 4;66697371481209;Valor 4;Valor 4;2025-07-12 07:52:56;790,31;Avenida D, 415;;;Valor 4;Valor 4;Valor 4;Valor 4;user4@example.com;;;4
-5;Item 5;Valor 5;70599101774053;Valor 5;Valor 5;2025-03-26 07:52:56;25,57;Rua A, 233;;;Valor 5;Valor 5;Valor 5;Valor 5;user5@example.com;;;5
+id_Cliente;NomeCliente;FantasiaCliente;CNPJ;DataContrato;TaxaADM;Endereco;id_Bairro;id_Cidade;CEP;Contato;Fone1;Fone2;email;PessoaJuridica
+1;Sociedade Medica Alpha Ltda;Alpha Clinica;12345678000100;2025-07-12 07:52:56;10.00;Rua A, 288;;;12345-678;João Silva;555-1111;555-2222;contato@alphamed.com;1
+2;Clinica Beta Servicos Medicos;Beta Clinica;98765432000199;2025-07-12 07:52:56;8.50;Rua B, 982;;;98765-432;Maria Santos;555-3333;555-4444;contato@betaclinica.com;1
+3;Centro Medico Gamma S/S;Gamma Saude;11222333000144;2025-08-27 07:52:56;12.00;Rua B, 894;;;11222-333;Pedro Costa;555-5555;555-6666;contato@gammasaude.com;1
+4;Hospital Delta Ltda;Hospital Delta;66697371481209;2025-07-12 07:52:56;9.50;Avenida D, 415;;;66697-371;Ana Souza;555-7777;555-8888;contato@hospitaldelta.com;1
+5;Laboratorio Epsilon;Lab Epsilon;70599101774053;2025-03-26 07:52:56;7.50;Rua A, 233;;;70599-101;Carlos Lima;555-9999;555-0000;contato@labepsilon.com;1
