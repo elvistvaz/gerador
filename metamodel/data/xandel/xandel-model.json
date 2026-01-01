@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "name": "xandel",
+    "name": "Xandel",
     "version": "1.0.0",
     "description": "Sistema de Gestão de Sociedade Médica",
     "author": "Gerador MetaModel",
@@ -89,7 +89,7 @@
     },
     {
       "id": "configuracoes_financeiras",
-      "name": "Configurações Financeiras",
+      "name": "Config. Financeiras",
       "description": "Parametrização de regras financeiras",
       "icon": "fa-sliders-h",
       "order": 6,

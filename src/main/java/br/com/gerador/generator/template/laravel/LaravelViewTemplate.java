@@ -204,16 +204,9 @@ public class LaravelViewTemplate {
         html.append("                </tbody>\n");
         html.append("            </table>\n\n");
 
-        // Paginação com informações
-        html.append("            <div class=\"d-flex justify-content-between align-items-center mt-4\">\n");
-        html.append("                <div class=\"text-muted\">\n");
-        html.append("                    Exibindo {{ $").append(entityNamePlural).append("->firstItem() ?? 0 }} ");
-        html.append("até {{ $").append(entityNamePlural).append("->lastItem() ?? 0 }} ");
-        html.append("de {{ $").append(entityNamePlural).append("->total() }} registros\n");
-        html.append("                </div>\n");
-        html.append("                <div>\n");
-        html.append("                    {{ $").append(entityNamePlural).append("->links('pagination::bootstrap-5') }}\n");
-        html.append("                </div>\n");
+        // Paginação (centralizada)
+        html.append("            <div class=\"d-flex justify-content-center mt-4\">\n");
+        html.append("                {{ $").append(entityNamePlural).append("->links('pagination::bootstrap-5') }}\n");
         html.append("            </div>\n");
         html.append("        </div>\n");
         html.append("    </div>\n");

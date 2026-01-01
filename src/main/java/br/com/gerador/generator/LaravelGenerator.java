@@ -289,8 +289,9 @@ public class LaravelGenerator {
         generateFile("resources/views/auth/register.blade.php", projectTemplate.generateRegisterView());
         generateFile("resources/views/dashboard.blade.php", projectTemplate.generateDashboardView());
 
-        // Tradução de paginação
+        // Traduções em português (pt_BR)
         generateFile("lang/pt_BR/pagination.php", projectTemplate.generatePaginationTranslation());
+        generateFile("lang/pt_BR/validation.php", projectTemplate.generateValidationTranslation());
 
         // Template customizado de paginação
         generateFile("resources/views/vendor/pagination/bootstrap-5.blade.php", projectTemplate.generateBootstrap5PaginationView());
