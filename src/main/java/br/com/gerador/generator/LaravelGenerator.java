@@ -296,7 +296,7 @@ public class LaravelGenerator {
         generateFile("resources/views/vendor/pagination/bootstrap-5.blade.php", projectTemplate.generateBootstrap5PaginationView());
 
         // AuthController
-        generateFile("app/Http/Controllers/AuthController.php", projectTemplate.generateAuthController());
+        generateFile("app/Http/Controllers/AuthController.php", projectTemplate.generateAuthController(metaModel));
 
         // Session Context (se configurado)
         String sessionController = projectTemplate.generateSessionController(metaModel);

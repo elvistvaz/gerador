@@ -843,8 +843,19 @@ require __DIR__.'/../vendor/autoload.php';
                            .append("        </div>\n");
             }
 
+            // Gera condição dinâmica para exibir a barra
+            StringBuilder sessionConditions = new StringBuilder();
+            for (int i = 0; i < sessionContextList.size(); i++) {
+                SessionContext ctx = sessionContextList.get(i);
+                String fieldSnake = toSnakeCase(ctx.getField());
+                if (i > 0) {
+                    sessionConditions.append(" || ");
+                }
+                sessionConditions.append("session()->has('").append(fieldSnake).append("')");
+            }
+
             sessionContextBar = String.format("""
-    @if(session()->has('avaliacao_id') && session()->has('municipio_id'))
+    @if(%s)
     <div class="session-context-bar">
         <div class="d-flex align-items-center gap-3">
 %s        </div>
@@ -856,7 +867,7 @@ require __DIR__.'/../vendor/autoload.php';
     </div>
     @endif
 
-    """, contextItems.toString());
+    """, sessionConditions.toString(), contextItems.toString());
         }
 
         return """
@@ -1364,7 +1375,13 @@ require __DIR__.'/../vendor/autoload.php';
 """;
     }
 
-    public String generateAuthController() {
+    public String generateAuthController(MetaModel metaModel) {
+        var metadata = metaModel.getMetadata();
+        boolean hasSessionContext = metadata.hasSessionContext();
+
+        // Define para onde redirecionar após login
+        String loginRedirect = hasSessionContext ? "'/session/select'" : "'/dashboard'";
+
         return """
 <?php
 
@@ -1391,7 +1408,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('/dashboard');
+            return redirect()->intended(%s);
         }
 
         return back()->withErrors([
@@ -1420,7 +1437,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect('/dashboard');
+        return redirect(%s);
     }
 
     public function logout(Request $request)
@@ -1436,7 +1453,7 @@ class AuthController extends Controller
         return view('dashboard');
     }
 }
-""";
+""".formatted(loginRedirect, loginRedirect);
     }
 
     public String generateUserModel() {
@@ -1708,14 +1725,20 @@ Route::middleware(['auth'])->group(function () {
 
     /**
      * Converte ícones do Material Icons para Font Awesome equivalentes.
+     * Se o ícone já estiver no formato Font Awesome (fa-*), retorna sem conversão.
      */
-    private String convertMaterialIconToFontAwesome(String materialIcon) {
-        if (materialIcon == null || materialIcon.isEmpty()) {
+    private String convertMaterialIconToFontAwesome(String icon) {
+        if (icon == null || icon.isEmpty()) {
             return "fa-circle";
         }
 
-        // Mapeamento de Material Icons para Font Awesome
-        return switch (materialIcon.toLowerCase()) {
+        // Se já é um ícone Font Awesome, retorna direto
+        if (icon.startsWith("fa-")) {
+            return icon;
+        }
+
+        // Senão, faz a conversão de Material Icons para Font Awesome
+        return switch (icon.toLowerCase()) {
             case "business_center" -> "fa-briefcase";
             case "person" -> "fa-user";
             case "apartment" -> "fa-building";
@@ -1748,6 +1771,39 @@ Route::middleware(['auth'])->group(function () {
             case "medical_information" -> "fa-heartbeat";
             case "health_and_safety" -> "fa-shield-alt";
             case "medication" -> "fa-pills";
+            // Ícones adicionais do ICEP
+            case "folder" -> "fa-folder";
+            case "folder_open" -> "fa-folder-open";
+            case "event_note" -> "fa-calendar-alt";
+            case "event_available" -> "fa-calendar-check";
+            case "event" -> "fa-calendar";
+            case "public" -> "fa-globe";
+            case "groups" -> "fa-users";
+            case "category" -> "fa-tag";
+            case "list_alt" -> "fa-list-alt";
+            case "list" -> "fa-list";
+            case "auto_stories" -> "fa-book-open";
+            case "lightbulb" -> "fa-lightbulb";
+            case "account_tree" -> "fa-sitemap";
+            case "speed" -> "fa-tachometer-alt";
+            case "grading" -> "fa-clipboard-check";
+            case "fact_check" -> "fa-check-square";
+            case "assessment" -> "fa-chart-bar";
+            case "chat" -> "fa-comments";
+            case "schedule" -> "fa-clock";
+            // Ícones adicionais do Xandel
+            case "tune" -> "fa-sliders-h";
+            case "percent" -> "fa-percentage";
+            case "compare_arrows" -> "fa-exchange-alt";
+            case "request_quote" -> "fa-file-invoice-dollar";
+            case "settings_applications" -> "fa-cogs";
+            case "star_rate" -> "fa-star";
+            case "email" -> "fa-envelope";
+            case "receipt_long" -> "fa-receipt";
+            case "store" -> "fa-store";
+            case "contact_phone" -> "fa-phone";
+            case "admin_panel_settings" -> "fa-user-shield";
+            case "domain" -> "fa-building";
             default -> "fa-circle";
         };
     }
