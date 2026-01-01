@@ -1,6 +1,7 @@
 package br.com.gerador.generator.template.laravel;
 
 import br.com.gerador.generator.config.ProjectConfig;
+import br.com.gerador.metamodel.model.DataType;
 import br.com.gerador.metamodel.model.Field;
 import br.com.gerador.metamodel.model.Entity;
 import br.com.gerador.metamodel.model.MetaModel;
@@ -65,22 +66,43 @@ public class LaravelViewTemplate {
         html.append("    @endif\n\n");
 
         // Seção de filtros ativos (se a entidade usa filtros de sessão)
-        if (hasSessionFilters(entity)) {
-            html.append("    @if(session('avaliacao_id') || session('municipio_id'))\n");
-            html.append("    <div class=\"alert alert-info mb-3\">\n");
-            html.append("        <strong><i class=\"fas fa-filter\"></i> Filtros ativos:</strong>\n");
-            html.append("        @if(session('avaliacao_id'))\n");
-            html.append("            <span class=\"badge bg-primary ms-2\">\n");
-            html.append("                Avaliação: {{ \\App\\Models\\Avaliacao::find(session('avaliacao_id'))?->nome ?? 'N/A' }}\n");
-            html.append("            </span>\n");
-            html.append("        @endif\n");
-            html.append("        @if(session('municipio_id'))\n");
-            html.append("            <span class=\"badge bg-primary ms-2\">\n");
-            html.append("                Município: {{ \\App\\Models\\Municipio::find(session('municipio_id'))?->nome ?? 'N/A' }}\n");
-            html.append("            </span>\n");
-            html.append("        @endif\n");
-            html.append("    </div>\n");
-            html.append("    @endif\n\n");
+        if (hasSessionFilters(entity) && metaModel != null && metaModel.getMetadata() != null) {
+            var sessionContexts = metaModel.getMetadata().getSessionContext();
+            if (sessionContexts != null && !sessionContexts.isEmpty()) {
+                // Construir condições para @if
+                StringBuilder conditions = new StringBuilder();
+                for (int i = 0; i < sessionContexts.size(); i++) {
+                    var ctx = sessionContexts.get(i);
+                    String fieldSnake = toSnakeCase(ctx.getField());
+                    if (i > 0) conditions.append(" || ");
+                    conditions.append("session('").append(fieldSnake).append("')");
+                }
+
+                html.append("    @if(").append(conditions).append(")\n");
+                html.append("    <div class=\"alert alert-info mb-3\">\n");
+                html.append("        <strong><i class=\"fas fa-filter\"></i> Contexto ativo:</strong>\n");
+
+                // Gerar badges para cada contexto
+                for (var ctx : sessionContexts) {
+                    String ctxEntity = ctx.getEntity();
+                    String fieldSnake = toSnakeCase(ctx.getField());
+                    String displayFieldName = ctx.getDisplayField() != null ? ctx.getDisplayField() : "nome";
+
+                    // Buscar o columnName correto do displayField na entidade
+                    String displayField = getColumnNameForField(ctxEntity, displayFieldName);
+
+                    String label = ctx.getLabel() != null ? ctx.getLabel().replace("Selecione a ", "").replace("Selecione o ", "") : ctxEntity;
+
+                    html.append("        @if(session('").append(fieldSnake).append("'))\n");
+                    html.append("            <span class=\"badge bg-primary ms-2\">\n");
+                    html.append("                ").append(label).append(": {{ \\App\\Models\\").append(ctxEntity).append("::find(session('").append(fieldSnake).append("'))?->").append(displayField).append(" ?? 'N/A' }}\n");
+                    html.append("            </span>\n");
+                    html.append("        @endif\n");
+                }
+
+                html.append("    </div>\n");
+                html.append("    @endif\n\n");
+            }
         }
 
         // Tabela
@@ -140,6 +162,15 @@ public class LaravelViewTemplate {
                     // Se o campo tem opções (ui.options), usar o accessor de label
                     String labelAccessor = attrName + "_label";
                     html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(labelAccessor).append(" }}</td>\n");
+                } else if (isDateField(attr)) {
+                    // Se for campo de data, formatar como dd/mm/yyyy
+                    html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(attrName).append(" ? \\Carbon\\Carbon::parse($").append(entityNameLower).append("->").append(attrName).append(")->format('d/m/Y') : '-' }}</td>\n");
+                } else if (isDateTimeField(attr)) {
+                    // Se for campo de data/hora, formatar como dd/mm/yyyy HH:mm
+                    html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(attrName).append(" ? \\Carbon\\Carbon::parse($").append(entityNameLower).append("->").append(attrName).append(")->format('d/m/Y H:i') : '-' }}</td>\n");
+                } else if (isDecimalField(attr)) {
+                    // Se for campo decimal/float, formatar com vírgula (padrão brasileiro)
+                    html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(attrName).append(" !== null ? number_format($").append(entityNameLower).append("->").append(attrName).append(", 2, ',', '.') : '-' }}</td>\n");
                 } else {
                     html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(attrName).append(" }}</td>\n");
                 }
@@ -173,9 +204,16 @@ public class LaravelViewTemplate {
         html.append("                </tbody>\n");
         html.append("            </table>\n\n");
 
-        // Paginação
-        html.append("            <div class=\"d-flex flex-column align-items-center mt-4\">\n");
-        html.append("                {{ $").append(entityNamePlural).append("->links('pagination::bootstrap-5') }}\n");
+        // Paginação com informações
+        html.append("            <div class=\"d-flex justify-content-between align-items-center mt-4\">\n");
+        html.append("                <div class=\"text-muted\">\n");
+        html.append("                    Exibindo {{ $").append(entityNamePlural).append("->firstItem() ?? 0 }} ");
+        html.append("até {{ $").append(entityNamePlural).append("->lastItem() ?? 0 }} ");
+        html.append("de {{ $").append(entityNamePlural).append("->total() }} registros\n");
+        html.append("                </div>\n");
+        html.append("                <div>\n");
+        html.append("                    {{ $").append(entityNamePlural).append("->links('pagination::bootstrap-5') }}\n");
+        html.append("                </div>\n");
         html.append("            </div>\n");
         html.append("        </div>\n");
         html.append("    </div>\n");
@@ -550,13 +588,25 @@ public class LaravelViewTemplate {
 
     /**
      * Verifica se um campo é usado como filtro de sessão.
-     * Campos de sessão (município_id, avaliacao_id) não devem aparecer na grid
+     * Campos de sessão não devem aparecer na grid
      * pois já são exibidos no contexto de sessão na parte superior.
      */
     private boolean isSessionFilterField(Field field) {
-        if (field == null) return false;
+        if (field == null || metaModel == null || metaModel.getMetadata() == null) return false;
+
         String fieldName = toSnakeCase(field.getName());
-        return fieldName.equals("municipio_id") || fieldName.equals("avaliacao_id");
+
+        // Verifica se o campo está na lista de sessionContext do metamodel
+        if (metaModel.getMetadata().getSessionContext() != null) {
+            for (var ctx : metaModel.getMetadata().getSessionContext()) {
+                String contextField = toSnakeCase(ctx.getField());
+                if (fieldName.equals(contextField)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -711,5 +761,71 @@ public class LaravelViewTemplate {
             case "export" -> "fa-download";
             default -> "fa-circle";
         };
+    }
+
+    /**
+     * Verifica se o campo é do tipo DATE.
+     */
+    private boolean isDateField(Field field) {
+        return field.getDataType() == DataType.DATE;
+    }
+
+    /**
+     * Verifica se o campo é do tipo DATETIME.
+     */
+    private boolean isDateTimeField(Field field) {
+        return field.getDataType() == DataType.DATETIME;
+    }
+
+    /**
+     * Verifica se o campo é do tipo DECIMAL/FLOAT/DOUBLE (ponto flutuante).
+     */
+    private boolean isDecimalField(Field field) {
+        if (field == null) return false;
+
+        // Verificar por DataType
+        if (field.getDataType() != null) {
+            DataType dataType = field.getDataType();
+            if (dataType == DataType.DECIMAL || dataType == DataType.MONEY) {
+                return true;
+            }
+        }
+
+        // Verificar por databaseType
+        if (field.getDatabaseType() != null) {
+            String dbType = field.getDatabaseType().toLowerCase();
+            return dbType.contains("decimal") || dbType.contains("float") ||
+                   dbType.contains("double") || dbType.contains("numeric") ||
+                   dbType.contains("real") || dbType.contains("money");
+        }
+
+        return false;
+    }
+
+    /**
+     * Busca o columnName correto de um campo em uma entidade.
+     * Usado para converter nomes de campos em camelCase para o columnName real (ex: nomeEmpresa -> NomeEmpresa).
+     */
+    private String getColumnNameForField(String entityName, String fieldName) {
+        if (metaModel != null && metaModel.getEntities() != null) {
+            // Buscar a entidade no metamodel
+            for (Entity entity : metaModel.getEntities()) {
+                if (entity.getName().equals(entityName)) {
+                    // Buscar o campo pelo nome
+                    for (Field field : entity.getFields()) {
+                        // Comparar ignorando case e underscores
+                        String normalizedFieldName = fieldName.replace("_", "").toLowerCase();
+                        String normalizedName = field.getName().replace("_", "").toLowerCase();
+
+                        if (normalizedName.equals(normalizedFieldName)) {
+                            return getFieldColumnName(field);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        // Fallback: retorna o nome original
+        return fieldName;
     }
 }

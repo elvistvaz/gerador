@@ -857,12 +857,22 @@ require __DIR__.'/../vendor/autoload.php';
             sessionContextBar = String.format("""
     @if(%s)
     <div class="session-context-bar">
-        <div class="d-flex align-items-center gap-3">
-%s        </div>
-        <div>
-            <a href="{{ route('session.select') }}" class="btn btn-sm btn-light">
-                <i class="fas fa-sync-alt"></i> Alterar Contexto
-            </a>
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <div class="d-flex align-items-center gap-3">
+%s            </div>
+            <div class="d-flex align-items-center gap-3">
+                <div class="session-context-item">
+                    <i class="fas fa-user"></i>
+                    <span class="session-context-label">Usuário:</span>
+                    <span class="session-context-value">{{ Auth::user()->name }}</span>
+                </div>
+                <form action="{{ url('/logout') }}" method="POST" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-sm btn-outline-light" title="Sair">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
     @endif
@@ -974,37 +984,6 @@ require __DIR__.'/../vendor/autoload.php';
         .sidebar-menu .submenu a:hover {
             background: rgba(255,255,255,0.1);
             color: white;
-        }
-
-        .sidebar-footer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 1rem;
-            background: rgba(0,0,0,0.2);
-            border-top: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .sidebar-footer .user-info {
-            color: white;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .sidebar-footer .btn-logout {
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            width: 100%%;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .sidebar-footer .btn-logout:hover {
-            background: rgba(255,255,255,0.3);
         }
 
         /* Main Content */
@@ -1171,18 +1150,6 @@ require __DIR__.'/../vendor/autoload.php';
 
 %s
         </ul>
-
-        <div class="sidebar-footer">
-            <div class="user-info">
-                <i class="fas fa-user-circle"></i> {{ auth()->user()->name }}
-            </div>
-            <button class="btn-logout" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <i class="fas fa-sign-out-alt"></i> Sair
-            </button>
-            <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
-                @csrf
-            </form>
-        </div>
     </div>
     @endauth
 
