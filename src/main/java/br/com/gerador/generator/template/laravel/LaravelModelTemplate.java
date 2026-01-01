@@ -55,8 +55,27 @@ public class LaravelModelTemplate {
         // Primary key (if not 'id')
         Field pkField = getPrimaryKeyField(entity);
         if (pkField != null && !pkField.getName().equals("id")) {
-            String pkName = toSnakeCase(pkField.getName());
+            String pkName = getFieldColumnName(pkField);
             sb.append("\n    protected $primaryKey = '").append(pkName).append("';\n");
+
+            // Se não é auto-increment, adiciona as propriedades necessárias
+            if (!pkField.isAutoIncrement()) {
+                sb.append("\n    /**\n");
+                sb.append("     * Indicates if the IDs are auto-incrementing.\n");
+                sb.append("     */\n");
+                sb.append("    public $incrementing = false;\n");
+
+                // Se a PK não é INTEGER ou LONG, define o tipo
+                if (pkField.getDataType() != DataType.INTEGER &&
+                    pkField.getDataType() != DataType.LONG) {
+                    sb.append("\n    /**\n");
+                    sb.append("     * The data type of the primary key.\n");
+                    sb.append("     */\n");
+                    sb.append("    protected $keyType = '");
+                    sb.append(getPhpKeyType(pkField.getDataType()));
+                    sb.append("';\n");
+                }
+            }
 
             // Route key name (for Route Model Binding)
             sb.append("\n    /**\n");
@@ -129,12 +148,22 @@ public class LaravelModelTemplate {
         sb.append("\n    protected $fillable = [\n");
 
         entity.getFields().stream()
-            .filter(field -> !field.isPrimaryKey() &&
-                           !field.getName().equals("created_at") &&
-                           !field.getName().equals("updated_at") &&
-                           !field.getName().equals("deleted_at"))
+            .filter(field -> {
+                // Excluir PKs auto-increment
+                if (field.isPrimaryKey() && field.isAutoIncrement()) {
+                    return false;
+                }
+                // Excluir campos de timestamp
+                if (field.getName().equals("created_at") ||
+                    field.getName().equals("updated_at") ||
+                    field.getName().equals("deleted_at")) {
+                    return false;
+                }
+                // Incluir PKs não auto-increment e todos os outros campos
+                return true;
+            })
             .forEach(field -> {
-                String fieldName = toSnakeCase(field.getName());
+                String fieldName = getFieldColumnName(field);
                 sb.append("        '").append(fieldName).append("',\n");
             });
 
@@ -146,7 +175,7 @@ public class LaravelModelTemplate {
             .filter(field -> field.getName().toLowerCase().contains("password") ||
                            field.getName().toLowerCase().contains("senha") ||
                            field.getName().toLowerCase().contains("token"))
-            .map(field -> toSnakeCase(field.getName()))
+            .map(this::getFieldColumnName)
             .collect(Collectors.toList());
 
         if (!hiddenFields.isEmpty()) {
@@ -164,7 +193,7 @@ public class LaravelModelTemplate {
         for (Field field : entity.getFields()) {
             String phpType = getPhpCastType(field);
             if (phpType != null) {
-                String fieldName = toSnakeCase(field.getName());
+                String fieldName = getFieldColumnName(field);
                 sb.append("        '").append(fieldName).append("' => '").append(phpType).append("',\n");
             }
         }
@@ -179,7 +208,7 @@ public class LaravelModelTemplate {
         // BelongsTo relationships (foreign keys in this entity)
         for (Field field : entity.getFields()) {
             if (field.isForeignKey()) {
-                generateBelongsTo(sb, field);
+                generateBelongsTo(sb, field, metaModel);
             }
         }
 
@@ -194,23 +223,30 @@ public class LaravelModelTemplate {
         }
     }
 
-    private void generateBelongsTo(StringBuilder sb, Field field) {
+    private void generateBelongsTo(StringBuilder sb, Field field, MetaModel metaModel) {
         String relatedEntity = field.getReference().getEntity();
-        String foreignKey = toSnakeCase(field.getName());
+        String foreignKey = getFieldColumnName(field);
 
         // Gera nome de método único para evitar duplicação quando há múltiplas FKs para a mesma entidade
         // Exemplo: id_cidade -> cidade(), id_naturalidade -> naturalidade()
         String methodName = generateUniqueBelongsToName(field.getName(), relatedEntity);
 
+        // Busca a PK da entidade relacionada no metamodel
+        String relatedPk = getRelatedEntityPrimaryKeyColumnName(field, metaModel);
+
         sb.append("\n    public function ").append(methodName).append("()\n");
         sb.append("    {\n");
         sb.append("        return $this->belongsTo(").append(relatedEntity).append("::class, '");
-        sb.append(foreignKey).append("');\n");
+        sb.append(foreignKey).append("'");
+        if (relatedPk != null) {
+            sb.append(", '").append(relatedPk).append("'");
+        }
+        sb.append(");\n");
         sb.append("    }\n");
     }
 
     private void generateHasMany(StringBuilder sb, Entity relatedEntity, Field foreignKeyField) {
-        String foreignKey = toSnakeCase(foreignKeyField.getName());
+        String foreignKey = getFieldColumnName(foreignKeyField);
 
         // Gera nome do método baseado na FK para evitar duplicações
         // Exemplo: id_naturalidade -> pessoasPorNaturalidade, id_cidade -> pessoas
@@ -221,6 +257,34 @@ public class LaravelModelTemplate {
         sb.append("        return $this->hasMany(").append(relatedEntity.getName()).append("::class, '");
         sb.append(foreignKey).append("');\n");
         sb.append("    }\n");
+    }
+
+    /**
+     * Retorna o nome da coluna da chave primária da entidade relacionada.
+     * Busca a entidade no metamodel e retorna o columnName da PK.
+     */
+    private String getRelatedEntityPrimaryKeyColumnName(Field field, MetaModel metaModel) {
+        if (field.getReference() == null || field.getReference().getEntity() == null) {
+            return null;
+        }
+
+        String relatedEntityName = field.getReference().getEntity();
+
+        // Busca a entidade relacionada no metamodel
+        for (Entity entity : metaModel.getEntities()) {
+            if (entity.getName().equals(relatedEntityName)) {
+                // Busca a chave primária da entidade
+                for (Field pkField : entity.getFields()) {
+                    if (pkField.isPrimaryKey()) {
+                        // Retorna o columnName da PK (não o nome do campo)
+                        return getFieldColumnName(pkField);
+                    }
+                }
+            }
+        }
+
+        // Fallback: se não encontrar, retorna null (Laravel usará 'id' como padrão)
+        return null;
     }
 
     /**
@@ -331,6 +395,17 @@ public class LaravelModelTemplate {
         };
     }
 
+    private String getPhpKeyType(DataType dataType) {
+        if (dataType == null) {
+            return "string";
+        }
+
+        return switch (dataType) {
+            case INTEGER, LONG -> "int";
+            default -> "string";
+        };
+    }
+
     /**
      * Gera constantes e métodos para campos com opções definidas (ui.options).
      */
@@ -340,10 +415,10 @@ public class LaravelModelTemplate {
         for (Field field : entity.getFields()) {
             if (field.getUi() != null && field.getUi().hasOptions()) {
                 String fieldName = field.getName();
-                String fieldNameSnake = toSnakeCase(fieldName);
-                String fieldNameUpper = fieldNameSnake.toUpperCase();
+                String fieldColumnName = getFieldColumnName(field);
+                String fieldNameUpper = fieldColumnName.toUpperCase();
 
-                sb.append("\n    // Opções do campo ").append(fieldNameSnake).append("\n");
+                sb.append("\n    // Opções do campo ").append(fieldColumnName).append("\n");
 
                 // Gerar constantes para cada opção
                 for (br.com.gerador.metamodel.model.FieldOption option : field.getUi().getOptions()) {
@@ -359,7 +434,7 @@ public class LaravelModelTemplate {
                 // Gerar método estático que retorna todas as opções
                 String methodName = "get" + capitalize(toCamelCase(fieldName)) + "Options";
                 sb.append("\n    /**\n");
-                sb.append("     * Retorna todas as opções de ").append(fieldNameSnake).append("\n");
+                sb.append("     * Retorna todas as opções de ").append(fieldColumnName).append("\n");
                 sb.append("     */\n");
                 sb.append("    public static function ").append(methodName).append("()\n");
                 sb.append("    {\n");
@@ -377,14 +452,14 @@ public class LaravelModelTemplate {
                 sb.append("    }\n");
 
                 // Gerar accessor para obter o label do valor atual
-                String accessorName = fieldNameSnake + "_label";
+                String accessorName = fieldColumnName + "_label";
                 sb.append("\n    /**\n");
-                sb.append("     * Retorna o label do ").append(fieldNameSnake).append("\n");
+                sb.append("     * Retorna o label do ").append(fieldColumnName).append("\n");
                 sb.append("     */\n");
                 sb.append("    public function get").append(capitalize(toCamelCase(fieldName))).append("LabelAttribute()\n");
                 sb.append("    {\n");
                 sb.append("        $options = self::").append(methodName).append("();\n");
-                sb.append("        return $options[$this->").append(fieldNameSnake).append("] ?? '-';\n");
+                sb.append("        return $options[$this->").append(fieldColumnName).append("] ?? '-';\n");
                 sb.append("    }\n");
             }
         }
@@ -403,6 +478,17 @@ public class LaravelModelTemplate {
                 .replaceAll("[Ç]", "C")
                 .replaceAll("[^A-Z0-9]+", "_")
                 .replaceAll("^_+|_+$", ""); // Remove underscores no início e fim
+    }
+
+    /**
+     * Retorna o nome da coluna do campo.
+     * Se columnName estiver definido, usa ele. Caso contrário, converte para snake_case.
+     */
+    private String getFieldColumnName(Field field) {
+        if (field.getColumnName() != null && !field.getColumnName().isEmpty()) {
+            return field.getColumnName();
+        }
+        return toSnakeCase(field.getName());
     }
 
     private String toSnakeCase(String str) {

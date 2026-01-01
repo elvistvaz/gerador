@@ -198,7 +198,22 @@
       "Bash(timeout /t 120 /nobreak)",
       "Bash(Select-Object -First 100 \")",
       "Bash(Select-Object -Last 20\"\")",
-      "Bash(tr:*)"
+      "Bash(tr:*)",
+      "Bash(cat:*)",
+      "Bash(mvn exec:java:*)",
+      "Bash(test:*)",
+      "Bash(mkdir:*)",
+      "Bash(zip:*)",
+      "Bash(tar:*)",
+      "Bash(chmod:*)",
+      "Bash(if [ -f composer.lock ])",
+      "Bash(then rm composer.lock)",
+      "Bash(fi)",
+      "Bash(composer dump-autoload:*)",
+      "Bash(java:*)",
+      "Bash(mvn package:*)",
+      "Bash(./gerar_xandel.bat)",
+      "Bash(timeout /t 30)"
     ]
   }
 }

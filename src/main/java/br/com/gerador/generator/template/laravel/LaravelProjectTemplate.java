@@ -180,6 +180,13 @@ use OwenIt\\Auditing\\Auditable as AuditableTrait;
 class BaseModel extends Model implements Auditable
 {
     use AuditableTrait;
+
+    /**
+     * Indicates if the model should use snake_case for attributes.
+     *
+     * Set to false to preserve the exact column names from the database.
+     */
+    public static $snakeAttributes = false;
 }
 """;
         } else {
@@ -192,7 +199,12 @@ use Illuminate\\Database\\Eloquent\\Model;
 
 class BaseModel extends Model
 {
-    // Base model for all application models
+    /**
+     * Indicates if the model should use snake_case for attributes.
+     *
+     * Set to false to preserve the exact column names from the database.
+     */
+    public static $snakeAttributes = false;
 }
 """;
         }
@@ -1854,9 +1866,9 @@ return [
             String entityLower = Character.toLowerCase(entity.charAt(0)) + entity.substring(1);
             String entityPlural = entityLower + "s";
 
-            // Converter field e displayField para snake_case
-            String fieldSnake = toSnakeCase(field);
-            String displayFieldSnake = toSnakeCase(displayField);
+            // Buscar o columnName do campo no metamodel
+            String fieldColumnName = getColumnNameFromMetaModel(metaModel, entity, field);
+            String displayFieldColumnName = getColumnNameFromMetaModel(metaModel, entity, displayField);
 
             // Nome da tabela em snake_case
             String tableName = toSnakeCase(entity);
@@ -1864,12 +1876,12 @@ return [
             uses.append("use App\\Models\\").append(entity).append(";\n");
 
             validationRules.append("            '").append(field).append("' => 'required|exists:")
-                          .append(tableName).append(",").append(fieldSnake).append("',\n");
+                          .append(tableName).append(",").append(fieldColumnName).append("',\n");
 
-            sessionAssignments.append("            '").append(fieldSnake).append("' => $request->").append(field).append(",\n");
+            sessionAssignments.append("            '").append(toSnakeCase(field)).append("' => $request->").append(field).append(",\n");
 
             selectFetches.append("        $").append(entityPlural).append(" = ").append(entity)
-                        .append("::orderBy('").append(displayFieldSnake).append("')->get();\n");
+                        .append("::orderBy('").append(displayFieldColumnName).append("')->get();\n");
 
             selectCompact.append(", '").append(entityPlural).append("'");
 
@@ -1877,17 +1889,17 @@ return [
                        .append("        $").append(entityLower).append(" = ").append(entity)
                        .append("::find($request->").append(field).append(");\n")
                        .append("        session([\n")
-                       .append("            '").append(fieldSnake).append("_nome' => $").append(entityLower)
-                       .append("->").append(displayFieldSnake).append(",\n")
+                       .append("            '").append(toSnakeCase(field)).append("_nome' => $").append(entityLower)
+                       .append("->").append(displayFieldColumnName).append(",\n")
                        .append("        ]);\n");
 
             updateMethods.append("\n        if ($request->has('").append(field).append("')) {\n")
                        .append("            $").append(entityLower).append(" = ").append(entity)
                        .append("::findOrFail($request->").append(field).append(");\n")
                        .append("            session([\n")
-                       .append("                '").append(fieldSnake).append("' => $").append(entityLower).append("->").append(fieldSnake).append(",\n")
-                       .append("                '").append(fieldSnake).append("_nome' => $").append(entityLower)
-                       .append("->").append(displayFieldSnake).append(",\n")
+                       .append("                '").append(toSnakeCase(field)).append("' => $").append(entityLower).append("->").append(fieldColumnName).append(",\n")
+                       .append("                '").append(toSnakeCase(field)).append("_nome' => $").append(entityLower)
+                       .append("->").append(displayFieldColumnName).append(",\n")
                        .append("            ]);\n")
                        .append("        }\n");
         }
@@ -2026,8 +2038,10 @@ class EnsureSessionContextSelected
             String entityLower = Character.toLowerCase(entity.charAt(0)) + entity.substring(1);
             String entityPlural = entityLower + "s";
             String icon = getIconForEntity(entity);
-            String fieldSnake = toSnakeCase(field);
-            String displayFieldSnake = toSnakeCase(displayField);
+
+            // Buscar columnNames do metamodel
+            String fieldColumnName = getColumnNameFromMetaModel(metaModel, entity, field);
+            String displayFieldColumnName = getColumnNameFromMetaModel(metaModel, entity, displayField);
 
             selectionSections.append("""
                         {{-- Seleção de %s --}}
@@ -2064,11 +2078,11 @@ class EnsureSessionContextSelected
                 entity, icon, label,
                 entityPlural, entityLower,
                 inputType, field,
-                entityLower, entityLower, fieldSnake,
-                entityLower, fieldSnake,
-                field, fieldSnake, entityLower, fieldSnake,
-                entityLower, entityLower, fieldSnake,
-                entityLower, displayFieldSnake,
+                entityLower, entityLower, fieldColumnName,
+                entityLower, fieldColumnName,
+                field, toSnakeCase(field), entityLower, fieldColumnName,
+                entityLower, entityLower, fieldColumnName,
+                entityLower, displayFieldColumnName,
                 field
             ));
         }
@@ -2121,6 +2135,37 @@ class EnsureSessionContextSelected
             case "empresa" -> "fa-building";
             default -> "fa-circle";
         };
+    }
+
+    /**
+     * Busca o columnName do campo no metamodel.
+     * Se não encontrar ou se columnName não estiver definido, retorna snake_case do fieldName.
+     */
+    private String getColumnNameFromMetaModel(MetaModel metaModel, String entityName, String fieldName) {
+        if (metaModel == null || metaModel.getEntities() == null) {
+            return toSnakeCase(fieldName);
+        }
+
+        // Busca a entidade
+        for (br.com.gerador.metamodel.model.Entity entity : metaModel.getEntities()) {
+            if (entity.getName().equals(entityName)) {
+                // Busca o campo
+                if (entity.getFields() != null) {
+                    for (br.com.gerador.metamodel.model.Field field : entity.getFields()) {
+                        if (field.getName().equals(fieldName)) {
+                            // Retorna columnName se existir, senão snake_case
+                            if (field.getColumnName() != null && !field.getColumnName().isEmpty()) {
+                                return field.getColumnName();
+                            }
+                            return toSnakeCase(fieldName);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Se não encontrou, retorna snake_case
+        return toSnakeCase(fieldName);
     }
 
     private String toSnakeCase(String camelCase) {

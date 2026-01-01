@@ -118,7 +118,7 @@
       "type": "MAIN",
       "defaultSort": { "field": "nomePlanoRetencao", "direction": "asc" },
       "childEntities": [
-        { "entity": "Retencao", "foreignKey": "idPlanoRetencao", "label": "Faixas de Retenção", "icon": "percent" }
+        { "entity": "Retencao", "foreignKey": "idPlanoRetencao", "label": "Faixas de Retenção", "icon": "fa-percentage" }
       ],
       "fields": [
         {
@@ -369,13 +369,13 @@
           "entity": "PessoaContaCorrente",
           "foreignKey": "idPessoa",
           "label": "Contas Correntes",
-          "icon": "account_balance"
+          "icon": "fa-wallet"
         },
         {
           "entity": "PessoaEspecialidade",
           "foreignKey": "idPessoa",
           "label": "Especialidades",
-          "icon": "medical_services"
+          "icon": "fa-briefcase-medical"
         }
       ],
       "fields": [

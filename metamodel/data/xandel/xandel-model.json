@@ -26,90 +26,90 @@
       "id": "gestao",
       "name": "Gestão",
       "description": "Gestão de entidades principais",
-      "icon": "business_center",
+      "icon": "fa-briefcase",
       "order": 1,
       "items": [
-        { "id": "menu_pessoa", "name": "Pessoas", "entityRef": "Pessoa", "icon": "person", "order": 1 },
-        { "id": "menu_empresa", "name": "Empresas", "entityRef": "Empresa", "icon": "apartment", "order": 2 },
-        { "id": "menu_cliente", "name": "Clientes", "entityRef": "Cliente", "icon": "corporate_fare", "order": 3 },
-        { "id": "menu_cartorio", "name": "Cartórios", "entityRef": "Cartorio", "icon": "account_balance", "order": 4 }
+        { "id": "menu_pessoa", "name": "Pessoas", "entityRef": "Pessoa", "icon": "fa-user", "order": 1 },
+        { "id": "menu_empresa", "name": "Empresas", "entityRef": "Empresa", "icon": "fa-building", "order": 2 },
+        { "id": "menu_cliente", "name": "Clientes", "entityRef": "Cliente", "icon": "fa-building", "order": 3 },
+        { "id": "menu_cartorio", "name": "Cartórios", "entityRef": "Cartorio", "icon": "fa-university", "order": 4 }
       ]
     },
     {
       "id": "financeiro",
       "name": "Financeiro",
       "description": "Operações financeiras",
-      "icon": "payments",
+      "icon": "fa-credit-card",
       "order": 2,
       "items": [
-        { "id": "menu_lancamento", "name": "Lançamentos", "entityRef": "Lancamento", "icon": "receipt", "order": 1 },
-        { "id": "menu_nf", "name": "Notas Fiscais", "entityRef": "NF", "icon": "description", "order": 2 },
-        { "id": "menu_contas", "name": "Contas a Pagar/Receber", "entityRef": "ContasPagarReceber", "icon": "account_balance_wallet", "order": 3 },
-        { "id": "menu_pag_nao_socio", "name": "Pagamentos Não-Sócios", "entityRef": "PagamentoNaoSocio", "icon": "paid", "order": 4 },
-        { "id": "menu_repasse_anual", "name": "Repasse Anual", "entityRef": "RepasseAnual", "icon": "trending_up", "order": 5 }
+        { "id": "menu_lancamento", "name": "Lançamentos", "entityRef": "Lancamento", "icon": "fa-receipt", "order": 1 },
+        { "id": "menu_nf", "name": "Notas Fiscais", "entityRef": "NF", "icon": "fa-file-alt", "order": 2 },
+        { "id": "menu_contas", "name": "Contas a Pagar/Receber", "entityRef": "ContasPagarReceber", "icon": "fa-wallet", "order": 3 },
+        { "id": "menu_pag_nao_socio", "name": "Pagamentos Não-Sócios", "entityRef": "PagamentoNaoSocio", "icon": "fa-money-bill-wave", "order": 4 },
+        { "id": "menu_repasse_anual", "name": "Repasse Anual", "entityRef": "RepasseAnual", "icon": "fa-chart-line", "order": 5 }
       ]
     },
     {
       "id": "anuidade",
       "name": "Anuidade",
       "description": "Gestão de anuidades CREMEB",
-      "icon": "event_note",
+      "icon": "fa-calendar-alt",
       "order": 3,
       "items": [
-        { "id": "menu_anuidade_cremeb", "name": "Anuidades CREMEB", "entityRef": "AnuidadeCremeb", "icon": "event_available", "order": 1 }
+        { "id": "menu_anuidade_cremeb", "name": "Anuidades CREMEB", "entityRef": "AnuidadeCremeb", "icon": "fa-calendar-check", "order": 1 }
       ]
     },
     {
       "id": "cadastros_gerais",
       "name": "Cadastros Gerais",
       "description": "Cadastros auxiliares do sistema",
-      "icon": "folder_open",
+      "icon": "fa-folder-open",
       "order": 4,
       "items": [
-        { "id": "menu_banco", "name": "Bancos", "entityRef": "Banco", "icon": "account_balance", "order": 1 },
-        { "id": "menu_cidade", "name": "Cidades", "entityRef": "Cidade", "icon": "location_city", "order": 2 },
-        { "id": "menu_bairro", "name": "Bairros", "entityRef": "Bairro", "icon": "map", "order": 3 },
-        { "id": "menu_estado_civil", "name": "Estados Civis", "entityRef": "EstadoCivil", "icon": "rings_wedding", "order": 4 },
-        { "id": "menu_tipo_contato", "name": "Tipos de Contato", "entityRef": "TipoContato", "icon": "contact_phone", "order": 5 }
+        { "id": "menu_banco", "name": "Bancos", "entityRef": "Banco", "icon": "fa-university", "order": 1 },
+        { "id": "menu_cidade", "name": "Cidades", "entityRef": "Cidade", "icon": "fa-city", "order": 2 },
+        { "id": "menu_bairro", "name": "Bairros", "entityRef": "Bairro", "icon": "fa-map-marked-alt", "order": 3 },
+        { "id": "menu_estado_civil", "name": "Estados Civis", "entityRef": "EstadoCivil", "icon": "fa-ring", "order": 4 },
+        { "id": "menu_tipo_contato", "name": "Tipos de Contato", "entityRef": "TipoContato", "icon": "fa-phone", "order": 5 }
       ]
     },
     {
       "id": "cadastros_medicos",
       "name": "Cadastros Médicos",
       "description": "Cadastros relacionados à área médica",
-      "icon": "medical_services",
+      "icon": "fa-briefcase-medical",
       "order": 5,
       "items": [
-        { "id": "menu_conselho", "name": "Conselhos", "entityRef": "Conselho", "icon": "admin_panel_settings", "order": 1 },
-        { "id": "menu_especialidade", "name": "Especialidades", "entityRef": "Especialidade", "icon": "health_and_safety", "order": 2 },
-        { "id": "menu_operadora", "name": "Operadoras", "entityRef": "Operadora", "icon": "domain", "order": 3 },
-        { "id": "menu_tipo_servico", "name": "Tipos de Serviço", "entityRef": "TipoServico", "icon": "local_hospital", "order": 4 },
-        { "id": "menu_cbo", "name": "CBO", "entityRef": "CBO", "icon": "badge", "order": 5 }
+        { "id": "menu_conselho", "name": "Conselhos", "entityRef": "Conselho", "icon": "fa-user-shield", "order": 1 },
+        { "id": "menu_especialidade", "name": "Especialidades", "entityRef": "Especialidade", "icon": "fa-shield-alt", "order": 2 },
+        { "id": "menu_operadora", "name": "Operadoras", "entityRef": "Operadora", "icon": "fa-building", "order": 3 },
+        { "id": "menu_tipo_servico", "name": "Tipos de Serviço", "entityRef": "TipoServico", "icon": "fa-stethoscope", "order": 4 },
+        { "id": "menu_cbo", "name": "CBO", "entityRef": "CBO", "icon": "fa-id-card", "order": 5 }
       ]
     },
     {
       "id": "configuracoes_financeiras",
       "name": "Configurações Financeiras",
       "description": "Parametrização de regras financeiras",
-      "icon": "tune",
+      "icon": "fa-sliders-h",
       "order": 6,
       "items": [
-        { "id": "menu_plano_retencao", "name": "Planos de Retenção", "entityRef": "PlanoRetencao", "icon": "percent", "order": 1 },
-        { "id": "menu_despesa_receita", "name": "Despesas e Receitas", "entityRef": "DespesaReceita", "icon": "compare_arrows", "order": 2 },
-        { "id": "menu_imposto_renda", "name": "Tabela IR", "entityRef": "ImpostoDeRenda", "icon": "request_quote", "order": 3 },
-        { "id": "menu_parametro_nf", "name": "Parâmetros NF", "entityRef": "ParametroNF", "icon": "settings_applications", "order": 4 },
-        { "id": "menu_indicacao", "name": "Indicações", "entityRef": "Indicacao", "icon": "star_rate", "order": 5 }
+        { "id": "menu_plano_retencao", "name": "Planos de Retenção", "entityRef": "PlanoRetencao", "icon": "fa-percentage", "order": 1 },
+        { "id": "menu_despesa_receita", "name": "Despesas e Receitas", "entityRef": "DespesaReceita", "icon": "fa-exchange-alt", "order": 2 },
+        { "id": "menu_imposto_renda", "name": "Tabela IR", "entityRef": "ImpostoDeRenda", "icon": "fa-file-invoice-dollar", "order": 3 },
+        { "id": "menu_parametro_nf", "name": "Parâmetros NF", "entityRef": "ParametroNF", "icon": "fa-cogs", "order": 4 },
+        { "id": "menu_indicacao", "name": "Indicações", "entityRef": "Indicacao", "icon": "fa-star", "order": 5 }
       ]
     },
     {
       "id": "administracao",
       "name": "Administração",
       "description": "Configurações administrativas do sistema",
-      "icon": "admin_panel_settings",
+      "icon": "fa-user-shield",
       "order": 7,
       "items": [
-        { "id": "menu_usuario", "name": "Usuários", "entityRef": "Usuario", "icon": "manage_accounts", "order": 1 },
-        { "id": "menu_parametro_email", "name": "Parâmetros de E-mail", "entityRef": "ParametroEmail", "icon": "email", "order": 2 }
+        { "id": "menu_usuario", "name": "Usuários", "entityRef": "Usuario", "icon": "fa-user-cog", "order": 1 },
+        { "id": "menu_parametro_email", "name": "Parâmetros de E-mail", "entityRef": "ParametroEmail", "icon": "fa-envelope", "order": 2 }
       ]
     }
   ],
@@ -1489,9 +1489,9 @@
         }
       ],
       "childEntities": [
-        { "entity": "EmpresaSocio", "foreignKey": "idEmpresa", "label": "Sócios", "icon": "people" },
-        { "entity": "EmpresaCliente", "foreignKey": "idEmpresa", "label": "Clientes", "icon": "corporate_fare" },
-        { "entity": "EmpresaDespesaFixa", "foreignKey": "idEmpresa", "label": "Despesas Fixas", "icon": "receipt_long" }
+        { "entity": "EmpresaSocio", "foreignKey": "idEmpresa", "label": "Sócios", "icon": "fa-users" },
+        { "entity": "EmpresaCliente", "foreignKey": "idEmpresa", "label": "Clientes", "icon": "fa-building" },
+        { "entity": "EmpresaDespesaFixa", "foreignKey": "idEmpresa", "label": "Despesas Fixas", "icon": "fa-receipt" }
       ]
     },
     {
@@ -1545,7 +1545,7 @@
         }
       ],
       "childEntities": [
-        { "entity": "Retencao", "foreignKey": "idPlanoRetencao", "label": "Faixas de Retenção", "icon": "percent" }
+        { "entity": "Retencao", "foreignKey": "idPlanoRetencao", "label": "Faixas de Retenção", "icon": "fa-percentage" }
       ]
     },
     {
@@ -1989,9 +1989,9 @@
         }
       ],
       "childEntities": [
-        { "entity": "MedicoEspecialidade", "foreignKey": "idPessoa", "label": "Especialidades", "icon": "health_and_safety" },
-        { "entity": "PessoaCartorio", "foreignKey": "idPessoa", "label": "Cartórios", "icon": "description" },
-        { "entity": "PessoaContaCorrente", "foreignKey": "idPessoa", "label": "Contas Correntes", "icon": "account_balance_wallet" }
+        { "entity": "MedicoEspecialidade", "foreignKey": "idPessoa", "label": "Especialidades", "icon": "fa-shield-alt" },
+        { "entity": "PessoaCartorio", "foreignKey": "idPessoa", "label": "Cartórios", "icon": "fa-file-alt" },
+        { "entity": "PessoaContaCorrente", "foreignKey": "idPessoa", "label": "Contas Correntes", "icon": "fa-wallet" }
       ]
     },
     {
@@ -2167,8 +2167,8 @@
         }
       ],
       "childEntities": [
-        { "entity": "ClienteContato", "foreignKey": "idCliente", "label": "Contatos", "icon": "contact_phone" },
-        { "entity": "ClienteFilial", "foreignKey": "idCliente", "label": "Filiais", "icon": "store" }
+        { "entity": "ClienteContato", "foreignKey": "idCliente", "label": "Contatos", "icon": "fa-phone" },
+        { "entity": "ClienteFilial", "foreignKey": "idCliente", "label": "Filiais", "icon": "fa-store" }
       ]
     },
     {
@@ -3184,7 +3184,7 @@
         }
       ],
       "childEntities": [
-        { "entity": "AnuidadeCremebItem", "foreignKey": "idAnuidadeCremeb", "label": "Itens da Anuidade", "icon": "list" }
+        { "entity": "AnuidadeCremebItem", "foreignKey": "idAnuidadeCremeb", "label": "Itens da Anuidade", "icon": "fa-list" }
       ]
     },
     {

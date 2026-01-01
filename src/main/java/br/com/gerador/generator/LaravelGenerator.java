@@ -84,6 +84,9 @@ public class LaravelGenerator {
         // Cria estrutura de diretórios Laravel
         createDirectories();
 
+        // Copia vendor pré-compilado se disponível (acelera muito o processo!)
+        copyVendorTemplate();
+
         // Gera arquivos de infraestrutura do projeto
         generateProjectFiles(metaModel);
 
@@ -108,6 +111,72 @@ public class LaravelGenerator {
         }
 
         return new GenerationResult(generatedFiles, errors);
+    }
+
+    /**
+     * Copia o vendor template pré-compilado se disponível.
+     * Isso acelera MUITO o processo de geração, evitando ter que rodar composer install.
+     */
+    private void copyVendorTemplate() {
+        Path vendorTemplatePath = Path.of("c:/java/workspace/Gerador/templates/laravel-vendor/vendor.tar.gz");
+
+        if (!Files.exists(vendorTemplatePath)) {
+            System.out.println("\n⚠ Vendor template não encontrado em: " + vendorTemplatePath);
+            System.out.println("  Execute 'composer install' manualmente após a geração.");
+            return;
+        }
+
+        System.out.println("\n📦 Vendor template encontrado! Descompactando...");
+
+        try {
+            Path vendorOutputPath = outputDir.resolve("vendor");
+
+            // Remove vendor existente se houver
+            if (Files.exists(vendorOutputPath)) {
+                System.out.println("  Removendo vendor existente...");
+                deleteDirectory(vendorOutputPath);
+            }
+
+            // Descompacta o vendor.tar.gz
+            ProcessBuilder pb = new ProcessBuilder(
+                "tar", "-xzf",
+                vendorTemplatePath.toAbsolutePath().toString(),
+                "-C", outputDir.toAbsolutePath().toString()
+            );
+            pb.redirectErrorStream(true);
+            Process process = pb.start();
+
+            int exitCode = process.waitFor();
+
+            if (exitCode == 0) {
+                System.out.println("  ✓ Vendor descompactado com sucesso!");
+                System.out.println("  ⚡ Deploy acelerado - composer install não será necessário!");
+            } else {
+                System.err.println("  ✗ Erro ao descompactar vendor (exit code: " + exitCode + ")");
+                System.err.println("  Execute 'composer install' manualmente.");
+            }
+
+        } catch (Exception e) {
+            System.err.println("  ✗ Erro ao copiar vendor template: " + e.getMessage());
+            System.err.println("  Execute 'composer install' manualmente.");
+        }
+    }
+
+    /**
+     * Remove um diretório recursivamente.
+     */
+    private void deleteDirectory(Path directory) throws IOException {
+        if (Files.exists(directory)) {
+            Files.walk(directory)
+                .sorted((a, b) -> b.compareTo(a)) // Reverse order for deletion
+                .forEach(path -> {
+                    try {
+                        Files.delete(path);
+                    } catch (IOException e) {
+                        // Ignore
+                    }
+                });
+        }
     }
 
     /**
@@ -281,10 +350,18 @@ public class LaravelGenerator {
         try {
             List<Path> csvFiles = Files.list(csvDir)
                     .filter(p -> p.toString().endsWith(".csv"))
-                    .sorted()
                     .toList();
 
-            for (Path csvFile : csvFiles) {
+            // Ordena os CSVs por dependência de FK (ordenação topológica)
+            List<Path> orderedCsvFiles = sortByForeignKeyDependencies(csvFiles, metaModel);
+
+            System.out.println("  Ordem de carga (respeitando FKs):");
+            for (int i = 0; i < orderedCsvFiles.size(); i++) {
+                System.out.println("    " + (i + 1) + ". " + orderedCsvFiles.get(i).getFileName());
+            }
+            System.out.println();
+
+            for (Path csvFile : orderedCsvFiles) {
                 String fileName = csvFile.getFileName().toString();
                 String tableName = fileName.replace(".csv", "");
 
@@ -606,6 +683,108 @@ class InitialDataSeeder extends Seeder
         String cleaned = str.replaceAll("_([A-Z])", "$1");
         // Converte para snake_case
         return cleaned.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+    }
+
+    /**
+     * Ordena os arquivos CSV por dependências de Foreign Keys (ordenação topológica).
+     * Garante que tabelas referenciadas sejam populadas antes das tabelas que as referenciam.
+     */
+    private List<Path> sortByForeignKeyDependencies(List<Path> csvFiles, MetaModel metaModel) {
+        // Mapa: tableName -> Entity
+        java.util.Map<String, Entity> tableToEntity = new java.util.HashMap<>();
+        for (Entity entity : metaModel.getEntities()) {
+            if (entity.getTableName() != null) {
+                tableToEntity.put(entity.getTableName().toLowerCase(), entity);
+            }
+        }
+
+        // Mapa: tableName -> lista de tabelas que dependem dela
+        java.util.Map<String, java.util.Set<String>> dependencies = new java.util.HashMap<>();
+        java.util.Map<String, Integer> inDegree = new java.util.HashMap<>();
+
+        // Inicializa estruturas
+        for (Path csvFile : csvFiles) {
+            String tableName = csvFile.getFileName().toString().replace(".csv", "").toLowerCase();
+            dependencies.putIfAbsent(tableName, new java.util.HashSet<>());
+            inDegree.putIfAbsent(tableName, 0);
+        }
+
+        // Analisa dependências de FK
+        for (Path csvFile : csvFiles) {
+            String tableName = csvFile.getFileName().toString().replace(".csv", "").toLowerCase();
+            Entity entity = findEntityByTableName(metaModel, tableName);
+
+            if (entity != null && entity.getFields() != null) {
+                for (Field field : entity.getFields()) {
+                    // Verifica se o campo é uma FK
+                    if (field.getReference() != null && field.getReference().getEntity() != null) {
+                        String referencedEntityName = field.getReference().getEntity();
+
+                        // Encontra a tabela referenciada
+                        Entity referencedEntity = metaModel.getEntities().stream()
+                            .filter(e -> e.getName().equals(referencedEntityName))
+                            .findFirst()
+                            .orElse(null);
+
+                        if (referencedEntity != null && referencedEntity.getTableName() != null) {
+                            String referencedTableName = referencedEntity.getTableName().toLowerCase();
+
+                            // Ignora auto-referências
+                            if (!referencedTableName.equals(tableName)) {
+                                // tableName depende de referencedTableName
+                                if (dependencies.containsKey(referencedTableName)) {
+                                    dependencies.get(referencedTableName).add(tableName);
+                                    inDegree.put(tableName, inDegree.get(tableName) + 1);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Ordenação topológica (algoritmo de Kahn)
+        java.util.Queue<String> queue = new java.util.LinkedList<>();
+        List<String> sortedTableNames = new ArrayList<>();
+
+        // Adiciona tabelas sem dependências
+        for (String tableName : inDegree.keySet()) {
+            if (inDegree.get(tableName) == 0) {
+                queue.offer(tableName);
+            }
+        }
+
+        while (!queue.isEmpty()) {
+            String current = queue.poll();
+            sortedTableNames.add(current);
+
+            // Remove arestas
+            for (String dependent : dependencies.get(current)) {
+                inDegree.put(dependent, inDegree.get(dependent) - 1);
+                if (inDegree.get(dependent) == 0) {
+                    queue.offer(dependent);
+                }
+            }
+        }
+
+        // Se houver ciclos, adiciona as tabelas restantes ao final
+        for (String tableName : inDegree.keySet()) {
+            if (inDegree.get(tableName) > 0) {
+                sortedTableNames.add(tableName);
+                System.out.println("  ⚠️ Aviso: Dependência circular detectada na tabela: " + tableName);
+            }
+        }
+
+        // Reconstrói a lista de Paths na ordem correta
+        List<Path> sortedCsvFiles = new ArrayList<>();
+        for (String tableName : sortedTableNames) {
+            csvFiles.stream()
+                .filter(p -> p.getFileName().toString().replace(".csv", "").equalsIgnoreCase(tableName))
+                .findFirst()
+                .ifPresent(sortedCsvFiles::add);
+        }
+
+        return sortedCsvFiles;
     }
 
     /**

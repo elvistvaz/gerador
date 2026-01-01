@@ -17,6 +17,17 @@ public class LaravelRequestTemplate {
         this.projectConfig = projectConfig;
     }
 
+    /**
+     * Obtém o nome da coluna para um campo.
+     * Se o campo tem columnName definido, usa ele. Senão, converte para snake_case.
+     */
+    private String getFieldColumnName(Field field) {
+        if (field.getColumnName() != null && !field.getColumnName().isEmpty()) {
+            return field.getColumnName();
+        }
+        return toSnakeCase(field.getName());
+    }
+
     public String generate(Entity entity, MetaModel metaModel) {
         return generateRequest(entity, "Store", true);
     }
@@ -61,15 +72,26 @@ public class LaravelRequestTemplate {
 
         // Generate validation rules
         for (Field field : entity.getFields()) {
-            if (field.isPrimaryKey() ||
-                field.getName().equals("created_at") ||
-                field.getName().equals("updated_at") ||
-                field.getName().equals("deleted_at")) {
+            String fieldName = getFieldColumnName(field);
+
+            // Pular campos automáticos
+            if (fieldName.equals("created_at") || fieldName.equals("updated_at") || fieldName.equals("deleted_at")) {
                 continue;
             }
 
-            String fieldName = toSnakeCase(field.getName());
-            String rules = getValidationRules(field, entityName, isCreate);
+            // Para PKs auto-increment, pular sempre
+            if (field.isPrimaryKey() && field.isAutoIncrement()) {
+                continue;
+            }
+
+            // Para PKs não auto-increment, incluir apenas no Store (create)
+            if (field.isPrimaryKey() && !field.isAutoIncrement()) {
+                if (!isCreate) {
+                    continue; // Pular no Update
+                }
+            }
+
+            String rules = getValidationRules(field, entity, isCreate);
 
             if (rules != null && !rules.isEmpty()) {
                 sb.append("            '").append(fieldName).append("' => '").append(rules).append("',\n");
@@ -84,7 +106,7 @@ public class LaravelRequestTemplate {
         return sb.toString();
     }
 
-    private String getValidationRules(Field field, String entityName, boolean isCreate) {
+    private String getValidationRules(Field field, Entity entity, boolean isCreate) {
         StringBuilder rules = new StringBuilder();
 
         // Required
@@ -101,11 +123,11 @@ public class LaravelRequestTemplate {
             rules.append(typeRule);
         }
 
-        // Unique
-        if (field.isUnique()) {
+        // Unique (incluindo PKs não auto-increment)
+        if (field.isUnique() || (field.isPrimaryKey() && !field.isAutoIncrement())) {
             if (rules.length() > 0) rules.append("|");
-            String tableName = toSnakeCase(entityName);
-            String fieldName = toSnakeCase(field.getName());
+            String tableName = toSnakeCase(entity.getName());
+            String fieldName = getFieldColumnName(field);
 
             if (isCreate) {
                 rules.append("unique:").append(tableName).append(",").append(fieldName);
@@ -122,12 +144,18 @@ public class LaravelRequestTemplate {
         }
 
         // Foreign key
-        if (field.isForeignKey()) {
+        if (field.isForeignKey() && field.getReference() != null) {
             if (rules.length() > 0) rules.append("|");
             String referencedTable = toSnakeCase(field.getReference().getEntity());
-            String referencedField = field.getReference().getField() != null
-                ? toSnakeCase(field.getReference().getField())
-                : "id";
+
+            // Se a referência especifica o campo, usar ele; senão, usar "id"
+            String referencedField = "id";
+            if (field.getReference().getField() != null && !field.getReference().getField().isEmpty()) {
+                // Aqui devemos buscar o campo na entidade referenciada para pegar seu columnName
+                // Por enquanto, vamos usar o nome do campo da referência
+                referencedField = field.getReference().getField();
+            }
+
             rules.append("exists:").append(referencedTable).append(",").append(referencedField);
         }
 

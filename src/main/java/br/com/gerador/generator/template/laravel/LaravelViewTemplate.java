@@ -5,8 +5,6 @@ import br.com.gerador.metamodel.model.Field;
 import br.com.gerador.metamodel.model.Entity;
 import br.com.gerador.metamodel.model.MetaModel;
 
-import java.util.stream.Collectors;
-
 /**
  * Template para geração de views Blade do Laravel (CRUD).
  */
@@ -17,6 +15,17 @@ public class LaravelViewTemplate {
 
     public void setProjectConfig(ProjectConfig projectConfig) {
         this.projectConfig = projectConfig;
+    }
+
+    /**
+     * Obtém o nome da coluna para um campo.
+     * Se o campo tem columnName definido, usa ele. Senão, converte para snake_case.
+     */
+    private String getFieldColumnName(Field field) {
+        if (field.getColumnName() != null && !field.getColumnName().isEmpty()) {
+            return field.getColumnName();
+        }
+        return toSnakeCase(field.getName());
     }
 
     /**
@@ -40,6 +49,20 @@ public class LaravelViewTemplate {
         html.append("            <i class=\"fas ").append(getActionIcon("create")).append("\"></i> Novo\n");
         html.append("        </a>\n");
         html.append("    </div>\n\n");
+
+        // Mensagens de sucesso e erro
+        html.append("    @if(session('success'))\n");
+        html.append("        <div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">\n");
+        html.append("            {{ session('success') }}\n");
+        html.append("            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\"></button>\n");
+        html.append("        </div>\n");
+        html.append("    @endif\n\n");
+        html.append("    @if(session('error'))\n");
+        html.append("        <div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">\n");
+        html.append("            {{ session('error') }}\n");
+        html.append("            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\"></button>\n");
+        html.append("        </div>\n");
+        html.append("    @endif\n\n");
 
         // Seção de filtros ativos (se a entidade usa filtros de sessão)
         if (hasSessionFilters(entity)) {
@@ -102,8 +125,7 @@ public class LaravelViewTemplate {
                     continue;
                 }
 
-                String originalAttrName = attr.getName();
-                String attrName = toSnakeCase(originalAttrName);
+                String attrName = getFieldColumnName(attr);
                 // Determinar alinhamento: enum centralizado, números à direita, FKs e texto à esquerda
                 String alignment = getFieldAlignment(attr);
 
@@ -129,12 +151,11 @@ public class LaravelViewTemplate {
         html.append("                            <td class=\"text-center\">\n");
         html.append("                                <div class=\"btn-group\" role=\"group\">\n");
 
-        // Para rota de edição - usar a chave primária
-        String primaryKeyAccess = getPrimaryKeyAccessExpression(entity, entityNameLower);
-        html.append("                                    <a href=\"{{ route('").append(entityNameLower).append(".edit', ").append(primaryKeyAccess).append(") }}\" class=\"btn btn-sm btn-outline-primary\" title=\"Editar\">\n");
+        // Para rota de edição - usar Route Model Binding (passa a variável $entidade diretamente)
+        html.append("                                    <a href=\"{{ route('").append(entityNameLower).append(".edit', $").append(entityNameLower).append(") }}\" class=\"btn btn-sm btn-outline-primary\" title=\"Editar\">\n");
         html.append("                                        <i class=\"fas ").append(getActionIcon("edit")).append("\"></i> Editar\n");
         html.append("                                    </a>\n");
-        html.append("                                    <form action=\"{{ route('").append(entityNameLower).append(".destroy', ").append(primaryKeyAccess).append(") }}\" method=\"POST\" class=\"d-inline\" onsubmit=\"return confirm('Deseja realmente excluir este registro?');\">\n");
+        html.append("                                    <form action=\"{{ route('").append(entityNameLower).append(".destroy', $").append(entityNameLower).append(") }}\" method=\"POST\" class=\"d-inline\" onsubmit=\"return confirm('Deseja realmente excluir este registro?');\">\n");
         html.append("                                        @csrf\n");
         html.append("                                        @method('DELETE')\n");
         html.append("                                        <button type=\"submit\" class=\"btn btn-sm btn-outline-danger\" title=\"Excluir\">\n");
@@ -194,8 +215,7 @@ public class LaravelViewTemplate {
 
         // Campos do formulário
         for (Field attr : entity.getFields()) {
-            String originalAttrName = attr.getName(); // Nome original em camelCase do metamodel
-            String attrName = toSnakeCase(originalAttrName); // Nome em snake_case para Laravel
+            String attrName = getFieldColumnName(attr);
 
             // Pular campos automáticos
             if (attrName.endsWith("_at") || attrName.equals("deleted_at")) {
@@ -203,11 +223,10 @@ public class LaravelViewTemplate {
             }
 
             // Verificar se é chave primária
-            boolean isPrimary = entity.getPrimaryKeyFields().stream()
-                .anyMatch(f -> toSnakeCase(f.getName()).equals(attrName));
+            boolean isPrimary = attr.isPrimaryKey();
 
-            // Auto-increment: INTEGER primary keys são auto-increment, STRING não são
-            boolean isAutoIncrement = isPrimary && isNumericType(attr.getDatabaseType());
+            // Auto-increment: verificar se o campo tem autoIncrement definido
+            boolean isAutoIncrement = isPrimary && attr.isAutoIncrement();
 
             // Pular auto-increment no formulário de criação, mas mostrar no modo edição (readonly)
             if (isPrimary && isAutoIncrement) {
@@ -218,6 +237,23 @@ public class LaravelViewTemplate {
                 html.append("                            <input type=\"text\" class=\"form-control\" value=\"{{ $").append(entityNameLower).append("->").append(attrName).append(" }}\" readonly>\n");
                 html.append("                        </div>\n");
                 html.append("                        @endif\n\n");
+                continue;
+            }
+
+            // Para chaves primárias não auto-increment (como string PKs)
+            if (isPrimary && !isAutoIncrement) {
+                html.append("                        <div class=\"mb-3\">\n");
+                html.append("                            <label for=\"").append(attrName).append("\" class=\"form-label\">").append(getFieldLabel(attr)).append("</label>\n");
+                html.append("                            <input type=\"text\" name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"form-control @error('").append(attrName).append("') is-invalid @enderror\" value=\"{{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') }}\" {{ isset($").append(entityNameLower).append(") ? 'readonly' : 'required' }}");
+                // Adicionar maxlength se o campo tiver tamanho definido
+                if (attr.getLength() != null && attr.getLength() > 0) {
+                    html.append(" maxlength=\"").append(attr.getLength()).append("\"");
+                }
+                html.append(">\n");
+                html.append("                            @error('").append(attrName).append("')\n");
+                html.append("                                <div class=\"invalid-feedback\">{{ $message }}</div>\n");
+                html.append("                            @enderror\n");
+                html.append("                        </div>\n\n");
                 continue;
             }
 
@@ -233,7 +269,7 @@ public class LaravelViewTemplate {
             } else if (hasFieldOptions(attr)) {
                 // Para campos com opções predefinidas (ui.options)
                 String modelClass = "\\App\\Models\\" + entityName;
-                String methodName = "get" + capitalize(originalAttrName) + "Options";
+                String methodName = "get" + capitalize(attr.getName()) + "Options";
 
                 html.append("                            <select name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"").append(inputClass).append(" @error('").append(attrName).append("') is-invalid @enderror\"");
                 if (attr.isRequired()) {
@@ -249,6 +285,9 @@ public class LaravelViewTemplate {
                 // Para relacionamentos (Foreign Keys)
                 String relatedEntity = getRelatedEntityName(attr);
                 String relatedEntityPlural = toPlural(relatedEntity.toLowerCase());
+
+                // Busca o nome correto da PK e do campo de exibição da entidade relacionada
+                String relatedPkField = getRelatedEntityPrimaryKey(relatedEntity);
                 String displayField = getDisplayFieldForEntity(relatedEntity);
 
                 html.append("                            <select name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"").append(inputClass).append(" @error('").append(attrName).append("') is-invalid @enderror\"");
@@ -258,8 +297,8 @@ public class LaravelViewTemplate {
                 html.append(">\n");
                 html.append("                                <option value=\"\">Selecione...</option>\n");
                 html.append("                                @foreach($").append(relatedEntityPlural).append(" as $item)\n");
-                // O value deve ser a chave primária da entidade relacionada (geralmente 'id')
-                html.append("                                    <option value=\"{{ $item->id }}\" {{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') == $item->id ? 'selected' : '' }}>{{ $item->").append(displayField).append(" }}</option>\n");
+                // Usa a PK correta da entidade relacionada
+                html.append("                                    <option value=\"{{ $item->").append(relatedPkField).append(" }}\" {{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') == $item->").append(relatedPkField).append(" ? 'selected' : '' }}>{{ $item->").append(displayField).append(" }}</option>\n");
                 html.append("                                @endforeach\n");
                 html.append("                            </select>\n");
             } else {
@@ -371,32 +410,6 @@ public class LaravelViewTemplate {
             result.append(Character.toUpperCase(part.charAt(0))).append(part.substring(1));
         }
         return result.toString();
-    }
-
-    /**
-     * Gera a expressão para acessar a chave primária da entidade nas rotas.
-     * Se for chave simples, retorna "$entidade->id_campo".
-     * Se for chave composta, retorna "[$entidade->id_campo1, $entidade->id_campo2]".
-     */
-    private String getPrimaryKeyAccessExpression(Entity entity, String entityVariableName) {
-        java.util.List<Field> primaryKeys = entity.getPrimaryKeyFields();
-
-        if (primaryKeys.isEmpty()) {
-            // Fallback: tentar encontrar campo "id"
-            return "$" + entityVariableName + "->id";
-        }
-
-        if (primaryKeys.size() == 1) {
-            // Chave primária simples - CORRIGIDO: usar snake_case
-            String pkName = toSnakeCase(primaryKeys.get(0).getName());
-            return "$" + entityVariableName + "->" + pkName;
-        } else {
-            // Chave primária composta - CORRIGIDO: usar snake_case
-            String keys = primaryKeys.stream()
-                .map(pk -> "$" + entityVariableName + "->" + toSnakeCase(pk.getName()))
-                .collect(Collectors.joining(", "));
-            return "[" + keys + "]";
-        }
     }
 
     /**
@@ -603,6 +616,28 @@ public class LaravelViewTemplate {
     }
 
     /**
+     * Retorna o nome da coluna da chave primária de uma entidade.
+     * Busca no metamodel e retorna o columnName da PK.
+     */
+    private String getRelatedEntityPrimaryKey(String entityName) {
+        if (metaModel != null && metaModel.getEntities() != null) {
+            // Buscar a entidade no metamodel
+            for (Entity entity : metaModel.getEntities()) {
+                if (entity.getName().equals(entityName)) {
+                    // Buscar a chave primária
+                    for (Field field : entity.getFields()) {
+                        if (field.isPrimaryKey()) {
+                            return getFieldColumnName(field);
+                        }
+                    }
+                }
+            }
+        }
+        // Fallback: retorna 'id' como padrão
+        return "id";
+    }
+
+    /**
      * Retorna o campo de exibição padrão para uma entidade.
      * Busca no metamodel ou usa heurística se não encontrar.
      */
@@ -619,19 +654,21 @@ public class LaravelViewTemplate {
                                 continue;
                             }
                             // Preferir campos chamados "nome", "descricao", "titulo", etc
-                            String fieldName = toSnakeCase(field.getName());
-                            if (fieldName.equals("nome") || fieldName.equals("name")) {
+                            String fieldName = getFieldColumnName(field);
+                            String fieldNameLower = fieldName.toLowerCase();
+                            if (fieldNameLower.contains("nome") || fieldNameLower.equals("name") ||
+                                fieldNameLower.contains("descricao") || fieldNameLower.contains("titulo")) {
                                 return fieldName;
                             }
                         }
-                        // Se não encontrou "nome", retornar o primeiro campo de texto
+                        // Se não encontrou campo preferencial, retornar o primeiro campo de texto
                         for (Field field : entity.getFields()) {
                             if (field.isPrimaryKey() || isForeignKey(field)) {
                                 continue;
                             }
                             String dataType = field.getDataType() != null ? field.getDataType().toString() : "";
                             if (dataType.equals("STRING") || dataType.equals("TEXT")) {
-                                return toSnakeCase(field.getName());
+                                return getFieldColumnName(field);
                             }
                         }
                     }

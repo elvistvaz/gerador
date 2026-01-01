@@ -71,37 +71,37 @@
       "id": "cadastro",
       "name": "Cadastro",
       "description": "Cadastros básicos do sistema",
-      "icon": "folder",
+      "icon": "fa-folder",
       "order": 1,
       "items": [
-        { "id": "menu_avaliacao_periodo", "name": "Avaliações", "entityRef": "Avaliacao", "icon": "event_note", "order": 1 },
-        { "id": "menu_territorio", "name": "Territórios", "entityRef": "Territorio", "icon": "public", "order": 2 },
-        { "id": "menu_municipio", "name": "Municípios", "entityRef": "Municipio", "icon": "location_city", "order": 3 },
-        { "id": "menu_publico_alvo", "name": "Público Alvo", "entityRef": "PublicoAlvo", "icon": "groups", "order": 4 },
-        { "id": "menu_segmento_atendido", "name": "Segmentos Atendidos", "entityRef": "SegmentoAtendido", "icon": "category", "order": 5 },
-        { "id": "menu_formacao", "name": "Tipos de Formação", "entityRef": "Formacao", "icon": "list_alt", "order": 6 },
-        { "id": "menu_formacao_territorio", "name": "Tipos de Formação Território", "entityRef": "FormacaoTerritorio", "icon": "list", "order": 7 },
-        { "id": "menu_ano_escolar", "name": "Anos Escolares", "entityRef": "AnoEscolar", "icon": "event", "order": 8 },
-        { "id": "menu_componente_curricular", "name": "Componentes Curriculares", "entityRef": "ComponenteCurricular", "icon": "auto_stories", "order": 9 },
-        { "id": "menu_conceito_aprendido", "name": "Conceitos Aprendidos", "entityRef": "ConceitoAprendido", "icon": "lightbulb", "order": 10 },
-        { "id": "menu_aprendizagem_esperada", "name": "Aprendizagens Esperadas", "entityRef": "AprendizagemEsperada", "icon": "school", "order": 11 },
-        { "id": "menu_ambito_gestao", "name": "Âmbitos de Gestão", "entityRef": "AmbitoGestao", "icon": "account_tree", "order": 12 },
-        { "id": "menu_indicador", "name": "Indicadores", "entityRef": "Indicador", "icon": "speed", "order": 13 }
+        { "id": "menu_avaliacao_periodo", "name": "Avaliações", "entityRef": "Avaliacao", "icon": "fa-calendar-alt", "order": 1 },
+        { "id": "menu_territorio", "name": "Territórios", "entityRef": "Territorio", "icon": "fa-globe", "order": 2 },
+        { "id": "menu_municipio", "name": "Municípios", "entityRef": "Municipio", "icon": "fa-city", "order": 3 },
+        { "id": "menu_publico_alvo", "name": "Público Alvo", "entityRef": "PublicoAlvo", "icon": "fa-users", "order": 4 },
+        { "id": "menu_segmento_atendido", "name": "Segmentos Atendidos", "entityRef": "SegmentoAtendido", "icon": "fa-tag", "order": 5 },
+        { "id": "menu_formacao", "name": "Tipos de Formação", "entityRef": "Formacao", "icon": "fa-list-alt", "order": 6 },
+        { "id": "menu_formacao_territorio", "name": "Tipos de Formação Território", "entityRef": "FormacaoTerritorio", "icon": "fa-list", "order": 7 },
+        { "id": "menu_ano_escolar", "name": "Anos Escolares", "entityRef": "AnoEscolar", "icon": "fa-calendar", "order": 8 },
+        { "id": "menu_componente_curricular", "name": "Componentes Curriculares", "entityRef": "ComponenteCurricular", "icon": "fa-book-open", "order": 9 },
+        { "id": "menu_conceito_aprendido", "name": "Conceitos Aprendidos", "entityRef": "ConceitoAprendido", "icon": "fa-lightbulb", "order": 10 },
+        { "id": "menu_aprendizagem_esperada", "name": "Aprendizagens Esperadas", "entityRef": "AprendizagemEsperada", "icon": "fa-school", "order": 11 },
+        { "id": "menu_ambito_gestao", "name": "Âmbitos de Gestão", "entityRef": "AmbitoGestao", "icon": "fa-sitemap", "order": 12 },
+        { "id": "menu_indicador", "name": "Indicadores", "entityRef": "Indicador", "icon": "fa-tachometer-alt", "order": 13 }
       ]
     },
     {
       "id": "avaliacao",
       "name": "Avaliação",
       "description": "Avaliações e resultados",
-      "icon": "grading",
+      "icon": "fa-clipboard-check",
       "order": 2,
       "items": [
-        { "id": "menu_avaliacao_sda", "name": "SDA", "entityRef": "AvaliacaoSDA", "icon": "fact_check", "order": 1 },
-        { "id": "menu_avaliacao_indicador", "name": "Indicadores", "entityRef": "AvaliacaoIndicador", "icon": "assessment", "order": 2 },
-        { "id": "menu_comentario_indicador", "name": "Comentários", "entityRef": "ComentarioIndicador", "icon": "chat", "order": 3 },
-        { "id": "menu_atendimento_municipio", "name": "Atendimento por Município", "entityRef": "AtendimentoMunicipio", "icon": "people", "order": 4 },
-        { "id": "menu_carga_horaria", "name": "Carga Horária Formação", "entityRef": "CargaHorariaFormacao", "icon": "schedule", "order": 5 },
-        { "id": "menu_carga_horaria_territorio", "name": "Carga Horária por Território", "entityRef": "CargaHorariaFormacaoTerritorio", "icon": "schedule", "order": 6 }
+        { "id": "menu_avaliacao_sda", "name": "SDA", "entityRef": "AvaliacaoSDA", "icon": "fa-check-square", "order": 1 },
+        { "id": "menu_avaliacao_indicador", "name": "Indicadores", "entityRef": "AvaliacaoIndicador", "icon": "fa-chart-bar", "order": 2 },
+        { "id": "menu_comentario_indicador", "name": "Comentários", "entityRef": "ComentarioIndicador", "icon": "fa-comments", "order": 3 },
+        { "id": "menu_atendimento_municipio", "name": "Atendimento por Município", "entityRef": "AtendimentoMunicipio", "icon": "fa-users", "order": 4 },
+        { "id": "menu_carga_horaria", "name": "Carga Horária Formação", "entityRef": "CargaHorariaFormacao", "icon": "fa-clock", "order": 5 },
+        { "id": "menu_carga_horaria_territorio", "name": "Carga Horária por Território", "entityRef": "CargaHorariaFormacaoTerritorio", "icon": "fa-clock", "order": 6 }
       ]
     }
   ],
@@ -606,7 +606,7 @@
           "entity": "SegmentoAtendido",
           "foreignKey": "publicoAlvoId",
           "label": "Segmentos",
-          "icon": "category"
+          "icon": "fa-tag"
         }
       ],
       "fields": [
