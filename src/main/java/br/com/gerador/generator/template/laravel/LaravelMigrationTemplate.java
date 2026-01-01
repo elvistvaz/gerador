@@ -98,6 +98,24 @@ public class LaravelMigrationTemplate {
             }
         }
 
+        // Indexes (do metamodel)
+        if (entity.getIndexes() != null && !entity.getIndexes().isEmpty()) {
+            sb.append("\n");
+            sb.append("            // Indexes\n");
+            for (br.com.gerador.metamodel.model.Index index : entity.getIndexes()) {
+                generateIndex(sb, index);
+            }
+        }
+
+        // Constraints (do metamodel)
+        if (entity.getConstraints() != null && !entity.getConstraints().isEmpty()) {
+            sb.append("\n");
+            sb.append("            // Constraints\n");
+            for (br.com.gerador.metamodel.model.Constraint constraint : entity.getConstraints()) {
+                generateConstraint(sb, constraint);
+            }
+        }
+
         sb.append("        });\n");
         sb.append("    }\n\n");
 
@@ -270,5 +288,100 @@ public class LaravelMigrationTemplate {
             return str;
         }
         return str.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+    }
+
+    /**
+     * Gera definição de index do metamodel.
+     */
+    private void generateIndex(StringBuilder sb, br.com.gerador.metamodel.model.Index index) {
+        if (index.getFields() == null || index.getFields().isEmpty()) {
+            return;
+        }
+
+        // Converter nomes de campos para snake_case
+        List<String> snakeCaseColumns = index.getFields().stream()
+            .map(this::toSnakeCase)
+            .collect(java.util.stream.Collectors.toList());
+
+        String indexName = index.getName();
+
+        if (index.isUnique()) {
+            // Index único
+            if (snakeCaseColumns.size() == 1) {
+                sb.append("            $table->unique('").append(snakeCaseColumns.get(0)).append("'");
+            } else {
+                sb.append("            $table->unique([");
+                for (int i = 0; i < snakeCaseColumns.size(); i++) {
+                    sb.append("'").append(snakeCaseColumns.get(i)).append("'");
+                    if (i < snakeCaseColumns.size() - 1) sb.append(", ");
+                }
+                sb.append("]");
+            }
+        } else {
+            // Index normal
+            if (snakeCaseColumns.size() == 1) {
+                sb.append("            $table->index('").append(snakeCaseColumns.get(0)).append("'");
+            } else {
+                sb.append("            $table->index([");
+                for (int i = 0; i < snakeCaseColumns.size(); i++) {
+                    sb.append("'").append(snakeCaseColumns.get(i)).append("'");
+                    if (i < snakeCaseColumns.size() - 1) sb.append(", ");
+                }
+                sb.append("]");
+            }
+        }
+
+        // Nome do index se especificado
+        if (indexName != null && !indexName.isEmpty()) {
+            sb.append(", '").append(indexName).append("'");
+        }
+
+        sb.append(");\n");
+    }
+
+    /**
+     * Gera constraint do metamodel.
+     */
+    private void generateConstraint(StringBuilder sb, br.com.gerador.metamodel.model.Constraint constraint) {
+        br.com.gerador.metamodel.model.ConstraintType type = constraint.getType();
+
+        if (type == null) {
+            return;
+        }
+
+        switch (type) {
+            case CHECK:
+                // Laravel não suporta CHECK constraints nativamente, adicionar como raw SQL
+                if (constraint.getExpression() != null && !constraint.getExpression().isEmpty()) {
+                    sb.append("            // CHECK constraint: ").append(constraint.getName()).append("\n");
+                    sb.append("            // Expression: ").append(constraint.getExpression()).append("\n");
+                }
+                break;
+
+            case UNIQUE:
+                // Unique já foi tratado como index
+                if (constraint.getFields() != null && !constraint.getFields().isEmpty()) {
+                    List<String> snakeCaseColumns = constraint.getFields().stream()
+                        .map(this::toSnakeCase)
+                        .collect(java.util.stream.Collectors.toList());
+
+                    sb.append("            $table->unique([");
+                    for (int i = 0; i < snakeCaseColumns.size(); i++) {
+                        sb.append("'").append(snakeCaseColumns.get(i)).append("'");
+                        if (i < snakeCaseColumns.size() - 1) sb.append(", ");
+                    }
+                    sb.append("]");
+
+                    if (constraint.getName() != null && !constraint.getName().isEmpty()) {
+                        sb.append(", '").append(constraint.getName()).append("'");
+                    }
+                    sb.append(");\n");
+                }
+                break;
+
+            case DEFAULT:
+                // Default values já são tratados na definição do campo
+                break;
+        }
     }
 }

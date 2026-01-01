@@ -529,20 +529,27 @@ class InitialDataSeeder extends Seeder
             String updateRequestCode = requestTemplate.generateUpdateRequest(entity, metaModel);
             generateFile("app/Http/Requests/Update" + entityName + "Request.php", updateRequestCode);
 
-            // Web Controller (para views)
-            String webControllerCode = webControllerTemplate.generate(entity, metaModel);
-            generateFile("app/Http/Controllers/Web/" + entityName + "Controller.php", webControllerCode);
+            // Web Controller e Views (exceto para JUNCTION e CHILD que são gerenciados em cascata)
+            br.com.gerador.metamodel.model.EntityType entityType = entity.getType();
+            if (entityType != br.com.gerador.metamodel.model.EntityType.JUNCTION &&
+                entityType != br.com.gerador.metamodel.model.EntityType.CHILD) {
 
-            // Views (index e form) - usar camelCase para diretórios
-            String entityNameLower = toLowerCamelCase(entityName);
+                String webControllerCode = webControllerTemplate.generate(entity, metaModel);
+                generateFile("app/Http/Controllers/Web/" + entityName + "Controller.php", webControllerCode);
 
-            String indexViewCode = viewTemplate.generateIndexView(entity, metaModel);
-            generateFile("resources/views/" + entityNameLower + "/index.blade.php", indexViewCode);
+                // Views (index e form) - usar camelCase para diretórios
+                String entityNameLower = toLowerCamelCase(entityName);
 
-            String formViewCode = viewTemplate.generateFormView(entity, metaModel);
-            generateFile("resources/views/" + entityNameLower + "/form.blade.php", formViewCode);
+                String indexViewCode = viewTemplate.generateIndexView(entity, metaModel);
+                generateFile("resources/views/" + entityNameLower + "/index.blade.php", indexViewCode);
 
-            System.out.println("  ✓ Model, Controllers (API + Web), Migration, Requests e Views gerados");
+                String formViewCode = viewTemplate.generateFormView(entity, metaModel);
+                generateFile("resources/views/" + entityNameLower + "/form.blade.php", formViewCode);
+
+                System.out.println("  ✓ Model, Controllers (API + Web), Migration, Requests e Views gerados");
+            } else {
+                System.out.println("  ✓ Model, Controller (API), Migration e Requests gerados (tipo: " + entityType + ")");
+            }
 
         } catch (Exception e) {
             String error = "Erro ao gerar código para " + entityName + ": " + e.getMessage();
@@ -574,10 +581,14 @@ class InitialDataSeeder extends Seeder
         var metadata = metaModel.getMetadata();
         boolean hasSessionContext = metadata.hasSessionContext();
 
-        // Usar Set para evitar entidades duplicadas
-        Set<String> uniqueEntities = new LinkedHashSet<>();
+        // Coletar entidades que terão rotas web (exceto JUNCTION e CHILD)
+        Set<String> webEntities = new LinkedHashSet<>();
         for (Entity entity : metaModel.getEntities()) {
-            uniqueEntities.add(entity.getName());
+            br.com.gerador.metamodel.model.EntityType entityType = entity.getType();
+            if (entityType != br.com.gerador.metamodel.model.EntityType.JUNCTION &&
+                entityType != br.com.gerador.metamodel.model.EntityType.CHILD) {
+                webEntities.add(entity.getName());
+            }
         }
 
         StringBuilder routes = new StringBuilder();
@@ -592,8 +603,8 @@ class InitialDataSeeder extends Seeder
 
         routes.append("\n");
 
-        // Imports dos controllers (sem duplicados)
-        for (String entityName : uniqueEntities) {
+        // Imports dos controllers (apenas MAIN e CONFIG)
+        for (String entityName : webEntities) {
             routes.append("use App\\Http\\Controllers\\Web\\").append(entityName).append("Controller;\n");
         }
 
@@ -626,7 +637,7 @@ class InitialDataSeeder extends Seeder
             routes.append("// Rotas que requerem contexto de sessão selecionado\n");
             routes.append("Route::middleware(['auth', 'session.context'])->group(function () {\n");
             routes.append("    // Rotas de CRUD\n");
-            for (String entityName : uniqueEntities) {
+            for (String entityName : webEntities) {
                 String entityNameLower = toLowerCamelCase(entityName);
                 routes.append("    Route::resource('").append(entityNameLower).append("', ").append(entityName).append("Controller::class);\n");
             }
@@ -635,7 +646,7 @@ class InitialDataSeeder extends Seeder
             routes.append("    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');\n\n");
 
             routes.append("    // Rotas de CRUD\n");
-            for (String entityName : uniqueEntities) {
+            for (String entityName : webEntities) {
                 String entityNameLower = toLowerCamelCase(entityName);
                 routes.append("    Route::resource('").append(entityNameLower).append("', ").append(entityName).append("Controller::class);\n");
             }

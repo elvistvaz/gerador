@@ -31,6 +31,9 @@ public class LaravelModelTemplate {
         // Imports
         generateImports(sb, entity);
 
+        // PHPDoc com metadata
+        generateClassDocBlock(sb, entity, metaModel);
+
         // Class declaration
         sb.append("class ").append(entity.getName());
 
@@ -126,6 +129,38 @@ public class LaravelModelTemplate {
         sb.append("\n");
     }
 
+    private void generateClassDocBlock(StringBuilder sb, Entity entity, MetaModel metaModel) {
+        sb.append("/**\n");
+        sb.append(" * ").append(entity.getName());
+
+        if (entity.getDisplayName() != null && !entity.getDisplayName().isEmpty()) {
+            sb.append(" - ").append(entity.getDisplayName());
+        }
+
+        sb.append("\n");
+
+        if (entity.getDescription() != null && !entity.getDescription().isEmpty()) {
+            sb.append(" *\n");
+            sb.append(" * ").append(entity.getDescription()).append("\n");
+        }
+
+        // Adicionar informações de metadata se disponível
+        if (metaModel != null && metaModel.getMetadata() != null) {
+            var metadata = metaModel.getMetadata();
+
+            if (metadata.getAuthor() != null && !metadata.getAuthor().isEmpty()) {
+                sb.append(" *\n");
+                sb.append(" * @author ").append(metadata.getAuthor()).append("\n");
+            }
+
+            if (metadata.getVersion() != null && !metadata.getVersion().isEmpty()) {
+                sb.append(" * @version ").append(metadata.getVersion()).append("\n");
+            }
+        }
+
+        sb.append(" */\n");
+    }
+
     private void generateTraits(StringBuilder sb, Entity entity, boolean useAuditing) {
         sb.append("    use HasFactory, SoftDeletes");
 
@@ -212,12 +247,22 @@ public class LaravelModelTemplate {
             }
         }
 
-        // HasMany relationships (this entity is referenced by others)
+        // HasMany relationships explícitos de childEntities
+        if (entity.getChildEntities() != null && !entity.getChildEntities().isEmpty()) {
+            for (br.com.gerador.metamodel.model.ChildEntity child : entity.getChildEntities()) {
+                generateHasManyFromChildEntity(sb, child);
+            }
+        }
+
+        // HasMany relationships automáticos (entidades que referenciam esta)
         for (Entity otherEntity : metaModel.getEntities()) {
             for (Field field : otherEntity.getFields()) {
                 if (field.isForeignKey() &&
                     field.getReference().getEntity().equals(entity.getName())) {
-                    generateHasMany(sb, otherEntity, field);
+                    // Verificar se não é um childEntity explícito (evitar duplicação)
+                    if (!isExplicitChildEntity(entity, otherEntity.getName())) {
+                        generateHasMany(sb, otherEntity, field);
+                    }
                 }
             }
         }
@@ -257,6 +302,44 @@ public class LaravelModelTemplate {
         sb.append("        return $this->hasMany(").append(relatedEntity.getName()).append("::class, '");
         sb.append(foreignKey).append("');\n");
         sb.append("    }\n");
+    }
+
+    /**
+     * Gera hasMany a partir de childEntity explícito do metamodel.
+     */
+    private void generateHasManyFromChildEntity(StringBuilder sb, br.com.gerador.metamodel.model.ChildEntity child) {
+        String childEntity = child.getEntity();
+        String foreignKey = toSnakeCase(child.getForeignKey());
+
+        // Usar label como nome do método se disponível, senão usar nome da entidade no plural
+        String methodName = child.getLabel() != null && !child.getLabel().isEmpty()
+            ? toCamelCase(child.getLabel().toLowerCase().replace(" ", ""))
+            : toCamelCasePlural(childEntity);
+
+        sb.append("\n    /**\n");
+        sb.append("     * ").append(child.getLabel() != null ? child.getLabel() : childEntity).append("\n");
+        sb.append("     */\n");
+        sb.append("    public function ").append(methodName).append("()\n");
+        sb.append("    {\n");
+        sb.append("        return $this->hasMany(").append(childEntity).append("::class, '");
+        sb.append(foreignKey).append("');\n");
+        sb.append("    }\n");
+    }
+
+    /**
+     * Verifica se uma entidade está na lista de childEntities explícitos.
+     */
+    private boolean isExplicitChildEntity(Entity parent, String entityName) {
+        if (parent.getChildEntities() == null) {
+            return false;
+        }
+
+        for (br.com.gerador.metamodel.model.ChildEntity child : parent.getChildEntities()) {
+            if (child.getEntity().equals(entityName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

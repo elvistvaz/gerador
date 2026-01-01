@@ -136,11 +136,48 @@ public class LaravelRequestTemplate {
             }
         }
 
-        // Max length
-        if (field.getLength() != null && field.getLength() > 0 &&
-            (field.getDataType() == DataType.STRING || field.getDataType() == DataType.TEXT)) {
-            if (rules.length() > 0) rules.append("|");
-            rules.append("max:").append(field.getLength());
+        // Validation properties from metamodel
+        if (field.getValidation() != null) {
+            // Min/Max for numeric fields
+            if (field.getValidation().getMin() != null) {
+                if (rules.length() > 0) rules.append("|");
+                rules.append("min:").append(field.getValidation().getMin());
+            }
+            if (field.getValidation().getMax() != null) {
+                if (rules.length() > 0) rules.append("|");
+                rules.append("max:").append(field.getValidation().getMax());
+            }
+
+            // MinLength/MaxLength for string fields
+            if (field.getValidation().getMinLength() != null) {
+                if (rules.length() > 0) rules.append("|");
+                rules.append("min:").append(field.getValidation().getMinLength());
+            }
+            if (field.getValidation().getMaxLength() != null) {
+                if (rules.length() > 0) rules.append("|");
+                rules.append("max:").append(field.getValidation().getMaxLength());
+            }
+
+            // Pattern (regex)
+            if (field.getValidation().getPattern() != null && !field.getValidation().getPattern().isEmpty()) {
+                if (rules.length() > 0) rules.append("|");
+                // Escapar barras no regex para Laravel
+                String pattern = field.getValidation().getPattern().replace("/", "\\/");
+                rules.append("regex:/").append(pattern).append("/");
+            }
+
+            // Custom validation rules
+            if (field.getValidation().getCustom() != null && !field.getValidation().getCustom().isEmpty()) {
+                if (rules.length() > 0) rules.append("|");
+                rules.append(field.getValidation().getCustom());
+            }
+        } else {
+            // Fallback: Max length from field.length property
+            if (field.getLength() != null && field.getLength() > 0 &&
+                (field.getDataType() == DataType.STRING || field.getDataType() == DataType.TEXT)) {
+                if (rules.length() > 0) rules.append("|");
+                rules.append("max:").append(field.getLength());
+            }
         }
 
         // Foreign key

@@ -5,6 +5,7 @@ import br.com.gerador.metamodel.model.DataType;
 import br.com.gerador.metamodel.model.Field;
 import br.com.gerador.metamodel.model.Entity;
 import br.com.gerador.metamodel.model.MetaModel;
+import br.com.gerador.metamodel.model.UIComponent;
 
 /**
  * Template para geração de views Blade do Laravel (CRUD).
@@ -105,6 +106,12 @@ public class LaravelViewTemplate {
             }
         }
 
+        // Formulário de pesquisa (se houver campos com search habilitado)
+        String searchForm = generateSearchForm(entity);
+        if (!searchForm.isEmpty()) {
+            html.append(searchForm);
+        }
+
         // Tabela
         html.append("    <div class=\"card\">\n");
         html.append("        <div class=\"card-body\">\n");
@@ -112,22 +119,39 @@ public class LaravelViewTemplate {
         html.append("                <thead>\n");
         html.append("                    <tr>\n");
 
-        // Cabeçalhos das colunas (primeiros 5 campos)
-        int colCount = 0;
-        for (Field attr : entity.getFields()) {
-            if (colCount >= 5) break;
-            if (!attr.getName().endsWith("_at") && !attr.getName().equals("deleted_at")) {
-                // Pular campos que são filtros de sessão (já exibidos no contexto superior)
-                if (isSessionFilterField(attr)) {
-                    continue;
-                }
+        // Obter campos visíveis no grid ordenados
+        java.util.List<Field> gridFields = getGridVisibleFields(entity);
 
-                // Se for chave primária, mostrar apenas "#"
-                String label = attr.isPrimaryKey() ? "#" : getFieldLabel(attr);
-                // Determinar alinhamento: enum centralizado, números à direita, FKs e texto à esquerda
-                String alignment = getFieldAlignment(attr);
-                html.append("                        <th").append(alignment).append(">").append(label).append("</th>\n");
-                colCount++;
+        // Cabeçalhos das colunas
+        for (Field attr : gridFields) {
+            // Se for chave primária, mostrar apenas "#"
+            String label = attr.isPrimaryKey() ? "#" : getFieldLabel(attr);
+            // Determinar alinhamento
+            String alignment = getFieldAlignment(attr);
+
+            // Aplicar largura se definida
+            String widthStyle = "";
+            if (attr.getUi() != null && attr.getUi().getGrid() != null && attr.getUi().getGrid().getWidth() != null) {
+                widthStyle = " style=\"width: " + attr.getUi().getGrid().getWidth() + "px\"";
+            }
+
+            // Verificar se é sortable
+            boolean isSortable = attr.getUi() != null && attr.getUi().getGrid() != null && attr.getUi().getGrid().isSortable();
+
+            if (isSortable) {
+                String columnName = getFieldColumnName(attr);
+                html.append("                        <th").append(alignment).append(widthStyle).append(">\n");
+                html.append("                            <a href=\"{{ route('").append(entityNameLower).append(".index', ['sort' => '").append(columnName).append("', 'direction' => request('sort') == '").append(columnName).append("' && request('direction') == 'asc' ? 'desc' : 'asc']) }}\" class=\"text-decoration-none text-dark\">\n");
+                html.append("                                ").append(label).append("\n");
+                html.append("                                @if(request('sort') == '").append(columnName).append("')\n");
+                html.append("                                    <i class=\"fas fa-sort-{{ request('direction') == 'asc' ? 'up' : 'down' }}\"></i>\n");
+                html.append("                                @else\n");
+                html.append("                                    <i class=\"fas fa-sort text-muted\"></i>\n");
+                html.append("                                @endif\n");
+                html.append("                            </a>\n");
+                html.append("                        </th>\n");
+            } else {
+                html.append("                        <th").append(alignment).append(widthStyle).append(">").append(label).append("</th>\n");
             }
         }
         html.append("                        <th class=\"text-center\">Ações</th>\n");
@@ -137,44 +161,34 @@ public class LaravelViewTemplate {
         html.append("                    @forelse($").append(entityNamePlural).append(" as $").append(entityNameLower).append(")\n");
         html.append("                        <tr>\n");
 
-        // Células de dados
-        colCount = 0;
-        for (Field attr : entity.getFields()) {
-            if (colCount >= 5) break;
-            if (!attr.getName().endsWith("_at") && !attr.getName().equals("deleted_at")) {
-                // Pular campos que são filtros de sessão (já exibidos no contexto superior)
-                if (isSessionFilterField(attr)) {
-                    continue;
-                }
+        // Células de dados (usar mesmos campos do grid)
+        for (Field attr : gridFields) {
+            String attrName = getFieldColumnName(attr);
+            // Determinar alinhamento: enum centralizado, números à direita, FKs e texto à esquerda
+            String alignment = getFieldAlignment(attr);
 
-                String attrName = getFieldColumnName(attr);
-                // Determinar alinhamento: enum centralizado, números à direita, FKs e texto à esquerda
-                String alignment = getFieldAlignment(attr);
+            // Se for FK, mostrar o rótulo da entidade relacionada ao invés do ID
+            if (isForeignKey(attr)) {
+                String relatedEntity = getRelatedEntityName(attr);
+                String displayField = getDisplayFieldForEntity(relatedEntity);
+                String relationName = toCamelCase(relatedEntity);
 
-                // Se for FK, mostrar o rótulo da entidade relacionada ao invés do ID
-                if (isForeignKey(attr)) {
-                    String relatedEntity = getRelatedEntityName(attr);
-                    String displayField = getDisplayFieldForEntity(relatedEntity);
-                    String relationName = toCamelCase(relatedEntity); // Usar camelCase para consistência com o model
-
-                    html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(relationName).append("?->").append(displayField).append(" ?? '-' }}</td>\n");
-                } else if (hasFieldOptions(attr)) {
-                    // Se o campo tem opções (ui.options), usar o accessor de label
-                    String labelAccessor = attrName + "_label";
-                    html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(labelAccessor).append(" }}</td>\n");
-                } else if (isDateField(attr)) {
-                    // Se for campo de data, formatar como dd/mm/yyyy
-                    html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(attrName).append(" ? \\Carbon\\Carbon::parse($").append(entityNameLower).append("->").append(attrName).append(")->format('d/m/Y') : '-' }}</td>\n");
-                } else if (isDateTimeField(attr)) {
-                    // Se for campo de data/hora, formatar como dd/mm/yyyy HH:mm
-                    html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(attrName).append(" ? \\Carbon\\Carbon::parse($").append(entityNameLower).append("->").append(attrName).append(")->format('d/m/Y H:i') : '-' }}</td>\n");
-                } else if (isDecimalField(attr)) {
-                    // Se for campo decimal/float, formatar com vírgula (padrão brasileiro)
-                    html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(attrName).append(" !== null ? number_format($").append(entityNameLower).append("->").append(attrName).append(", 2, ',', '.') : '-' }}</td>\n");
-                } else {
-                    html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(attrName).append(" }}</td>\n");
-                }
-                colCount++;
+                html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(relationName).append("?->").append(displayField).append(" ?? '-' }}</td>\n");
+            } else if (hasFieldOptions(attr)) {
+                // Se o campo tem opções (ui.options), usar o accessor de label
+                String labelAccessor = attrName + "_label";
+                html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(labelAccessor).append(" }}</td>\n");
+            } else if (isDateField(attr)) {
+                // Se for campo de data, formatar como dd/mm/yyyy
+                html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(attrName).append(" ? \\Carbon\\Carbon::parse($").append(entityNameLower).append("->").append(attrName).append(")->format('d/m/Y') : '-' }}</td>\n");
+            } else if (isDateTimeField(attr)) {
+                // Se for campo de data/hora, formatar como dd/mm/yyyy HH:mm
+                html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(attrName).append(" ? \\Carbon\\Carbon::parse($").append(entityNameLower).append("->").append(attrName).append(")->format('d/m/Y H:i') : '-' }}</td>\n");
+            } else if (isDecimalField(attr)) {
+                // Se for campo decimal/float, formatar com vírgula (padrão brasileiro)
+                html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(attrName).append(" !== null ? number_format($").append(entityNameLower).append("->").append(attrName).append(", 2, ',', '.') : '-' }}</td>\n");
+            } else {
+                html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(attrName).append(" }}</td>\n");
             }
         }
 
@@ -198,7 +212,7 @@ public class LaravelViewTemplate {
         html.append("                        </tr>\n");
         html.append("                    @empty\n");
         html.append("                        <tr>\n");
-        html.append("                            <td colspan=\"").append(colCount + 1).append("\" class=\"text-center text-muted\">Nenhum registro encontrado.</td>\n");
+        html.append("                            <td colspan=\"").append(gridFields.size() + 1).append("\" class=\"text-center text-muted\">Nenhum registro encontrado.</td>\n");
         html.append("                        </tr>\n");
         html.append("                    @endforelse\n");
         html.append("                </tbody>\n");
@@ -244,14 +258,15 @@ public class LaravelViewTemplate {
         html.append("                            @method('PUT')\n");
         html.append("                        @endif\n\n");
 
-        // Campos do formulário
-        for (Field attr : entity.getFields()) {
-            String attrName = getFieldColumnName(attr);
+        // Campos do formulário (usar campos visíveis e ordenados conforme metamodel)
+        java.util.List<Field> formFields = getFormVisibleFields(entity);
 
-            // Pular campos automáticos
-            if (attrName.endsWith("_at") || attrName.equals("deleted_at")) {
-                continue;
-            }
+        // Adicionar row do Bootstrap para suportar colSpan
+        html.append("                        <div class=\"row\">\n");
+
+        for (Field attr : formFields) {
+            String attrName = getFieldColumnName(attr);
+            int colSpan = getFormColSpan(attr);
 
             // Verificar se é chave primária
             boolean isPrimary = attr.isPrimaryKey();
@@ -263,7 +278,7 @@ public class LaravelViewTemplate {
             if (isPrimary && isAutoIncrement) {
                 // Mostrar apenas no modo edição (readonly)
                 html.append("                        @if(isset($").append(entityNameLower).append("))\n");
-                html.append("                        <div class=\"mb-3\">\n");
+                html.append("                        <div class=\"col-md-").append(colSpan).append(" mb-3\">\n");
                 html.append("                            <label for=\"").append(attrName).append("\" class=\"form-label\">").append(getFieldLabel(attr)).append("</label>\n");
                 html.append("                            <input type=\"text\" class=\"form-control\" value=\"{{ $").append(entityNameLower).append("->").append(attrName).append(" }}\" readonly>\n");
                 html.append("                        </div>\n");
@@ -273,7 +288,7 @@ public class LaravelViewTemplate {
 
             // Para chaves primárias não auto-increment (como string PKs)
             if (isPrimary && !isAutoIncrement) {
-                html.append("                        <div class=\"mb-3\">\n");
+                html.append("                        <div class=\"col-md-").append(colSpan).append(" mb-3\">\n");
                 html.append("                            <label for=\"").append(attrName).append("\" class=\"form-label\">").append(getFieldLabel(attr)).append("</label>\n");
                 html.append("                            <input type=\"text\" name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"form-control @error('").append(attrName).append("') is-invalid @enderror\" value=\"{{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') }}\" {{ isset($").append(entityNameLower).append(") ? 'readonly' : 'required' }}");
                 // Adicionar maxlength se o campo tiver tamanho definido
@@ -288,7 +303,7 @@ public class LaravelViewTemplate {
                 continue;
             }
 
-            html.append("                        <div class=\"mb-3\">\n");
+            html.append("                        <div class=\"col-md-").append(colSpan).append(" mb-3\">\n");
             html.append("                            <label for=\"").append(attrName).append("\" class=\"form-label\">").append(getFieldLabel(attr)).append("</label>\n");
 
             // Determinar tipo de input
@@ -296,7 +311,14 @@ public class LaravelViewTemplate {
             String inputClass = "form-control";
 
             if (inputType.equals("textarea")) {
-                html.append("                            <textarea name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"").append(inputClass).append(" @error('").append(attrName).append("') is-invalid @enderror\" rows=\"3\">{{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') }}</textarea>\n");
+                html.append("                            <textarea name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"").append(inputClass).append(" @error('").append(attrName).append("') is-invalid @enderror\" rows=\"3\"");
+
+                // Adicionar placeholder se configurado
+                if (attr.getUi() != null && attr.getUi().getPlaceholder() != null && !attr.getUi().getPlaceholder().isEmpty()) {
+                    html.append(" placeholder=\"").append(attr.getUi().getPlaceholder()).append("\"");
+                }
+
+                html.append(">{{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') }}</textarea>\n");
             } else if (hasFieldOptions(attr)) {
                 // Para campos com opções predefinidas (ui.options)
                 String modelClass = "\\App\\Models\\" + entityName;
@@ -333,7 +355,52 @@ public class LaravelViewTemplate {
                 html.append("                                @endforeach\n");
                 html.append("                            </select>\n");
             } else {
-                html.append("                            <input type=\"").append(inputType).append("\" name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"").append(inputClass).append(" @error('").append(attrName).append("') is-invalid @enderror\" value=\"{{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') }}\"");
+                html.append("                            <input type=\"").append(inputType).append("\" name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"").append(inputClass);
+
+                // Adicionar classe para mask se configurado
+                if (attr.getUi() != null && attr.getUi().getMask() != null && !attr.getUi().getMask().isEmpty()) {
+                    html.append(" input-mask");
+                }
+
+                html.append(" @error('").append(attrName).append("') is-invalid @enderror\" value=\"{{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') }}\"");
+
+                // Adicionar placeholder se configurado
+                if (attr.getUi() != null && attr.getUi().getPlaceholder() != null && !attr.getUi().getPlaceholder().isEmpty()) {
+                    html.append(" placeholder=\"").append(attr.getUi().getPlaceholder()).append("\"");
+                }
+
+                // Adicionar data-mask se configurado
+                if (attr.getUi() != null && attr.getUi().getMask() != null && !attr.getUi().getMask().isEmpty()) {
+                    html.append(" data-mask=\"").append(attr.getUi().getMask()).append("\"");
+                }
+
+                // Adicionar validações HTML5 se configurado
+                if (attr.getValidation() != null) {
+                    // Min/Max para campos numéricos
+                    if (inputType.equals("number")) {
+                        if (attr.getValidation().getMin() != null) {
+                            html.append(" min=\"").append(attr.getValidation().getMin()).append("\"");
+                        }
+                        if (attr.getValidation().getMax() != null) {
+                            html.append(" max=\"").append(attr.getValidation().getMax()).append("\"");
+                        }
+                    }
+
+                    // MinLength/MaxLength para campos de texto
+                    if (inputType.equals("text") || inputType.equals("email") || inputType.equals("tel")) {
+                        if (attr.getValidation().getMinLength() != null) {
+                            html.append(" minlength=\"").append(attr.getValidation().getMinLength()).append("\"");
+                        }
+                        if (attr.getValidation().getMaxLength() != null) {
+                            html.append(" maxlength=\"").append(attr.getValidation().getMaxLength()).append("\"");
+                        }
+                    }
+
+                    // Pattern (regex)
+                    if (attr.getValidation().getPattern() != null && !attr.getValidation().getPattern().isEmpty()) {
+                        html.append(" pattern=\"").append(attr.getValidation().getPattern()).append("\"");
+                    }
+                }
 
                 if (attr.isRequired()) {
                     html.append(" required");
@@ -346,6 +413,9 @@ public class LaravelViewTemplate {
             html.append("                            @enderror\n");
             html.append("                        </div>\n\n");
         }
+
+        // Fechar a row do Bootstrap
+        html.append("                        </div>\n\n");
 
         // Botões
         html.append("                        <div class=\"d-flex justify-content-between\">\n");
@@ -368,6 +438,31 @@ public class LaravelViewTemplate {
     }
 
     private String getInputType(Field attr) {
+        // Prioridade 1: ui.component (fonte primária)
+        if (attr.getUi() != null && attr.getUi().getComponent() != null) {
+            UIComponent component = attr.getUi().getComponent();
+            switch (component) {
+                case TEXT: return "text";
+                case TEXTAREA: return "textarea";
+                case NUMBER: return "number";
+                case DECIMAL: return "number";
+                case DATE: return "date";
+                case DATETIME: return "datetime-local";
+                case CHECKBOX: return "checkbox";
+                case SELECT: return "select";
+                case AUTOCOMPLETE: return "text"; // Will add JS later
+                case RADIO: return "radio";
+                case PASSWORD: return "password";
+                case EMAIL: return "email";
+                case PHONE: return "tel";
+                case CPF: return "text";
+                case CNPJ: return "text";
+                case CEP: return "text";
+                case HIDDEN: return "hidden";
+            }
+        }
+
+        // Prioridade 2: fallback para databaseType
         String type = attr.getDatabaseType() != null ? attr.getDatabaseType().toLowerCase() : "";
 
         if (type.contains("text") || type.contains("longtext")) {
@@ -820,5 +915,275 @@ public class LaravelViewTemplate {
         }
         // Fallback: retorna o nome original
         return fieldName;
+    }
+
+    /**
+     * Retorna lista de campos visíveis no grid, ordenados conforme configuração.
+     * Usa propriedades grid.visible e grid.order do metamodel.
+     */
+    private java.util.List<Field> getGridVisibleFields(Entity entity) {
+        java.util.List<Field> visibleFields = new java.util.ArrayList<>();
+
+        for (Field field : entity.getFields()) {
+            // Pular campos de timestamp e deleted_at
+            if (field.getName().endsWith("_at") || field.getName().equals("deleted_at")) {
+                continue;
+            }
+
+            // Pular campos que são filtros de sessão
+            if (isSessionFilterField(field)) {
+                continue;
+            }
+
+            // Se o campo tem configuração de grid
+            if (field.getUi() != null && field.getUi().getGrid() != null) {
+                // Verificar se está visível (padrão: true)
+                if (field.getUi().getGrid().isVisible()) {
+                    visibleFields.add(field);
+                }
+            } else {
+                // Se não tem configuração de grid, incluir por padrão (máximo 5 campos)
+                if (visibleFields.size() < 5) {
+                    visibleFields.add(field);
+                }
+            }
+        }
+
+        // Ordenar campos conforme grid.order
+        visibleFields.sort((f1, f2) -> {
+            Integer order1 = (f1.getUi() != null && f1.getUi().getGrid() != null)
+                ? f1.getUi().getGrid().getOrder() : null;
+            Integer order2 = (f2.getUi() != null && f2.getUi().getGrid() != null)
+                ? f2.getUi().getGrid().getOrder() : null;
+
+            // Se ambos têm order, comparar
+            if (order1 != null && order2 != null) {
+                return order1.compareTo(order2);
+            }
+            // Se apenas f1 tem order, vem primeiro
+            if (order1 != null) {
+                return -1;
+            }
+            // Se apenas f2 tem order, vem primeiro
+            if (order2 != null) {
+                return 1;
+            }
+            // Se nenhum tem order, manter ordem original
+            return 0;
+        });
+
+        return visibleFields;
+    }
+
+    /**
+     * Retorna lista de campos visíveis no formulário, ordenados conforme configuração.
+     * Usa propriedades form.visible e form.order do metamodel.
+     */
+    private java.util.List<Field> getFormVisibleFields(Entity entity) {
+        java.util.List<Field> visibleFields = new java.util.ArrayList<>();
+
+        for (Field field : entity.getFields()) {
+            String attrName = getFieldColumnName(field);
+
+            // Pular campos automáticos
+            if (attrName.endsWith("_at") || attrName.equals("deleted_at")) {
+                continue;
+            }
+
+            // Pular campos de sessão (são filtros, não aparecem no form)
+            if (isSessionFilterField(field)) {
+                continue;
+            }
+
+            // Se o campo tem configuração de form
+            if (field.getUi() != null && field.getUi().getForm() != null) {
+                // Verificar se está visível (padrão: true)
+                if (field.getUi().getForm().isVisible()) {
+                    visibleFields.add(field);
+                }
+            } else {
+                // Se não tem configuração de form, incluir por padrão
+                visibleFields.add(field);
+            }
+        }
+
+        // Ordenar campos conforme form.order
+        visibleFields.sort((f1, f2) -> {
+            Integer order1 = (f1.getUi() != null && f1.getUi().getForm() != null)
+                ? f1.getUi().getForm().getOrder() : null;
+            Integer order2 = (f2.getUi() != null && f2.getUi().getForm() != null)
+                ? f2.getUi().getForm().getOrder() : null;
+
+            // Se ambos têm order, comparar
+            if (order1 != null && order2 != null) {
+                return order1.compareTo(order2);
+            }
+            // Se apenas f1 tem order, vem primeiro
+            if (order1 != null) {
+                return -1;
+            }
+            // Se apenas f2 tem order, vem primeiro
+            if (order2 != null) {
+                return 1;
+            }
+            // Se nenhum tem order, manter ordem original
+            return 0;
+        });
+
+        return visibleFields;
+    }
+
+    /**
+     * Retorna o número de colunas Bootstrap para o campo (col-md-X).
+     * Usa form.colSpan do metamodel (padrão: 12 = linha inteira).
+     * Nota: Se colSpan for 1 (default da classe FormConfig), trata como 12.
+     */
+    private int getFormColSpan(Field field) {
+        if (field.getUi() != null && field.getUi().getForm() != null) {
+            Integer colSpan = field.getUi().getForm().getColSpan();
+            if (colSpan != null && colSpan >= 2 && colSpan <= 12) {
+                return colSpan;
+            }
+        }
+        // Padrão: 12 (linha inteira) - também usado quando colSpan == 1
+        return 12;
+    }
+
+    /**
+     * Agrupa campos por tab.
+     */
+    private java.util.Map<String, java.util.List<Field>> groupFieldsByTab(java.util.List<Field> fields) {
+        java.util.Map<String, java.util.List<Field>> groups = new java.util.LinkedHashMap<>();
+
+        for (Field field : fields) {
+            String tab = null;
+            if (field.getUi() != null && field.getUi().getForm() != null) {
+                tab = field.getUi().getForm().getTab();
+            }
+
+            if (!groups.containsKey(tab)) {
+                groups.put(tab, new java.util.ArrayList<>());
+            }
+            groups.get(tab).add(field);
+        }
+
+        return groups;
+    }
+
+    /**
+     * Agrupa campos por group dentro de uma mesma tab.
+     */
+    private java.util.Map<String, java.util.List<Field>> groupFieldsByGroup(java.util.List<Field> fields) {
+        java.util.Map<String, java.util.List<Field>> groups = new java.util.LinkedHashMap<>();
+
+        for (Field field : fields) {
+            String group = null;
+            if (field.getUi() != null && field.getUi().getForm() != null) {
+                group = field.getUi().getForm().getGroup();
+            }
+
+            if (!groups.containsKey(group)) {
+                groups.put(group, new java.util.ArrayList<>());
+            }
+            groups.get(group).add(field);
+        }
+
+        return groups;
+    }
+
+    /**
+     * Gera formulário de pesquisa baseado em fields com ui.search.enabled = true.
+     */
+    private String generateSearchForm(Entity entity) {
+        StringBuilder form = new StringBuilder();
+        java.util.List<Field> searchableFields = new java.util.ArrayList<>();
+
+        // Coletar campos com search habilitado
+        for (Field field : entity.getFields()) {
+            if (field.getUi() != null && field.getUi().getSearch() != null && field.getUi().getSearch().isEnabled()) {
+                searchableFields.add(field);
+            }
+        }
+
+        if (searchableFields.isEmpty()) {
+            return "";
+        }
+
+        String entityNameLower = toLowerCamelCase(entity.getName());
+
+        form.append("    <div class=\"card mb-3\">\n");
+        form.append("        <div class=\"card-header\">\n");
+        form.append("            <h5 class=\"mb-0\">\n");
+        form.append("                <i class=\"fas fa-search\"></i> Filtros de Pesquisa\n");
+        form.append("                <button class=\"btn btn-sm btn-link float-end\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#searchForm\">\n");
+        form.append("                    <i class=\"fas fa-chevron-down\"></i>\n");
+        form.append("                </button>\n");
+        form.append("            </h5>\n");
+        form.append("        </div>\n");
+        form.append("        <div class=\"collapse\" id=\"searchForm\">\n");
+        form.append("            <div class=\"card-body\">\n");
+        form.append("                <form method=\"GET\" action=\"{{ route('").append(entityNameLower).append(".index') }}\">\n");
+        form.append("                    <div class=\"row\">\n");
+
+        // Gerar campos de pesquisa
+        for (Field field : searchableFields) {
+            String paramName = toSnakeCase(field.getName());
+            String label = getFieldLabel(field);
+
+            br.com.gerador.metamodel.model.SearchOperator operator = field.getUi().getSearch().getOperator();
+            if (operator == null) {
+                operator = br.com.gerador.metamodel.model.SearchOperator.EQUALS;
+            }
+
+            form.append("                        <div class=\"col-md-4 mb-3\">\n");
+            form.append("                            <label for=\"search_").append(paramName).append("\" class=\"form-label\">").append(label).append("</label>\n");
+
+            if (operator == br.com.gerador.metamodel.model.SearchOperator.BETWEEN) {
+                // Para BETWEEN, gerar dois campos (from/to)
+                form.append("                            <div class=\"input-group\">\n");
+                form.append("                                <input type=\"text\" name=\"").append(paramName).append("_from\" id=\"search_").append(paramName).append("_from\" class=\"form-control\" placeholder=\"De\" value=\"{{ request('").append(paramName).append("_from') }}\">\n");
+                form.append("                                <span class=\"input-group-text\">até</span>\n");
+                form.append("                                <input type=\"text\" name=\"").append(paramName).append("_to\" id=\"search_").append(paramName).append("_to\" class=\"form-control\" placeholder=\"Até\" value=\"{{ request('").append(paramName).append("_to') }}\">\n");
+                form.append("                            </div>\n");
+            } else if (isForeignKey(field)) {
+                // Para FKs, gerar select
+                String relatedEntity = getRelatedEntityName(field);
+                String relatedEntityPlural = toPlural(relatedEntity.toLowerCase());
+                String displayField = getDisplayFieldForEntity(relatedEntity);
+                String relatedPkField = getRelatedEntityPrimaryKey(relatedEntity);
+
+                form.append("                            <select name=\"").append(paramName).append("\" id=\"search_").append(paramName).append("\" class=\"form-control\">\n");
+                form.append("                                <option value=\"\">Todos</option>\n");
+                form.append("                                @foreach($").append(relatedEntityPlural).append(" ?? [] as $item)\n");
+                form.append("                                    <option value=\"{{ $item->").append(relatedPkField).append(" }}\" {{ request('").append(paramName).append("') == $item->").append(relatedPkField).append(" ? 'selected' : '' }}>{{ $item->").append(displayField).append(" }}</option>\n");
+                form.append("                                @endforeach\n");
+                form.append("                            </select>\n");
+            } else {
+                // Campo de texto simples
+                String placeholder = "";
+                if (operator == br.com.gerador.metamodel.model.SearchOperator.CONTAINS) {
+                    placeholder = " placeholder=\"Buscar em " + label + "...\"";
+                }
+                form.append("                            <input type=\"text\" name=\"").append(paramName).append("\" id=\"search_").append(paramName).append("\" class=\"form-control\"").append(placeholder).append(" value=\"{{ request('").append(paramName).append("') }}\">\n");
+            }
+
+            form.append("                        </div>\n");
+        }
+
+        form.append("                    </div>\n");
+        form.append("                    <div class=\"d-flex justify-content-end gap-2\">\n");
+        form.append("                        <a href=\"{{ route('").append(entityNameLower).append(".index') }}\" class=\"btn btn-secondary\">\n");
+        form.append("                            <i class=\"fas fa-eraser\"></i> Limpar\n");
+        form.append("                        </a>\n");
+        form.append("                        <button type=\"submit\" class=\"btn btn-primary\">\n");
+        form.append("                            <i class=\"fas fa-search\"></i> Pesquisar\n");
+        form.append("                        </button>\n");
+        form.append("                    </div>\n");
+        form.append("                </form>\n");
+        form.append("            </div>\n");
+        form.append("        </div>\n");
+        form.append("    </div>\n\n");
+
+        return form.toString();
     }
 }

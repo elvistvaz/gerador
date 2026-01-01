@@ -3,6 +3,7 @@ package br.com.gerador.generator.template.laravel;
 import br.com.gerador.generator.config.ProjectConfig;
 import br.com.gerador.metamodel.model.Entity;
 import br.com.gerador.metamodel.model.MetaModel;
+import br.com.gerador.metamodel.model.SearchOperator;
 import br.com.gerador.metamodel.model.SessionFilter;
 
 /**
@@ -51,12 +52,12 @@ public class LaravelWebControllerTemplate {
         code.append("    /**\n");
         code.append("     * Lista todos os registros.\n");
         code.append("     */\n");
-        code.append("    public function index()\n");
+        code.append("    public function index(Request $request)\n");
         code.append("    {\n");
+        code.append("        $query = ").append(entityName).append("::query();\n\n");
 
         // Aplicar filtro de sessão se configurado
         if (hasSessionFilter) {
-            code.append("        $query = ").append(entityName).append("::query();\n\n");
             code.append("        // Aplicar filtro de sessão\n");
 
             SessionFilter sessionFilter = entity.getSessionFilter();
@@ -76,12 +77,39 @@ public class LaravelWebControllerTemplate {
                 code.append("            $query->where('").append(sessionKey2).append("', session('").append(sessionKey2).append("'));\n");
                 code.append("        }\n");
             }
-
-            code.append("\n        $").append(entityNamePlural).append(" = $query->paginate(15);\n");
-        } else {
-            code.append("        $").append(entityNamePlural).append(" = ").append(entityName).append("::paginate(15);\n");
+            code.append("\n");
         }
 
+        // Aplicar filtros de pesquisa conforme metamodel
+        String searchFilters = generateSearchFilters(entity);
+        if (!searchFilters.isEmpty()) {
+            code.append(searchFilters);
+        }
+
+        // Aplicar ordenação
+        code.append("        // Aplicar ordenação\n");
+        code.append("        if ($request->has('sort')) {\n");
+        code.append("            $sortField = $request->get('sort');\n");
+        code.append("            $direction = $request->get('direction', 'asc');\n");
+        code.append("            $query->orderBy($sortField, $direction);\n");
+        code.append("        }");
+
+        // Aplicar ordenação padrão se configurada
+        if (entity.getDefaultSort() != null && entity.getDefaultSort().getField() != null) {
+            String defaultSortField = toSnakeCase(entity.getDefaultSort().getField());
+            String defaultDirection = entity.getDefaultSort().getDirection() != null
+                ? entity.getDefaultSort().getDirection()
+                : "asc";
+
+            code.append(" else {\n");
+            code.append("            // Ordenação padrão\n");
+            code.append("            $query->orderBy('").append(defaultSortField).append("', '").append(defaultDirection).append("');\n");
+            code.append("        }\n\n");
+        } else {
+            code.append("\n\n");
+        }
+
+        code.append("        $").append(entityNamePlural).append(" = $query->paginate(15);\n");
         code.append("        return view('").append(entityNameLower).append(".index', compact('").append(entityNamePlural).append("'));\n");
         code.append("    }\n\n");
 
@@ -325,5 +353,85 @@ public class LaravelWebControllerTemplate {
             return Character.toUpperCase(entityName.charAt(0)) + entityName.substring(1);
         }
         return fieldName;
+    }
+
+    /**
+     * Gera os filtros de pesquisa baseados na configuração search do metamodel.
+     */
+    private String generateSearchFilters(Entity entity) {
+        StringBuilder filters = new StringBuilder();
+        boolean hasFilters = false;
+
+        filters.append("        // Aplicar filtros de pesquisa\n");
+
+        for (br.com.gerador.metamodel.model.Field field : entity.getFields()) {
+            // Verificar se o campo tem configuração de search habilitada
+            if (field.getUi() != null && field.getUi().getSearch() != null && field.getUi().getSearch().isEnabled()) {
+                String columnName = getFieldColumnName(field);
+                String paramName = toSnakeCase(field.getName());
+                SearchOperator operator = field.getUi().getSearch().getOperator();
+
+                // Se não tem operador definido, usar EQUALS como padrão
+                if (operator == null) {
+                    operator = SearchOperator.EQUALS;
+                }
+
+                filters.append("        if ($request->filled('").append(paramName).append("')) {\n");
+
+                switch (operator) {
+                    case EQUALS:
+                        filters.append("            $query->where('").append(columnName)
+                               .append("', $request->get('").append(paramName).append("'));\n");
+                        break;
+
+                    case CONTAINS:
+                        filters.append("            $query->where('").append(columnName)
+                               .append("', 'like', '%' . $request->get('").append(paramName).append("') . '%');\n");
+                        break;
+
+                    case STARTS_WITH:
+                        filters.append("            $query->where('").append(columnName)
+                               .append("', 'like', $request->get('").append(paramName).append("') . '%');\n");
+                        break;
+
+                    case ENDS_WITH:
+                        filters.append("            $query->where('").append(columnName)
+                               .append("', 'like', '%' . $request->get('").append(paramName).append("'));\n");
+                        break;
+
+                    case BETWEEN:
+                        filters.append("            $from = $request->get('").append(paramName).append("_from');\n");
+                        filters.append("            $to = $request->get('").append(paramName).append("_to');\n");
+                        filters.append("            if ($from) $query->where('").append(columnName).append("', '>=', $from);\n");
+                        filters.append("            if ($to) $query->where('").append(columnName).append("', '<=', $to);\n");
+                        break;
+
+                    case IN:
+                        filters.append("            $values = explode(',', $request->get('").append(paramName).append("'));\n");
+                        filters.append("            $query->whereIn('").append(columnName).append("', $values);\n");
+                        break;
+                }
+
+                filters.append("        }\n");
+                hasFilters = true;
+            }
+        }
+
+        if (hasFilters) {
+            filters.append("\n");
+            return filters.toString();
+        }
+
+        return "";
+    }
+
+    /**
+     * Retorna o columnName de um campo.
+     */
+    private String getFieldColumnName(br.com.gerador.metamodel.model.Field field) {
+        if (field.getColumnName() != null && !field.getColumnName().isEmpty()) {
+            return field.getColumnName();
+        }
+        return toSnakeCase(field.getName());
     }
 }
