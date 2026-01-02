@@ -218,7 +218,9 @@
       "Bash(Select-String -Pattern \"\\(Gerando|Grid|ERRO|Exception\\)\" -Context 0,1)",
       "Bash(dir /b /s \"c:\\\\java\\\\workspace\\\\Gerador\\\\src\\\\main\\\\java\\\\br\\\\com\\\\gerador\\\\metamodel\\\\model\\\\*.java\")",
       "Bash(dir /b \"c:\\\\java\\\\workspace\\\\Gerador\\\\generated\\\\xandel-laravel\\\\resources\\\\views\\\\banco\")",
-      "Bash(php artisan db:table:*)"
+      "Bash(php artisan db:table:*)",
+      "Bash(cmd.exe /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador && gerar_icep.bat\")",
+      "Bash(./gerar_icep.bat)"
     ]
   }
 }

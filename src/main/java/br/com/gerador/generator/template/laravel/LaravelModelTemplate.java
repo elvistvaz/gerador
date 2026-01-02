@@ -172,9 +172,10 @@ public class LaravelModelTemplate {
     }
 
     private void generateTableName(StringBuilder sb, Entity entity) {
-        String tableName = toSnakeCase(entity.getTableName() != null
+        // Usa exatamente o tableName configurado no JSON, sem conversão
+        String tableName = entity.getTableName() != null
             ? entity.getTableName()
-            : entity.getName());
+            : entity.getName();
 
         sb.append("\n    protected $table = '").append(tableName).append("';\n");
     }

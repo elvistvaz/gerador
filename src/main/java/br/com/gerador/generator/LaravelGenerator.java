@@ -364,12 +364,17 @@ public class LaravelGenerator {
 
             for (Path csvFile : orderedCsvFiles) {
                 String fileName = csvFile.getFileName().toString();
-                String tableName = fileName.replace(".csv", "");
+                String csvTableName = fileName.replace(".csv", "");
 
                 System.out.println("  Processando: " + fileName);
 
                 // Encontra a entidade correspondente no MetaModel
-                Entity entity = findEntityByTableName(metaModel, tableName);
+                Entity entity = findEntityByTableName(metaModel, csvTableName);
+
+                // Usa exatamente o tableName da entidade do JSON (sem conversão)
+                String tableName = entity != null && entity.getTableName() != null
+                    ? entity.getTableName()
+                    : csvTableName;
 
                 List<java.util.Map<String, String>> data = readCSV(csvFile);
 

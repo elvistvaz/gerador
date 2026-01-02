@@ -23,7 +23,8 @@ public class LaravelMigrationTemplate {
 
     public String generate(Entity entity, MetaModel metaModel) {
         StringBuilder sb = new StringBuilder();
-        String tableName = toSnakeCase(entity.getTableName() != null ? entity.getTableName() : entity.getName());
+        // Usa exatamente o tableName configurado no JSON, sem conversão
+        String tableName = entity.getTableName() != null ? entity.getTableName() : entity.getName();
 
         // PHP opening tag
         sb.append("<?php\n\n");
@@ -247,9 +248,13 @@ public class LaravelMigrationTemplate {
         String foreignKey = field.getColumnName() != null && !field.getColumnName().isEmpty()
             ? field.getColumnName()
             : toSnakeCase(field.getName());
-        String referencedTable = toSnakeCase(field.getReference().getEntity());
+
+        // Usa o nome da entidade referenciada diretamente (sem conversão)
+        String referencedTable = field.getReference().getEntity();
+
+        // Usa o nome do campo referenciado diretamente (sem conversão)
         String referencedKey = field.getReference().getField() != null
-            ? toSnakeCase(field.getReference().getField())
+            ? field.getReference().getField()
             : "id";
 
         sb.append("            $table->foreign('").append(foreignKey).append("')\n");
@@ -278,6 +283,7 @@ public class LaravelMigrationTemplate {
     }
 
     public String getMigrationFileName(Entity entity) {
+        // Nome do arquivo em snake_case (convenção Laravel), mas tabela usa o nome do JSON
         String tableName = toSnakeCase(entity.getTableName() != null ? entity.getTableName() : entity.getName());
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy_MM_dd_HHmmss"));
         return timestamp + "_create_" + tableName + "_table.php";
