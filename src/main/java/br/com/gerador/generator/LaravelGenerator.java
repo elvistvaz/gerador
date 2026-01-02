@@ -716,14 +716,16 @@ class InitialDataSeeder extends Seeder
 
         // Inicializa estruturas
         for (Path csvFile : csvFiles) {
-            String tableName = csvFile.getFileName().toString().replace(".csv", "").toLowerCase();
+            // Mantém o PascalCase do nome do arquivo CSV
+            String tableName = csvFile.getFileName().toString().replace(".csv", "");
             dependencies.putIfAbsent(tableName, new java.util.HashSet<>());
             inDegree.putIfAbsent(tableName, 0);
         }
 
         // Analisa dependências de FK
         for (Path csvFile : csvFiles) {
-            String tableName = csvFile.getFileName().toString().replace(".csv", "").toLowerCase();
+            // Mantém o PascalCase do nome do arquivo CSV
+            String tableName = csvFile.getFileName().toString().replace(".csv", "");
             Entity entity = findEntityByTableName(metaModel, tableName);
 
             if (entity != null && entity.getFields() != null) {
@@ -739,10 +741,11 @@ class InitialDataSeeder extends Seeder
                             .orElse(null);
 
                         if (referencedEntity != null && referencedEntity.getTableName() != null) {
-                            String referencedTableName = referencedEntity.getTableName().toLowerCase();
+                            // Mantém o PascalCase
+                            String referencedTableName = referencedEntity.getTableName();
 
-                            // Ignora auto-referências
-                            if (!referencedTableName.equals(tableName)) {
+                            // Ignora auto-referências (case-insensitive)
+                            if (!referencedTableName.equalsIgnoreCase(tableName)) {
                                 // tableName depende de referencedTableName
                                 if (dependencies.containsKey(referencedTableName)) {
                                     dependencies.get(referencedTableName).add(tableName);

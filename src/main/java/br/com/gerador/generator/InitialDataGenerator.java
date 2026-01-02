@@ -92,7 +92,9 @@ public class InitialDataGenerator {
 
         // Processa cada CSV
         for (Entity entity : orderedEntities) {
-            String csvFileName = toSnakeCase(entity.getName()) + ".csv";
+            // Usa o tableName (PascalCase) ao invés de snake_case
+            String csvTableName = entity.getTableName() != null ? entity.getTableName() : entity.getName();
+            String csvFileName = csvTableName + ".csv";
             Path csvFile = csvFolder.resolve(csvFileName);
 
             if (Files.exists(csvFile)) {
@@ -415,7 +417,9 @@ public class InitialDataGenerator {
         Map<String, Integer> maxIds = new HashMap<>();
 
         for (Entity entity : entities) {
-            String csvFileName = toSnakeCase(entity.getName()) + ".csv";
+            // Usa o tableName (PascalCase) ao invés de snake_case
+            String tableName = entity.getTableName() != null ? entity.getTableName() : entity.getName();
+            String csvFileName = tableName + ".csv";
             Path csvFile = csvFolder.resolve(csvFileName);
 
             if (Files.exists(csvFile)) {
