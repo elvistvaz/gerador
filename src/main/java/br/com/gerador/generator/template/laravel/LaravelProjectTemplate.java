@@ -1138,7 +1138,7 @@ require __DIR__.'/../vendor/autoload.php';
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
-            <h3><i class="fas fa-user-md"></i> {{ config('app.name') }}</h3>
+            <h3><i class="fas %s"></i> {{ config('app.name') }}</h3>
         </div>
 
         <ul class="sidebar-menu">
@@ -1185,7 +1185,7 @@ require __DIR__.'/../vendor/autoload.php';
     @stack('scripts')
 </body>
 </html>
-""".formatted(menuItems.toString(), sessionContextBar);
+""".formatted(getAppIcon(), menuItems.toString(), sessionContextBar);
     }
 
     // Métodos auxiliares para formatação
@@ -1775,6 +1775,21 @@ Route::middleware(['auth'])->group(function () {
         };
     }
 
+    /**
+     * Obtém o ícone da aplicação configurado no JSON.
+     * Se não estiver configurado, retorna um ícone padrão.
+     */
+    private String getAppIcon() {
+        if (projectConfig != null) {
+            String icon = projectConfig.getString("project.appIcon", null);
+            if (icon != null && !icon.isEmpty()) {
+                return icon;
+            }
+        }
+        // Ícone padrão caso não esteja configurado
+        return "fa-desktop";
+    }
+
     public String generatePaginationTranslation() {
         return """
 <?php
@@ -2072,13 +2087,16 @@ return [
             String fieldColumnName = getColumnNameFromMetaModel(metaModel, entity, field);
             String displayFieldColumnName = getColumnNameFromMetaModel(metaModel, entity, displayField);
 
+            // Buscar o nome da coluna PK da entidade referenciada
+            String pkColumnName = getPrimaryKeyColumnName(metaModel, entity);
+
             // Nome da tabela em snake_case
             String tableName = toSnakeCase(entity);
 
             uses.append("use App\\Models\\").append(entity).append(";\n");
 
             validationRules.append("            '").append(field).append("' => 'required|exists:")
-                          .append(tableName).append(",").append(fieldColumnName).append("',\n");
+                          .append(tableName).append(",").append(pkColumnName).append("',\n");
 
             sessionAssignments.append("            '").append(toSnakeCase(field)).append("' => $request->").append(field).append(",\n");
 
@@ -2368,6 +2386,33 @@ class EnsureSessionContextSelected
 
         // Se não encontrou, retorna snake_case
         return toSnakeCase(fieldName);
+    }
+
+    private String getPrimaryKeyColumnName(MetaModel metaModel, String entityName) {
+        if (metaModel == null || metaModel.getEntities() == null) {
+            return "id"; // default
+        }
+
+        // Busca a entidade
+        for (br.com.gerador.metamodel.model.Entity entity : metaModel.getEntities()) {
+            if (entity.getName().equals(entityName)) {
+                // Busca o campo com primaryKey = true
+                if (entity.getFields() != null) {
+                    for (br.com.gerador.metamodel.model.Field field : entity.getFields()) {
+                        if (field.isPrimaryKey()) {
+                            // Retorna columnName da PK
+                            if (field.getColumnName() != null && !field.getColumnName().isEmpty()) {
+                                return field.getColumnName();
+                            }
+                            return toSnakeCase(field.getName());
+                        }
+                    }
+                }
+            }
+        }
+
+        // Se não encontrou, retorna 'id' como padrão
+        return "id";
     }
 
     private String toSnakeCase(String camelCase) {

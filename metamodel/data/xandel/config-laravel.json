@@ -3,7 +3,8 @@
     "id": "xandel",
     "name": "Xandel",
     "description": "Sistema de Gestão Xandel",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "appIcon": "fa-user-md"
   },
   "generationType": "laravel",
   "output": {

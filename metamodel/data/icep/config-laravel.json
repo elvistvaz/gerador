@@ -3,7 +3,8 @@
     "id": "icep",
     "name": "ICEP",
     "description": "Sistema de Gestão Educacional ICEP",
-    "version": "1.0.0"
+    "version": "1.0.0",
+    "appIcon": "fa-chalkboard-teacher"
   },
   "generationType": "laravel",
   "output": {
