@@ -39,6 +39,7 @@ public class LaravelRequestTemplate {
     private String generateRequest(Entity entity, String prefix, boolean isCreate) {
         StringBuilder sb = new StringBuilder();
         String entityName = entity.getName();
+        String entityNameLower = toLowerCamelCase(entityName);
 
         // PHP opening tag
         sb.append("<?php\n\n");
@@ -68,6 +69,15 @@ public class LaravelRequestTemplate {
         sb.append("     */\n");
         sb.append("    public function rules(): array\n");
         sb.append("    {\n");
+
+        // Para UpdateRequest, buscar o ID do registro atual
+        if (!isCreate) {
+            // Buscar o nome da PK
+            String pkField = getPrimaryKeyField(entity);
+            sb.append("        $").append(entityNameLower).append(" = $this->route('").append(entityNameLower).append("');\n");
+            sb.append("        $").append(entityNameLower).append("Id = $").append(entityNameLower).append(" ? $").append(entityNameLower).append("->").append(pkField).append(" : null;\n\n");
+        }
+
         sb.append("        return [\n");
 
         // Generate validation rules
@@ -128,11 +138,15 @@ public class LaravelRequestTemplate {
             if (rules.length() > 0) rules.append("|");
             String tableName = toSnakeCase(entity.getName());
             String fieldName = getFieldColumnName(field);
+            String pkFieldName = getPrimaryKeyField(entity);
 
             if (isCreate) {
                 rules.append("unique:").append(tableName).append(",").append(fieldName);
             } else {
-                rules.append("unique:").append(tableName).append(",").append(fieldName).append(",{id}");
+                // Para Update, usar variável dinâmica ao invés de placeholder
+                String entityNameLower = toLowerCamelCase(entity.getName());
+                rules.append("unique:").append(tableName).append(",").append(fieldName)
+                     .append(",' . $").append(entityNameLower).append("Id . ',").append(pkFieldName);
             }
         }
 
@@ -219,5 +233,22 @@ public class LaravelRequestTemplate {
             return str;
         }
         return str.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
+    }
+
+    private String toLowerCamelCase(String name) {
+        if (name == null || name.isEmpty()) return name;
+        return Character.toLowerCase(name.charAt(0)) + name.substring(1);
+    }
+
+    /**
+     * Retorna o nome do campo da chave primária (columnName).
+     */
+    private String getPrimaryKeyField(Entity entity) {
+        for (Field field : entity.getFields()) {
+            if (field.isPrimaryKey()) {
+                return getFieldColumnName(field);
+            }
+        }
+        return "id"; // Fallback
     }
 }
