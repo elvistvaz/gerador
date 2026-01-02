@@ -130,9 +130,54 @@
       "name": "NivelAprendizagem",
       "description": "Níveis de aprendizagem",
       "values": [
-        { "code": "1", "label": "Nível 1 - Básico" },
-        { "code": "2", "label": "Nível 2 - Intermediário" },
-        { "code": "3", "label": "Nível 3 - Avançado" }
+        { "code": 1, "label": "Nível 1 - Básico" },
+        { "code": 2, "label": "Nível 2 - Intermediário" },
+        { "code": 3, "label": "Nível 3 - Avançado" }
+      ]
+    },
+    {
+      "id": "enum_status_indicador",
+      "name": "StatusIndicador",
+      "description": "Status de realização de indicadores",
+      "values": [
+        { "code": 0, "label": "Não se aplica" },
+        { "code": 1, "label": "Não realizado" },
+        { "code": 2, "label": "Realizado Parcial" },
+        { "code": 3, "label": "Realizado Total" }
+      ]
+    },
+    {
+      "id": "enum_unidade_federativa",
+      "name": "UnidadeFederativa",
+      "description": "Unidades Federativas do Brasil",
+      "values": [
+        { "code": "AC", "label": "Acre" },
+        { "code": "AL", "label": "Alagoas" },
+        { "code": "AP", "label": "Amapá" },
+        { "code": "AM", "label": "Amazonas" },
+        { "code": "BA", "label": "Bahia" },
+        { "code": "CE", "label": "Ceará" },
+        { "code": "DF", "label": "Distrito Federal" },
+        { "code": "ES", "label": "Espírito Santo" },
+        { "code": "GO", "label": "Goiás" },
+        { "code": "MA", "label": "Maranhão" },
+        { "code": "MT", "label": "Mato Grosso" },
+        { "code": "MS", "label": "Mato Grosso do Sul" },
+        { "code": "MG", "label": "Minas Gerais" },
+        { "code": "PA", "label": "Pará" },
+        { "code": "PB", "label": "Paraíba" },
+        { "code": "PR", "label": "Paraná" },
+        { "code": "PE", "label": "Pernambuco" },
+        { "code": "PI", "label": "Piauí" },
+        { "code": "RJ", "label": "Rio de Janeiro" },
+        { "code": "RN", "label": "Rio Grande do Norte" },
+        { "code": "RS", "label": "Rio Grande do Sul" },
+        { "code": "RO", "label": "Rondônia" },
+        { "code": "RR", "label": "Roraima" },
+        { "code": "SC", "label": "Santa Catarina" },
+        { "code": "SP", "label": "São Paulo" },
+        { "code": "SE", "label": "Sergipe" },
+        { "code": "TO", "label": "Tocantins" }
       ]
     }
   ],
@@ -311,8 +356,9 @@
           "databaseType": "char",
           "length": 2,
           "required": true,
+          "enumRef": "enum_unidade_federativa",
           "ui": {
-            "component": "TEXT",
+            "component": "SELECT",
             "grid": { "visible": true, "order": 4, "width": 60, "sortable": true },
             "form": { "visible": true, "order": 4 },
             "search": { "enabled": true, "operator": "EQUALS" }
@@ -1023,16 +1069,11 @@
           "dataType": "INTEGER",
           "databaseType": "int",
           "required": false,
+          "enumRef": "enum_status_indicador",
           "ui": {
             "component": "SELECT",
             "grid": { "visible": true, "order": 4, "width": 150, "sortable": true },
-            "form": { "visible": true, "order": 4 },
-            "options": [
-              { "value": 0, "label": "Não se aplica" },
-              { "value": 1, "label": "Não realizado" },
-              { "value": 2, "label": "Realizado Parcial" },
-              { "value": 3, "label": "Realizado Total" }
-            ]
+            "form": { "visible": true, "order": 4 }
           }
         }
       ],

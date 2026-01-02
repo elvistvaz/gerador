@@ -134,6 +134,50 @@
         { "code": "S", "label": "Sim" },
         { "code": "N", "label": "Não" }
       ]
+    },
+    {
+      "id": "enum_nivel_acesso",
+      "name": "NivelAcesso",
+      "description": "Níveis de acesso de usuários",
+      "values": [
+        { "code": 1, "label": "Administrador" },
+        { "code": 2, "label": "Gerente" },
+        { "code": 3, "label": "Usuário" }
+      ]
+    },
+    {
+      "id": "enum_unidade_federativa",
+      "name": "UnidadeFederativa",
+      "description": "Unidades Federativas do Brasil",
+      "values": [
+        { "code": "AC", "label": "Acre" },
+        { "code": "AL", "label": "Alagoas" },
+        { "code": "AP", "label": "Amapá" },
+        { "code": "AM", "label": "Amazonas" },
+        { "code": "BA", "label": "Bahia" },
+        { "code": "CE", "label": "Ceará" },
+        { "code": "DF", "label": "Distrito Federal" },
+        { "code": "ES", "label": "Espírito Santo" },
+        { "code": "GO", "label": "Goiás" },
+        { "code": "MA", "label": "Maranhão" },
+        { "code": "MT", "label": "Mato Grosso" },
+        { "code": "MS", "label": "Mato Grosso do Sul" },
+        { "code": "MG", "label": "Minas Gerais" },
+        { "code": "PA", "label": "Pará" },
+        { "code": "PB", "label": "Paraíba" },
+        { "code": "PR", "label": "Paraná" },
+        { "code": "PE", "label": "Pernambuco" },
+        { "code": "PI", "label": "Piauí" },
+        { "code": "RJ", "label": "Rio de Janeiro" },
+        { "code": "RN", "label": "Rio Grande do Norte" },
+        { "code": "RS", "label": "Rio Grande do Sul" },
+        { "code": "RO", "label": "Rondônia" },
+        { "code": "RR", "label": "Roraima" },
+        { "code": "SC", "label": "Santa Catarina" },
+        { "code": "SP", "label": "São Paulo" },
+        { "code": "SE", "label": "Sergipe" },
+        { "code": "TO", "label": "Tocantins" }
+      ]
     }
   ],
   "entities": [
@@ -276,8 +320,9 @@
           "databaseType": "char",
           "length": 2,
           "required": false,
+          "enumRef": "enum_unidade_federativa",
           "ui": {
-            "component": "TEXT",
+            "component": "SELECT",
             "grid": { "visible": true, "order": 3, "width": 60 },
             "form": { "visible": true, "order": 3 },
             "search": { "enabled": true, "operator": "EQUALS" }
@@ -713,13 +758,9 @@
           "dataType": "INTEGER",
           "databaseType": "smallint",
           "required": false,
+          "enumRef": "enum_nivel_acesso",
           "ui": {
             "component": "SELECT",
-            "options": [
-              { "value": 1, "label": "Administrador" },
-              { "value": 2, "label": "Gerente" },
-              { "value": 3, "label": "Usuário" }
-            ],
             "grid": { "visible": true, "order": 4 },
             "form": { "visible": true, "order": 5 }
           }

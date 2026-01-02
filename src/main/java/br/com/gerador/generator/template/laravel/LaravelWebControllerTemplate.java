@@ -6,6 +6,9 @@ import br.com.gerador.metamodel.model.MetaModel;
 import br.com.gerador.metamodel.model.SearchOperator;
 import br.com.gerador.metamodel.model.SessionFilter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Template para geração de Web Controllers do Laravel (retornam views).
  */
@@ -109,8 +112,26 @@ public class LaravelWebControllerTemplate {
             code.append("\n\n");
         }
 
+        // Eager loading dos relacionamentos (evita problema N+1)
+        String eagerLoadRelations = generateEagerLoadRelations(entity);
+        if (!eagerLoadRelations.isEmpty()) {
+            code.append("        // Eager loading dos relacionamentos\n");
+            code.append("        $query->with([").append(eagerLoadRelations).append("]);\n\n");
+        }
+
         code.append("        $").append(entityNamePlural).append(" = $query->paginate(15);\n");
-        code.append("        return view('").append(entityNameLower).append(".index', compact('").append(entityNamePlural).append("'));\n");
+
+        // Carregar dados para os filtros de pesquisa
+        String searchDataLoads = generateSearchDataLoads(entity, metaModel);
+        if (!searchDataLoads.isEmpty()) {
+            code.append("\n        // Carregar dados para os filtros de pesquisa\n");
+            code.append(searchDataLoads);
+            code.append("\n        return view('").append(entityNameLower).append(".index', compact('").append(entityNamePlural).append("'");
+            code.append(generateSearchDataCompact(entity, metaModel));
+            code.append("));\n");
+        } else {
+            code.append("        return view('").append(entityNameLower).append(".index', compact('").append(entityNamePlural).append("'));\n");
+        }
         code.append("    }\n\n");
 
         // Method: create
@@ -264,6 +285,37 @@ public class LaravelWebControllerTemplate {
         }
 
         return result.toString();
+    }
+
+    /**
+     * Converte PascalCase ou snake_case para camelCase.
+     */
+    private String toCamelCase(String name) {
+        if (name == null || name.isEmpty()) return name;
+
+        // Se contém underscores, converte de snake_case para camelCase
+        if (name.contains("_")) {
+            StringBuilder result = new StringBuilder();
+            String[] parts = name.split("_");
+            for (int i = 0; i < parts.length; i++) {
+                if (parts[i].isEmpty()) continue;
+                if (i == 0) {
+                    result.append(Character.toLowerCase(parts[i].charAt(0)));
+                    if (parts[i].length() > 1) {
+                        result.append(parts[i].substring(1));
+                    }
+                } else {
+                    result.append(Character.toUpperCase(parts[i].charAt(0)));
+                    if (parts[i].length() > 1) {
+                        result.append(parts[i].substring(1));
+                    }
+                }
+            }
+            return result.toString();
+        }
+
+        // Se já está em PascalCase, converte para camelCase
+        return Character.toLowerCase(name.charAt(0)) + name.substring(1);
     }
 
     /**
@@ -433,5 +485,78 @@ public class LaravelWebControllerTemplate {
             return field.getColumnName();
         }
         return toSnakeCase(field.getName());
+    }
+
+    /**
+     * Gera a lista de relacionamentos para eager loading.
+     */
+    private String generateEagerLoadRelations(Entity entity) {
+        List<String> relations = new ArrayList<>();
+
+        for (br.com.gerador.metamodel.model.Field field : entity.getFields()) {
+            if (field.getReference() != null && field.getReference().getEntity() != null) {
+                // Gera o nome do relacionamento usando a mesma lógica do Model
+                String relationName = generateUniqueBelongsToName(field.getName(), field.getReference().getEntity());
+                relations.add("'" + relationName + "'");
+            }
+        }
+
+        return String.join(", ", relations);
+    }
+
+    /**
+     * Gera nome único para relacionamento belongsTo (mesmo método do LaravelModelTemplate).
+     */
+    private String generateUniqueBelongsToName(String foreignKeyName, String relatedEntity) {
+        String entityCamel = toCamelCase(relatedEntity);
+        String fkCamel = toCamelCase(foreignKeyName);
+
+        if (fkCamel.startsWith("id") && fkCamel.length() > 2 && Character.isUpperCase(fkCamel.charAt(2))) {
+            fkCamel = Character.toLowerCase(fkCamel.charAt(2)) + fkCamel.substring(3);
+        }
+
+        if (fkCamel.endsWith("Id") && fkCamel.length() > 2) {
+            fkCamel = fkCamel.substring(0, fkCamel.length() - 2);
+        }
+
+        if (entityCamel.toLowerCase().startsWith(fkCamel.toLowerCase())) {
+            return entityCamel;
+        }
+
+        return fkCamel;
+    }
+
+    /**
+     * Gera código para carregar dados das FKs para os filtros de pesquisa.
+     */
+    private String generateSearchDataLoads(Entity entity, MetaModel metaModel) {
+        StringBuilder loads = new StringBuilder();
+
+        for (br.com.gerador.metamodel.model.Field field : entity.getFields()) {
+            if (field.getReference() != null && field.getReference().getEntity() != null) {
+                String relatedEntity = field.getReference().getEntity();
+                String varName = toCamelCase(relatedEntity) + "s";
+                loads.append("        $").append(varName).append(" = \\App\\Models\\").append(relatedEntity).append("::all();\n");
+            }
+        }
+
+        return loads.toString();
+    }
+
+    /**
+     * Gera a lista de variáveis para o compact() incluindo dados de pesquisa.
+     */
+    private String generateSearchDataCompact(Entity entity, MetaModel metaModel) {
+        StringBuilder compact = new StringBuilder();
+
+        for (br.com.gerador.metamodel.model.Field field : entity.getFields()) {
+            if (field.getReference() != null && field.getReference().getEntity() != null) {
+                String relatedEntity = field.getReference().getEntity();
+                String varName = toCamelCase(relatedEntity) + "s";
+                compact.append(", '").append(varName).append("'");
+            }
+        }
+
+        return compact.toString();
     }
 }

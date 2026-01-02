@@ -105,6 +105,9 @@ public class LaravelModelTemplate {
         // Relationships
         generateRelationships(sb, entity, metaModel);
 
+        // Enum accessors
+        generateEnumAccessors(sb, entity, metaModel);
+
         // Custom methods
         generateCustomMethods(sb, entity);
 
@@ -419,6 +422,9 @@ public class LaravelModelTemplate {
      *   id_estado_civil + EstadoCivil -> estadoCivil()
      */
     private String generateUniqueBelongsToName(String foreignKeyName, String relatedEntity) {
+        // Sempre usa o nome da entidade em camelCase como padrão
+        String entityCamel = toCamelCase(relatedEntity);
+
         // Remove underscores e converte para camelCase
         String fkCamel = toCamelCase(foreignKeyName);
 
@@ -432,13 +438,16 @@ public class LaravelModelTemplate {
             fkCamel = fkCamel.substring(0, fkCamel.length() - 2);
         }
 
-        // Se após remover 'id' o nome resultante é igual ao nome da entidade em camelCase, usa o nome da entidade
-        String entityCamel = toCamelCase(relatedEntity);
-        if (fkCamel.equalsIgnoreCase(entityCamel)) {
+        // Se o campo FK (sem 'id') contém o nome completo da entidade, usa o nome da entidade
+        // Exemplo: aprendizagemId -> aprendizagem, mas entidade é AprendizagemEsperada -> usa aprendizagemEsperada
+        // Exemplo: cidadeId -> cidade, entidade é Cidade -> usa cidade
+        // Exemplo: naturalidadeId -> naturalidade, entidade é Cidade -> usa naturalidade (para diferenciação)
+        if (entityCamel.toLowerCase().startsWith(fkCamel.toLowerCase())) {
+            // FK é um prefixo da entidade, usa o nome completo da entidade
             return entityCamel;
         }
 
-        // Caso contrário, usa o nome derivado do campo FK (sem o 'id')
+        // Caso contrário, usa o nome derivado do campo FK (para casos de FKs com nomes diferentes)
         return fkCamel;
     }
 
@@ -447,6 +456,50 @@ public class LaravelModelTemplate {
             return str;
         }
         return Character.toUpperCase(str.charAt(0)) + str.substring(1);
+    }
+
+    /**
+     * Gera accessors para campos ENUM que retornam o label em vez do valor numérico.
+     */
+    private void generateEnumAccessors(StringBuilder sb, Entity entity, MetaModel metaModel) {
+        if (metaModel == null || metaModel.getEnums() == null) {
+            return;
+        }
+
+        for (Field field : entity.getFields()) {
+            if (field.getEnumRef() != null && !field.getEnumRef().isEmpty()) {
+                // Buscar o enum no metamodel
+                var enumDef = metaModel.getEnums().stream()
+                    .filter(e -> e.getId().equals(field.getEnumRef()))
+                    .findFirst()
+                    .orElse(null);
+
+                if (enumDef == null || enumDef.getValues() == null) {
+                    continue;
+                }
+
+                String fieldName = field.getName();
+                String accessorName = "get" + capitalize(toCamelCase(fieldName)) + "LabelAttribute";
+
+                sb.append("\n    /**\n");
+                sb.append("     * Retorna o label do ").append(fieldName).append(".\n");
+                sb.append("     */\n");
+                sb.append("    public function ").append(accessorName).append("()\n");
+                sb.append("    {\n");
+                sb.append("        return match($this->").append(getFieldColumnName(field)).append(") {\n");
+
+                // Gerar cases do match para cada valor do enum
+                for (var enumValue : enumDef.getValues()) {
+                    Object code = enumValue.getCode();
+                    String label = enumValue.getLabel();
+                    sb.append("            ").append(code).append(" => '").append(label).append("',\n");
+                }
+
+                sb.append("            default => $this->").append(getFieldColumnName(field)).append("\n");
+                sb.append("        };\n");
+                sb.append("    }\n");
+            }
+        }
     }
 
     private void generateCustomMethods(StringBuilder sb, Entity entity) {

@@ -160,6 +160,10 @@ public class LaravelViewTemplate {
                 String relationName = toCamelCase(relatedEntity);
 
                 html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(relationName).append("?->").append(displayField).append(" ?? '-' }}</td>\n");
+            } else if (attr.getEnumRef() != null && !attr.getEnumRef().isEmpty()) {
+                // Se o campo é ENUM, usar o accessor de label
+                String labelAccessor = toCamelCase(attr.getName()) + "_label";
+                html.append("                            <td").append(alignment).append(">{{ $").append(entityNameLower).append("->").append(labelAccessor).append(" }}</td>\n");
             } else if (hasFieldOptions(attr)) {
                 // Se o campo tem opções (ui.options), usar o accessor de label
                 String labelAccessor = attrName + "_label";
@@ -323,6 +327,19 @@ public class LaravelViewTemplate {
                 html.append("                                @foreach(").append(modelClass).append("::").append(methodName).append("() as $key => $label)\n");
                 html.append("                                    <option value=\"{{ $key }}\" {{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') == $key ? 'selected' : '' }}>{{ $label }}</option>\n");
                 html.append("                                @endforeach\n");
+                html.append("                            </select>\n");
+            } else if (attr.getEnumRef() != null && !attr.getEnumRef().isEmpty()) {
+                // Para campos ENUM - gera options hardcoded baseado no metamodel
+                html.append("                            <select name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"").append(inputClass).append(" @error('").append(attrName).append("') is-invalid @enderror\"");
+                if (attr.isRequired()) {
+                    html.append(" required");
+                }
+                html.append(">\n");
+                html.append("                                <option value=\"\">Selecione...</option>\n");
+
+                // Buscar enum no metamodel e gerar opções
+                generateEnumOptions(html, attr, entityNameLower, attrName);
+
                 html.append("                            </select>\n");
             } else if (inputType.equals("select") || isForeignKey(attr)) {
                 // Para relacionamentos (Foreign Keys)
@@ -1187,5 +1204,40 @@ public class LaravelViewTemplate {
         form.append("    </div>\n\n");
 
         return form.toString();
+    }
+
+    /**
+     * Gera as opções de um campo ENUM baseado no metamodel.
+     */
+    private void generateEnumOptions(StringBuilder html, Field field, String entityNameLower, String attrName) {
+        if (metaModel == null || metaModel.getEnums() == null) {
+            return;
+        }
+
+        String enumRef = field.getEnumRef();
+        if (enumRef == null || enumRef.isEmpty()) {
+            return;
+        }
+
+        // Buscar o enum no metamodel
+        var enumDef = metaModel.getEnums().stream()
+            .filter(e -> e.getId().equals(enumRef))
+            .findFirst()
+            .orElse(null);
+
+        if (enumDef == null || enumDef.getValues() == null) {
+            return;
+        }
+
+        // Gerar uma option para cada valor do enum
+        for (var enumValue : enumDef.getValues()) {
+            Object code = enumValue.getCode();
+            String label = enumValue.getLabel();
+
+            html.append("                                <option value=\"").append(code).append("\" {{ old('")
+                .append(attrName).append("', $").append(entityNameLower).append("->").append(attrName)
+                .append(" ?? '') == ").append(code).append(" ? 'selected' : '' }}>")
+                .append(label).append("</option>\n");
+        }
     }
 }
