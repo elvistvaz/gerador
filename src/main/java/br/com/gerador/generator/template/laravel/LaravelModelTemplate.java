@@ -422,9 +422,14 @@ public class LaravelModelTemplate {
         // Remove underscores e converte para camelCase
         String fkCamel = toCamelCase(foreignKeyName);
 
-        // Remove o prefixo 'id' se existir
+        // Remove o prefixo 'id' se existir no início (ex: idCidade -> cidade)
         if (fkCamel.startsWith("id") && fkCamel.length() > 2 && Character.isUpperCase(fkCamel.charAt(2))) {
             fkCamel = Character.toLowerCase(fkCamel.charAt(2)) + fkCamel.substring(3);
+        }
+
+        // Remove o sufixo 'Id' se existir no final (ex: componenteId -> componente)
+        if (fkCamel.endsWith("Id") && fkCamel.length() > 2) {
+            fkCamel = fkCamel.substring(0, fkCamel.length() - 2);
         }
 
         // Se após remover 'id' o nome resultante é igual ao nome da entidade em camelCase, usa o nome da entidade

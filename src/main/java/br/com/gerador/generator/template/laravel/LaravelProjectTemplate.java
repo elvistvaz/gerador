@@ -2263,6 +2263,9 @@ class EnsureSessionContextSelected
             String fieldColumnName = getColumnNameFromMetaModel(metaModel, entity, field);
             String displayFieldColumnName = getColumnNameFromMetaModel(metaModel, entity, displayField);
 
+            // Buscar a PK da entidade referenciada (sempre será 'id' no Laravel por padrão)
+            String entityPkColumnName = getPrimaryKeyColumnName(metaModel, entity);
+
             selectionSections.append("""
                         {{-- Seleção de %s --}}
                         <div class="mb-4">
@@ -2298,10 +2301,10 @@ class EnsureSessionContextSelected
                 entity, icon, label,
                 entityPlural, entityLower,
                 inputType, field,
-                entityLower, entityLower, fieldColumnName,
-                entityLower, fieldColumnName,
-                field, toSnakeCase(field), entityLower, fieldColumnName,
-                entityLower, entityLower, fieldColumnName,
+                entityLower, entityLower, entityPkColumnName,
+                entityLower, entityPkColumnName,
+                field, toSnakeCase(field), entityLower, entityPkColumnName,
+                entityLower, entityLower, entityPkColumnName,
                 entityLower, displayFieldColumnName,
                 field
             ));
