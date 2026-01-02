@@ -715,6 +715,11 @@
           "required": false,
           "ui": {
             "component": "SELECT",
+            "options": [
+              { "value": 1, "label": "Administrador" },
+              { "value": 2, "label": "Gerente" },
+              { "value": 3, "label": "Usuário" }
+            ],
             "grid": { "visible": true, "order": 4 },
             "form": { "visible": true, "order": 5 }
           }

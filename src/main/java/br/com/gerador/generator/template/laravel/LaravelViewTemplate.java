@@ -304,11 +304,15 @@ public class LaravelViewTemplate {
             }
 
             html.append("                        <div class=\"col-md-").append(colSpan).append(" mb-3\">\n");
-            html.append("                            <label for=\"").append(attrName).append("\" class=\"form-label\">").append(getFieldLabel(attr)).append("</label>\n");
 
             // Determinar tipo de input
             String inputType = getInputType(attr);
             String inputClass = "form-control";
+
+            // Label (não gerar para checkbox, pois ele tem label próprio)
+            if (!inputType.equals("checkbox")) {
+                html.append("                            <label for=\"").append(attrName).append("\" class=\"form-label\">").append(getFieldLabel(attr)).append("</label>\n");
+            }
 
             if (inputType.equals("textarea")) {
                 html.append("                            <textarea name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"").append(inputClass).append(" @error('").append(attrName).append("') is-invalid @enderror\" rows=\"3\"");
@@ -354,6 +358,15 @@ public class LaravelViewTemplate {
                 html.append("                                    <option value=\"{{ $item->").append(relatedPkField).append(" }}\" {{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? '') == $item->").append(relatedPkField).append(" ? 'selected' : '' }}>{{ $item->").append(displayField).append(" }}</option>\n");
                 html.append("                                @endforeach\n");
                 html.append("                            </select>\n");
+            } else if (inputType.equals("checkbox")) {
+                // Tratamento especial para checkbox com Bootstrap
+                html.append("                            <div class=\"form-check\">\n");
+                html.append("                                <input type=\"checkbox\" name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"form-check-input @error('").append(attrName).append("') is-invalid @enderror\" value=\"1\" {{ old('").append(attrName).append("', $").append(entityNameLower).append("->").append(attrName).append(" ?? false) ? 'checked' : '' }}>\n");
+                html.append("                                <label for=\"").append(attrName).append("\" class=\"form-check-label\">").append(getFieldLabel(attr)).append("</label>\n");
+                html.append("                                @error('").append(attrName).append("')\n");
+                html.append("                                    <div class=\"invalid-feedback\">{{ $message }}</div>\n");
+                html.append("                                @enderror\n");
+                html.append("                            </div>\n");
             } else {
                 html.append("                            <input type=\"").append(inputType).append("\" name=\"").append(attrName).append("\" id=\"").append(attrName).append("\" class=\"").append(inputClass);
 
@@ -408,9 +421,12 @@ public class LaravelViewTemplate {
                 html.append(">\n");
             }
 
-            html.append("                            @error('").append(attrName).append("')\n");
-            html.append("                                <div class=\"invalid-feedback\">{{ $message }}</div>\n");
-            html.append("                            @enderror\n");
+            // @error (não gerar para checkbox, pois ele já tem dentro do form-check)
+            if (!inputType.equals("checkbox")) {
+                html.append("                            @error('").append(attrName).append("')\n");
+                html.append("                                <div class=\"invalid-feedback\">{{ $message }}</div>\n");
+                html.append("                            @enderror\n");
+            }
             html.append("                        </div>\n\n");
         }
 
