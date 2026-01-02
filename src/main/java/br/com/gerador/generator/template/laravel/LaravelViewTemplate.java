@@ -52,20 +52,6 @@ public class LaravelViewTemplate {
         html.append("        </a>\n");
         html.append("    </div>\n\n");
 
-        // Mensagens de sucesso e erro
-        html.append("    @if(session('success'))\n");
-        html.append("        <div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">\n");
-        html.append("            {{ session('success') }}\n");
-        html.append("            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\"></button>\n");
-        html.append("        </div>\n");
-        html.append("    @endif\n\n");
-        html.append("    @if(session('error'))\n");
-        html.append("        <div class=\"alert alert-danger alert-dismissible fade show\" role=\"alert\">\n");
-        html.append("            {{ session('error') }}\n");
-        html.append("            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\"></button>\n");
-        html.append("        </div>\n");
-        html.append("    @endif\n\n");
-
         // Seção de filtros ativos (se a entidade usa filtros de sessão)
         if (hasSessionFilters(entity) && metaModel != null && metaModel.getMetadata() != null) {
             var sessionContexts = metaModel.getMetadata().getSessionContext();
