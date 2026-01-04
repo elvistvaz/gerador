@@ -815,9 +815,22 @@ class InitialDataSeeder extends Seeder
             return null;
         }
 
-        // Normaliza o nome da tabela removendo underscores para comparação
-        String normalizedTableName = tableName.replace("_", "").toLowerCase();
+        // 1. Exact match on entity name (PascalCase)
+        for (Entity entity : metaModel.getEntities()) {
+            if (entity.getName().equals(tableName)) {
+                return entity;
+            }
+        }
 
+        // 2. Case-insensitive match on entity name
+        for (Entity entity : metaModel.getEntities()) {
+            if (entity.getName().equalsIgnoreCase(tableName)) {
+                return entity;
+            }
+        }
+
+        // 3. Normalized match on table name (original logic)
+        String normalizedTableName = tableName.replace("_", "").toLowerCase();
         for (Entity entity : metaModel.getEntities()) {
             String entityTableName = entity.getTableName();
             if (entityTableName != null) {

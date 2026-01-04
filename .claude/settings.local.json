@@ -222,7 +222,8 @@
       "Bash(cmd.exe /c \"cd /d c:\\\\java\\\\workspace\\\\Gerador && gerar_icep.bat\")",
       "Bash(./gerar_icep.bat)",
       "Bash(./executar_icep.bat)",
-      "Bash(C:/php82/php.exe:*)"
+      "Bash(C:/php82/php.exe:*)",
+      "Bash(if not exist \"c:\\\\java\\\\workspace\\\\Gerador\\\\templates\\\\laravel-vendor\" mkdir \"c:\\\\java\\\\workspace\\\\Gerador\\\\templates\\\\laravel-vendor\")"
     ]
   }
 }

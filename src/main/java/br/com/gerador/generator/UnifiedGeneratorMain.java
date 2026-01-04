@@ -424,13 +424,14 @@ public class UnifiedGeneratorMain {
             pb.directory(laravelPath.toFile());
 
             // Composer install com flags otimizadas para cache
+            // NOTA: --optimize-autoloader foi removido para acelerar geração em dev
+            // (não é necessário durante desenvolvimento, só em produção)
             pb.command(
                 "C:\\php82\\php.exe",
                 "C:\\php82\\composer.phar",
                 "install",
                 "--prefer-dist",           // Usa cache de distribuição (mais rápido)
                 "--no-dev",                // Sem dependências de desenvolvimento
-                "--optimize-autoloader",   // Autoloader otimizado
                 "--no-interaction"         // Não-interativo
             );
 
@@ -459,7 +460,7 @@ public class UnifiedGeneratorMain {
         } catch (Exception e) {
             System.out.println("\n⚠ Aviso: Não foi possível executar composer install automaticamente.");
             System.out.println("  Execute manualmente no diretório do projeto:");
-            System.out.println("  composer install --prefer-dist --no-dev --optimize-autoloader");
+            System.out.println("  composer install --prefer-dist --no-dev");
             System.out.println("  Erro: " + e.getMessage());
         }
     }
