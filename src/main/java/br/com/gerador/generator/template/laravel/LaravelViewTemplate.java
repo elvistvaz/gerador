@@ -595,7 +595,8 @@ public class LaravelViewTemplate {
             String dataType = field.getDataType().toString().toLowerCase();
             if (dataType.contains("int") || dataType.contains("long") || dataType.contains("short") ||
                 dataType.contains("byte") || dataType.contains("float") || dataType.contains("double") ||
-                dataType.contains("decimal") || dataType.contains("numeric") || dataType.contains("number")) {
+                dataType.contains("decimal") || dataType.contains("numeric") || dataType.contains("number") ||
+                dataType.contains("money")) {
                 return true;
             }
         }
@@ -605,7 +606,7 @@ public class LaravelViewTemplate {
             String dbType = field.getDatabaseType().toLowerCase();
             return dbType.contains("int") || dbType.contains("serial") || dbType.contains("numeric") ||
                    dbType.contains("decimal") || dbType.contains("number") || dbType.contains("float") ||
-                   dbType.contains("double");
+                   dbType.contains("double") || dbType.contains("money");
         }
 
         return false;
